@@ -2661,8 +2661,6 @@ details.settings-box summary {
           <button class="tab-btn" data-mode="formula" role="tab" aria-selected="false">
             <span>📐</span> Công thức cần nhớ
           </button>
-            <span>✍️</span> Tự luận
-          </button>
         </div>
       </div>
 
@@ -8237,6 +8235,7 @@ let state = {
   quiz: {},
   flash: {},
   essay: {},
+  formula: {},
   star: {},
   notes: {},
   maxStreak: 0,
@@ -8245,6 +8244,15 @@ let state = {
 
 let soundEnabled = localStorage.getItem('cse703102-sound') !== 'false';
 let currentTheme = localStorage.getItem('cse703102-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+function activateFormulaMode() {
+  mode = 'formula';
+  shuffled = false;
+  try { closeDrawer(); } catch(e) {}
+  rebuild();
+  setTimeout(scrollToCard, 10);
+}
+
 let sidebarCollapsed = localStorage.getItem('cse703102-sidebar-collapsed') === 'true';
 
 let session = 'all';
@@ -9098,7 +9106,9 @@ function nav() {
   const html = labels.map(([id, title, count]) => {
     const isActive = id === session;
     const sItems = (mode === 'essay' ? D.essay : D.quiz).filter(q => id === 'all' || String(q.session) === id);
-    const doneCount = sItems.filter(q => state[mode][q.id]).length;
+    const targetMode = mode === 'formula' ? 'quiz' : mode;
+    const mState = state[targetMode] || {};
+    const doneCount = sItems.filter(q => mState[q.id]).length;
     const pct = sItems.length ? Math.round((doneCount / sItems.length) * 100) : 0;
     const isCompleted = sItems.length > 0 && doneCount === sItems.length;
 
@@ -9175,8 +9185,21 @@ $('#mobileSessionBtn').onclick = openDrawer;
 
 // Stats Calculation
 function stats() {
+  if (mode === 'formula') {
+    $('#total').textContent = FORMULA_LIBRARY.length;
+    $('#done').textContent = 'Slide & 121 trang';
+    $('#donePercent').textContent = 'Đầy đủ';
+    $('#accuracy').textContent = '100%';
+    $('#accuracy').style.color = 'var(--green)';
+    $('#accDetail').textContent = 'Công thức chuẩn';
+    $('#streakCount').textContent = currentStreak;
+    $('#streakBadge').classList.toggle('active', currentStreak > 0);
+    $('#maxStreakVal').textContent = state.maxStreak || 0;
+    return;
+  }
   const all = base();
-  const seen = all.filter(q => state[mode][q.id]);
+  const mState = state[mode] || {};
+  const seen = all.filter(q => mState[q.id]);
   const right = seen.filter(q => state[mode][q.id].correct);
   const pct = all.length ? Math.round((seen.length / all.length) * 100) : 0;
 
