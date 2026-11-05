@@ -22,21 +22,20 @@
   - `S`: Bật / tắt âm thanh.
   - `Esc`: Đóng lightbox ảnh.
 - 📱 **Tối ưu Mobile First**: Tự động cuộn mượt đưa câu hỏi lên vị trí trung tâm, nút bấm thân thiện với cảm ứng, giao diện gọn gàng, không bị tràn hay tụt dòng.
-- ⚡ **Hoạt động 100% Offline**: Chỉ cần tải thư mục và mở trực tiếp file `dist/index.html` trên trình duyệt mà không cần cài đặt môi trường hay internet.
+- ⚡ **Hoạt động 100% Offline**: Chỉ cần mở trực tiếp file `index.html` trên trình duyệt mà không cần cài đặt môi trường hay internet.
 
 ---
 
 ## 📂 Cấu trúc thư mục
 
 ```text
-├── on-tap-cse703102/
-│   └── dist/
-│       ├── index.html                 # Ứng dụng chính (Single Page App)
-│       ├── ngan-hang-cau-hoi.json     # Dữ liệu 300 trắc nghiệm + 60 tự luận
-│       ├── de-cuong-goc.pdf          # File đề cương gốc 121 trang
-│       ├── vercel.json                # Cấu hình định tuyến Vercel
-│       ├── answers/                   # 360 ảnh trích xuất đáp án gốc (q_1.png -> q_300.png, e_1.png -> e_60.png)
-│       └── pages/                     # 46 trang PDF đáp án gốc dạng PNG chất lượng cao
+├── index.html                 # Ứng dụng chính (Single Page App)
+├── ngan-hang-cau-hoi.json     # Dữ liệu 300 trắc nghiệm + 60 tự luận
+├── de-cuong-goc.pdf          # File đề cương gốc 121 trang
+├── vercel.json                # Cấu hình định tuyến & cache Vercel
+├── answers/                   # 360 ảnh trích xuất đáp án gốc (q_1.png -> q_300.png, e_1.png -> e_60.png)
+├── pages/                     # 46 trang PDF đáp án gốc dạng PNG chất lượng cao
+├── HUONG-DAN.txt              # Hướng dẫn mở nhanh
 └── README.md
 ```
 
@@ -48,5 +47,5 @@
    ```bash
    git clone https://github.com/trung1609/TMDT_FLASHCARD.git
    ```
-2. Mở thư mục `on-tap-cse703102/dist/` và click đúp vào file `index.html` bằng Google Chrome, Microsoft Edge hoặc Safari.
+2. Click đúp vào file `index.html` bằng Google Chrome, Microsoft Edge hoặc Safari.
 3. Học tập và ôn thi hiệu quả!

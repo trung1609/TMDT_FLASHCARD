@@ -1,6 +1,11 @@
 {
-  "name": "on-tap-cse703102",
   "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/on-tap-cse703102/dist/(.*)",
+      "destination": "/$1"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -22,4 +27,3 @@
     }
   ]
 }
-

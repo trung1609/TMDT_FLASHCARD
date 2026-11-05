@@ -12,8 +12,8 @@ on-tap-cse703102-deploy.tar.gz
 # ========================================================
 # TÀI LIỆU PDF TRÙNG LẶP Ở THƯ MỤC GỐC (~4 MB)
 # ========================================================
-/*.pdf
 SE703102 - De cuong on tap toan phan.pdf
+!de-cuong-goc.pdf
 
 # ========================================================
 # CÁC FILE SAO LƯU & ẢNH PREVIEW TẠM
@@ -47,6 +47,7 @@ node_modules/
 # ========================================================
 # HỆ ĐIỀU HÀNH & EDITOR CẤU HÌNH CÁ NHÂN
 # ========================================================
+.vercel
 .DS_Store
 Thumbs.db
 desktop.ini
