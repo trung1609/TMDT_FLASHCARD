@@ -1,0 +1,64 @@
+# ========================================================
+# CÁC FILE NÉN & GÓI DEPLOY NẶNG (66+ MB - RẤT NẶNG TRÊN GIT)
+# ========================================================
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+on-tap-cse703102.zip
+on-tap-cse703102-deploy.tar.gz
+
+# ========================================================
+# TÀI LIỆU PDF TRÙNG LẶP Ở THƯ MỤC GỐC (~4 MB)
+# ========================================================
+/*.pdf
+SE703102 - De cuong on tap toan phan.pdf
+
+# ========================================================
+# CÁC FILE SAO LƯU & ẢNH PREVIEW TẠM
+# ========================================================
+*.bak
+*.tmp
+*-preview.png
+flashcard-preview.png
+desktop-preview.png
+mobile-preview.png
+test_*.png
+test_*.py
+
+# ========================================================
+# BUILD SCRIPTS & FILE TẠM
+# ========================================================
+generate_images.py
+generate_index.js
+
+# ========================================================
+# PYTHON & NODE DEPENDENCIES / CACHE
+# ========================================================
+__pycache__/
+*.py[cod]
+*$py.class
+node_modules/
+.pytest_cache/
+.env
+.env.local
+
+# ========================================================
+# HỆ ĐIỀU HÀNH & EDITOR CẤU HÌNH CÁ NHÂN
+# ========================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ========================================================
+# TÙY CHỌN NẾU MUỐN GIẢM TẢI THÊM CHO GITHUB:
+# (Bỏ dấu # ở đầu dòng nếu bạn KHÔNG muốn đẩy thư mục này lên)
+# ========================================================
+#on-tap-cse703102/dist/pages/  
+#on-tap-cse703102/dist/answers/    
+#on-tap-cse703102/dist/de-cuong-goc.pdf 

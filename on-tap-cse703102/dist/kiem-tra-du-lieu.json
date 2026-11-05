@@ -1,0 +1,97 @@
+{
+  "source_sha256": "e1fa2ba457f8f15a029c02b7c77c9bcaa956e3db2e106f0908ccd19302839488",
+  "pages": 121,
+  "quiz_count": 300,
+  "essay_count": 60,
+  "answer_table_entries": 300,
+  "explanation_entries": 300,
+  "answer_mismatches": [],
+  "missing_ids": [],
+  "four_options_each": true,
+  "essay_answers": 60,
+  "session_counts": [
+    {
+      "session": 1,
+      "quiz": 23,
+      "essay": 4
+    },
+    {
+      "session": 2,
+      "quiz": 21,
+      "essay": 4
+    },
+    {
+      "session": 3,
+      "quiz": 24,
+      "essay": 4
+    },
+    {
+      "session": 4,
+      "quiz": 24,
+      "essay": 4
+    },
+    {
+      "session": 5,
+      "quiz": 24,
+      "essay": 4
+    },
+    {
+      "session": 6,
+      "quiz": 24,
+      "essay": 4
+    },
+    {
+      "session": 7,
+      "quiz": 24,
+      "essay": 4
+    },
+    {
+      "session": 8,
+      "quiz": 24,
+      "essay": 4
+    },
+    {
+      "session": 9,
+      "quiz": 22,
+      "essay": 4
+    },
+    {
+      "session": 10,
+      "quiz": 22,
+      "essay": 4
+    },
+    {
+      "session": 11,
+      "quiz": 14,
+      "essay": 1
+    },
+    {
+      "session": 12,
+      "quiz": 14,
+      "essay": 1
+    },
+    {
+      "session": 13,
+      "quiz": 14,
+      "essay": 1
+    },
+    {
+      "session": 14,
+      "quiz": 14,
+      "essay": 1
+    },
+    {
+      "session": 15,
+      "quiz": 12,
+      "essay": 1
+    }
+  ],
+  "open_essays": 15,
+  "answer_distribution": {
+    "A": 75,
+    "B": 75,
+    "C": 75,
+    "D": 75
+  },
+  "scope": "Exact answer-key agreement with supplied PDF; no independent factual verification."
+}
