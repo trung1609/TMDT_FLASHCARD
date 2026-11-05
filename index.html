@@ -2096,7 +2096,439 @@ details.settings-box summary {
   }
 }
 
-  </style>
+  
+/* ========================================================
+   FORMULAS & ADVERTISING SIMULATOR STYLES (WAYGROUND STYLE)
+   ======================================================== */
+.formula-header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(99, 102, 241, 0.35);
+  transition: all 0.2s ease;
+}
+.formula-header-btn:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 5px 16px rgba(99, 102, 241, 0.45);
+}
+.formula-header-btn:active {
+  transform: translateY(0);
+}
+
+.formula-hub-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.formula-hero-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.08));
+  border: 1.5px solid rgba(99, 102, 241, 0.2);
+  border-radius: 18px;
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+[data-theme="dark"] .formula-hero-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.12));
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.formula-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.formula-hero-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.formula-hero-desc {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Category Filter Bar */
+.formula-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.formula-chip {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.formula-chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+.formula-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.3);
+}
+
+/* Slide Exercise Showcase Card */
+.slide-showcase-card {
+  background: var(--surface);
+  border: 2px solid #8b5cf6;
+  border-radius: 20px;
+  padding: 24px 22px;
+  box-shadow: 0 8px 28px rgba(139, 92, 246, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.slide-showcase-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1.5px dashed var(--border);
+}
+.slide-showcase-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #8b5cf6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.slide-params-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+.slide-param-box {
+  background: rgba(139, 92, 246, 0.06);
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.slide-param-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+.slide-param-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* Solutions Grid */
+.solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+.solution-item-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.solution-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  border-color: #8b5cf6;
+}
+.solution-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.solution-code {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+}
+.solution-res-badge {
+  font-size: 15px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--green);
+}
+.solution-math {
+  font-family: 'SF Pro Mono', Consolas, Monaco, monospace;
+  font-size: 12.5px;
+  color: var(--text);
+  background: var(--bg);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  line-height: 1.45;
+}
+.solution-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* Question Breakdown Cards */
+.qa-card {
+  background: var(--surface);
+  border-left: 4px solid var(--primary);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.qa-q {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.qa-ans {
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Interactive Simulator */
+.calc-card {
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-radius: 20px;
+  padding: 24px 22px;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.calc-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+.calc-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.calc-field label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.calc-field input {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s;
+}
+.calc-field input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.calc-verdict-box {
+  padding: 16px 20px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+.calc-verdict-box.profit {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1.5px solid var(--green);
+  color: var(--green);
+}
+.calc-verdict-box.loss {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1.5px solid var(--red);
+  color: var(--red);
+}
+.calc-verdict-box.breakeven {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1.5px solid var(--amber);
+  color: var(--amber);
+}
+
+/* Formula Library Cards */
+.formula-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+.formula-item-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+.formula-item-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+.formula-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.formula-card-title {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+.formula-category-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  text-transform: uppercase;
+}
+.formula-equation-box {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--primary);
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+}
+.formula-vars-list {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  padding-left: 18px;
+  margin: 0;
+}
+.formula-tip-box {
+  background: rgba(245, 158, 11, 0.08);
+  border-left: 3.5px solid var(--amber);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.formula-example-box {
+  background: rgba(99, 102, 241, 0.05);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.5;
+  border: 1px dashed rgba(99, 102, 241, 0.25);
+}
+
+@media (max-width: 768px) {
+  .slide-params-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .solutions-grid {
+    grid-template-columns: 1fr;
+  }
+  .formula-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .calc-inputs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .calc-inputs-grid {
+    grid-template-columns: 1fr;
+  }
+  .slide-params-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+</style>
 </head>
 <body>
   <canvas id="confettiCanvas"></canvas>
@@ -2127,6 +2559,9 @@ details.settings-box summary {
         <span id="themeIcon">🌙</span>
       </button>
 
+      <button id="headerFormulaBtn" class="formula-header-btn" title="Mở sổ tay công thức TMĐT & Máy tính mô phỏng">
+        <span>📐</span> <span class="hide-mobile">Công thức cần nhớ</span>
+      </button>
       <span class="badge-pill">✓ 300 trắc nghiệm & 60 tự luận</span>
     </div>
   </header>
@@ -2221,6 +2656,11 @@ details.settings-box summary {
             <span>🎴</span> Flashcard 3D
           </button>
           <button class="tab-btn" data-mode="essay" role="tab" aria-selected="false">
+            <span>✍️</span> Tự luận
+          </button>
+          <button class="tab-btn" data-mode="formula" role="tab" aria-selected="false">
+            <span>📐</span> Công thức cần nhớ
+          </button>
             <span>✍️</span> Tự luận
           </button>
         </div>
@@ -8047,11 +8487,581 @@ function scrollToCard() {
 // Key generation helper
 const key = q => (mode === 'essay' ? 'e' : 'q') + q.id;
 
+
+// ========================================================
+// SỔ TAY CÔNG THỨC TMĐT & BÀI TẬP TÍNH TOÁN TOÀN DIỆN
+// ========================================================
+const FORMULA_CATEGORIES = [
+  { id: 'all', label: 'Tất cả' },
+  { id: 'slide', label: '🎯 Bài tập trên Slide' },
+  { id: 'ads', label: '📊 Quảng cáo số (Buổi 6)' },
+  { id: 'ltv', label: '👥 Khách hàng LTV & CAC (Buổi 5, 13)' },
+  { id: 'funnel', label: '🔄 Phễu chuyển đổi TMĐT (Buổi 13)' },
+  { id: 'ops', label: '📦 Vận hành & Phí cổng (Buổi 4, 10)' },
+  { id: 'security', label: '🛡️ An ninh thông tin (Buổi 7)' }
+];
+
+let activeFormulaCategory = 'all';
+let formulaSearchTerm = '';
+
+// Live Ad Simulator State
+let simState = {
+  impressions: 200000,
+  clicks: 4000,
+  cost: 20000000,
+  orders: 100,
+  revenue: 80000000,
+  margin: 30
+};
+
+function resetAdSimulator() {
+  simState = {
+    impressions: 200000,
+    clicks: 4000,
+    cost: 20000000,
+    orders: 100,
+    revenue: 80000000,
+    margin: 30
+  };
+  $('#simImp').value = simState.impressions;
+  $('#simClk').value = simState.clicks;
+  $('#simCost').value = simState.cost;
+  $('#simOrd').value = simState.orders;
+  $('#simRev').value = simState.revenue;
+  $('#simMargin').value = simState.margin;
+  updateAdSimulator();
+  showToast('✓ Đã khôi phục thông số bài tập gốc trên Slide');
+}
+
+function updateAdSimulator() {
+  const imp = Math.max(1, parseFloat($('#simImp')?.value) || 0);
+  const clk = Math.max(0, parseFloat($('#simClk')?.value) || 0);
+  const cost = Math.max(0, parseFloat($('#simCost')?.value) || 0);
+  const ord = Math.max(0, parseFloat($('#simOrd')?.value) || 0);
+  const rev = Math.max(0, parseFloat($('#simRev')?.value) || 0);
+  const margin = Math.max(0.1, parseFloat($('#simMargin')?.value) || 0);
+
+  const ctr = (clk / imp) * 100;
+  const cpc = clk > 0 ? (cost / clk) : 0;
+  const cpm = imp > 0 ? (cost / imp) * 1000 : 0;
+  const cvr = clk > 0 ? (ord / clk) * 100 : 0;
+  const cpa = ord > 0 ? (cost / ord) : 0;
+  const aov = ord > 0 ? (rev / ord) : 0;
+  const roas = cost > 0 ? (rev / cost) : 0;
+  const roasBreakeven = 100 / margin;
+  const grossProfit = rev * (margin / 100);
+  const netProfit = grossProfit - cost;
+  const reqCvr = (aov > 0 && margin > 0) ? (cpc / (aov * (margin / 100))) * 100 : 0;
+
+  if ($('#resCtr')) $('#resCtr').textContent = ctr.toFixed(2) + '%';
+  if ($('#resCpc')) $('#resCpc').textContent = Math.round(cpc).toLocaleString('vi-VN') + ' đ';
+  if ($('#resCpm')) $('#resCpm').textContent = Math.round(cpm).toLocaleString('vi-VN') + ' đ';
+  if ($('#resCvr')) $('#resCvr').textContent = cvr.toFixed(2) + '%';
+  if ($('#resCpa')) $('#resCpa').textContent = Math.round(cpa).toLocaleString('vi-VN') + ' đ';
+  if ($('#resAov')) $('#resAov').textContent = Math.round(aov).toLocaleString('vi-VN') + ' đ';
+  if ($('#resRoas')) $('#resRoas').textContent = roas.toFixed(2) + 'x';
+  if ($('#resRoasBe')) $('#resRoasBe').textContent = roasBreakeven.toFixed(2) + 'x';
+  if ($('#resGross')) $('#resGross').textContent = Math.round(grossProfit).toLocaleString('vi-VN') + ' đ';
+  if ($('#resNet')) $('#resNet').textContent = (netProfit >= 0 ? '+' : '') + Math.round(netProfit).toLocaleString('vi-VN') + ' đ';
+
+  const vBox = $('#simVerdictBox');
+  if (vBox) {
+    if (netProfit > 500) {
+      vBox.className = 'calc-verdict-box profit';
+      vBox.innerHTML = '<div>🎉 <strong>KẾT LUẬN: CHIẾN DỊCH CÓ LÃI</strong><div style="font-size:12.5px;font-weight:500;margin-top:2px;">ROAS thực tế (' + roas.toFixed(2) + 'x) > ROAS hòa vốn (' + roasBreakeven.toFixed(2) + 'x) · Lãi ròng: +' + Math.round(netProfit).toLocaleString('vi-VN') + ' đ</div></div>' +
+        '<div style="font-size:13px;font-weight:800;">Lợi nhuận gộp đủ bù chi phí QC</div>';
+    } else if (Math.abs(netProfit) <= 500) {
+      vBox.className = 'calc-verdict-box breakeven';
+      vBox.innerHTML = '<div>⚖️ <strong>KẾT LUẬN: CHIẾN DỊCH HÒA VỐN</strong><div style="font-size:12.5px;font-weight:500;margin-top:2px;">ROAS xấp xỉ ngưỡng hòa vốn (' + roasBreakeven.toFixed(2) + 'x)</div></div>';
+    } else {
+      vBox.className = 'calc-verdict-box loss';
+      vBox.innerHTML = '<div>⚠️ <strong>KẾT LUẬN: CHIẾN DỊCH ĐANG BỊ LỖ</strong><div style="font-size:12.5px;font-weight:500;margin-top:2px;">ROAS thực tế (' + roas.toFixed(2) + 'x) < ROAS hòa vốn (' + roasBreakeven.toFixed(2) + 'x) · Lỗ: ' + Math.round(netProfit).toLocaleString('vi-VN') + ' đ</div></div>' +
+        '<div style="font-size:12px;font-weight:600;">Cần tăng CVR lên ≥ ' + reqCvr.toFixed(2) + '% hoặc tăng AOV</div>';
+    }
+  }
+}
+
+// Full Library of Formulas
+const FORMULA_LIBRARY = [
+  // ADS
+  {
+    category: 'ads',
+    title: 'CTR (Click-Through Rate) · Tỷ lệ nhấp chuột',
+    equation: 'CTR = (Clicks ÷ Impressions) × 100%',
+    vars: [
+      '<b>Clicks</b>: Tổng số lần người dùng bấm vào quảng cáo',
+      '<b>Impressions</b>: Tổng số lần quảng cáo được hiển thị trên màn hình'
+    ],
+    tip: '💡 <b>Ý nghĩa & Mẹo thi:</b> Đo lường mức độ hấp dẫn của mẫu quảng cáo (tiêu đề, hình ảnh, lời kêu gọi). Chuẩn ngành TMĐT thường từ 1,0% – 2,5%. CTR cao giúp tăng Điểm chất lượng (Quality Score) trong cơ chế đấu giá.',
+    example: '<b>Bài tập Slide:</b> 4.000 clicks ÷ 200.000 impressions = <b>2,0%</b> (Chuẩn tốt).'
+  },
+  {
+    category: 'ads',
+    title: 'CPC (Cost Per Click) · Chi phí mỗi lượt nhấp',
+    equation: 'CPC = Ad Cost ÷ Clicks',
+    vars: [
+      '<b>Ad Cost</b>: Tổng ngân sách / chi phí đã chi cho quảng cáo (VNĐ)',
+      '<b>Clicks</b>: Tổng số lượt nhấp chuột thu được'
+    ],
+    tip: '💡 <b>Ý nghĩa:</b> Chi phí thực tế trả cho mỗi khách tiềm năng truy cập vào trang đích (Landing Page). Phụ thuộc vào mức độ cạnh tranh từ khóa và Điểm chất lượng.',
+    example: '<b>Bài tập Slide:</b> 20.000.000 đ ÷ 4.000 clicks = <b>5.000 đ/click</b>.'
+  },
+  {
+    category: 'ads',
+    title: 'CPM (Cost Per Mille) · Chi phí 1.000 lượt hiển thị',
+    equation: 'CPM = (Ad Cost ÷ Impressions) × 1.000',
+    vars: [
+      '<b>Ad Cost</b>: Chi phí quảng cáo đã chi',
+      '<b>Impressions</b>: Tổng số lượt hiển thị',
+      '<b>1.000</b>: Đơn vị tính trên mỗi ngàn (Mille) hiển thị'
+    ],
+    tip: '💡 <b>Ý nghĩa:</b> Thước đo chuẩn quốc tế cho chiến dịch giai đoạn Nhận thức / Thương hiệu (Brand Awareness) để tiếp cận độ phủ rộng.',
+    example: '<b>Bài tập Slide:</b> (20.000.000 đ ÷ 200.000) × 1.000 = <b>100.000 đ</b>.<br><b>Câu trắc nghiệm 123:</b> Chi 6tr, 2 triệu hiển thị → CPM = (6tr ÷ 2tr) × 1.000 = <b>3.000 đ</b>.'
+  },
+  {
+    category: 'ads',
+    title: 'CVR (Conversion Rate) · Tỷ lệ chuyển đổi',
+    equation: 'CVR = (Orders ÷ Clicks) × 100%',
+    vars: [
+      '<b>Orders</b>: Số đơn hàng hoặc mục tiêu chuyển đổi hoàn tất',
+      '<b>Clicks</b>: Tổng số lượt truy cập từ quảng cáo'
+    ],
+    tip: '💡 <b>Ý nghĩa cốt lõi:</b> Thước đo năng lực thuyết phục của Trang đích (Landing Page: giá bán, ảnh sản phẩm, tốc độ tải, lòng tin, quy trình thanh toán). CVR không phụ thuộc nền tảng quảng cáo mà thuộc về website của doanh nghiệp.',
+    example: '<b>Bài tập Slide:</b> 100 đơn ÷ 4.000 clicks = <b>2,5%</b> (Mức chuẩn TMĐT).'
+  },
+  {
+    category: 'ads',
+    title: 'CPA (Cost Per Acquisition) · Chi phí mỗi đơn hàng',
+    equation: 'CPA = Ad Cost ÷ Orders = CPC ÷ CVR',
+    vars: [
+      '<b>Ad Cost</b>: Chi phí quảng cáo',
+      '<b>Orders</b>: Số đơn hàng thành công',
+      '<b>Mối quan hệ vàng</b>: CPA = CPC ÷ CVR'
+    ],
+    tip: '⭐ <b>CÂU HỎI TRỌNG TÂM ĐỀ THI (Câu 127):</b> Vì sao con đường tăng CVR bền vững hơn giảm CPC?<br>→ Vì tăng CVR hạ CPA mà giữ nguyên hoặc tăng lưu lượng đơn hàng; còn giảm giá thầu (hạ CPC) sẽ làm giảm hiển thị và sụt giảm số đơn. Dư địa tối ưu trang đích luôn lớn hơn đấu thầu giá!',
+    example: '<b>Bài tập Slide:</b> 20.000.000 đ ÷ 100 = <b>200.000 đ/đơn</b> (hoặc 5.000 đ ÷ 0,025 = 200.000 đ).<br><b>Câu 124:</b> CPC 5.000 đ, CVR 2,5% → CPA = 5.000 ÷ 0,025 = <b>200.000 đ</b>.'
+  },
+  {
+    category: 'ads',
+    title: 'AOV (Average Order Value) · Giá trị đơn trung bình',
+    equation: 'AOV = Revenue ÷ Orders',
+    vars: [
+      '<b>Revenue</b>: Tổng doanh thu tạo ra (VNĐ)',
+      '<b>Orders</b>: Tổng số đơn hàng'
+    ],
+    tip: '💡 <b>Ý nghĩa:</b> Tăng AOV (bằng combo, freeship từ ngưỡng, gợi ý chéo) là một trong 3 trụ cột mở rộng doanh thu mà không cần tốn thêm tiền quảng cáo.',
+    example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 100 đơn = <b>800.000 đ/đơn</b>.'
+  },
+  {
+    category: 'ads',
+    title: 'ROAS (Return On Ad Spend) · Doanh thu trên chi phí QC',
+    equation: 'ROAS = Revenue ÷ Ad Cost = AOV ÷ CPA',
+    vars: [
+      '<b>Revenue</b>: Tổng doanh thu mang lại từ quảng cáo',
+      '<b>Ad Cost</b>: Tổng ngân sách quảng cáo đã chi'
+    ],
+    tip: '⚠️ <b>LƯU Ý CỐT LÕI:</b> ROAS chỉ đo doanh thu, hoàn toàn KHÔNG ĐO LỢI NHUẬN. Doanh nghiệp có thể có ROAS = 4x nhưng vẫn lỗ nếu biên lợi nhuận gộp mỏng.',
+    example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 20.000.000 đ = <b>4,0x</b> (hay 400%).'
+  },
+  {
+    category: 'ads',
+    title: 'Ngưỡng ROAS hòa vốn (Break-even ROAS)',
+    equation: 'ROAS hòa vốn = 1 ÷ Biên lợi nhuận gộp (Gross Margin)',
+    vars: [
+      '<b>Gross Margin</b>: Tỷ lệ lợi nhuận gộp của sản phẩm (ví dụ 30% = 0,3)',
+      '<b>Công thức mở rộng</b>: Nếu có chi phí vận hành (OPEX %): ROAS hòa vốn = 1 ÷ (Gross Margin − OPEX)'
+    ],
+    tip: '⭐ <b>CÂU HỎI ĐỀ CƯƠNG (Câu 125, Essay 21, Essay 44):</b><br>• Gross Margin = 40% (0,4) → ROAS hòa vốn = 1 ÷ 0,4 = <b>2,5x</b><br>• Gross Margin = 30% (0,3) → ROAS hòa vốn = 1 ÷ 0,3 ≈ <b>3,33x</b><br>• Gross Margin = 25% (0,25) → ROAS hòa vốn = 1 ÷ 0,25 = <b>4,0x</b><br>• Gross Margin = 28% (0,28) → ROAS hòa vốn = 1 ÷ 0,28 ≈ <b>3,57x</b>',
+    example: '<b>Bài tập Slide:</b> Biên gộp 30% → Ngưỡng hòa vốn = 1 ÷ 0,3 ≈ <b>3,33x</b>. Vì ROAS thực tế (4x) > 3,33x nên chiến dịch có lãi (+4 triệu).'
+  },
+  {
+    category: 'ads',
+    title: 'CVR cần đạt để hòa vốn (Break-even CVR)',
+    equation: 'CVR hòa vốn = CPC ÷ (AOV × Gross Margin)',
+    vars: [
+      '<b>CPC</b>: Chi phí mỗi lượt nhấp',
+      '<b>AOV × Gross Margin</b>: Lợi nhuận gộp tạo ra trên 1 đơn hàng (CPA tối đa cho phép)'
+    ],
+    tip: '💡 <b>Ý nghĩa (Essay 21):</b> Nếu không thể giảm giá thầu CPC và giá bán cố định, website buộc phải nâng CVR lên mức này để không bị lỗ.',
+    example: '<b>Essay 21:</b> CPC = 4.000 đ, AOV = 700.000 đ, Biên gộp = 25% → CPA tối đa = 700k × 25% = 175.000 đ → CVR cần đạt = 4.000 ÷ 175.000 ≈ <b>2,29%</b> để hòa vốn.'
+  },
+  {
+    category: 'ads',
+    title: 'Ad Rank · Cơ chế Xếp hạng Đấu giá quảng cáo (Essay 22)',
+    equation: 'Thứ hạng quảng cáo = Giá thầu (Bid) × Điểm chất lượng (Quality Score)',
+    vars: [
+      '<b>Giá thầu (Bid)</b>: Mức giá tối đa nhà quảng cáo sẵn sàng trả cho 1 click',
+      '<b>Điểm chất lượng</b>: Đánh giá của nền tảng dựa trên CTR kỳ vọng, độ liên quan mẫu quảng cáo và trải nghiệm Trang đích'
+    ],
+    tip: '⭐ <b>Tác động kép của trang đích (Landing Page):</b> Cải thiện trang đích vừa làm tăng CVR (giúp hạ CPA), vừa là yếu tố cốt lõi tăng Quality Score (giúp hạ giá thầu thực tế CPC). Hai tác động nhân với nhau tạo lợi thế cạnh tranh áp đảo.',
+    example: 'Một nhà quảng cáo thầu 6.000 đ nhưng điểm chất lượng 10/10 sẽ vượt qua nhà quảng cáo thầu 10.000 đ nhưng điểm chất lượng 5/10, và chỉ phải trả CPC thực tế thấp hơn!'
+  },
+
+  // LTV & CAC
+  {
+    category: 'ltv',
+    title: 'LTV (Customer Lifetime Value) · Giá trị vòng đời khách hàng',
+    equation: 'LTV (Lợi nhuận gộp) = AOV × f × t × Gross Margin',
+    vars: [
+      '<b>AOV</b>: Giá trị đơn hàng trung bình',
+      '<b>f (Frequency)</b>: Tần suất mua hàng bình quân (số đơn / năm)',
+      '<b>t (Lifespan)</b>: Thời gian gắn bó trung bình của khách hàng (số năm)',
+      '<b>Gross Margin</b>: Tỷ lệ lợi nhuận gộp bình quân'
+    ],
+    tip: '⭐ <b>CÂU HỎI ĐỀ CƯƠNG (Buổi 5 & Buổi 13):</b> LTV là "trần ngân sách" bảo vệ doanh nghiệp không bị vung tay quá trán khi chạy quảng cáo.',
+    example: '<b>Essay 20:</b> AOV = 450.000 đ, f = 3 đơn/năm, t = 2 năm, Biên gộp 30%<br>→ LTV = 450.000 × 3 × 2 × 30% = <b>810.000 đ</b>.<br><b>Essay 43:</b> AOV = 250.000 đ, f = 2,5 đơn/năm, t = 2 năm, Biên gộp 32%<br>→ LTV = 250.000 × 2,5 × 2 × 32% = <b>400.000 đ</b>.'
+  },
+  {
+    category: 'ltv',
+    title: 'CAC (Customer Acquisition Cost) · Chi phí thu hút khách hàng',
+    equation: 'CAC = Tổng chi phí Marketing & Sales ÷ Số khách hàng mới',
+    vars: [
+      '<b>Chi phí Marketing & Sales</b>: Toàn bộ ngân sách quảng cáo, nhân sự, công cụ trong kỳ',
+      '<b>Số khách hàng mới</b>: Lượng khách hàng lần đầu phát sinh đơn hàng'
+    ],
+    tip: '⭐ <b>Quy tắc vàng tỷ số LTV / CAC:</b><br>• <b>LTV / CAC ≥ 3</b>: Ngưỡng chuẩn vàng của một mô hình TMĐT bền vững.<br>• <b>LTV / CAC < 1</b>: Đang lỗ trên từng khách hàng thu hút (chảy máu tiền tệ).<br>• <b>CAC tối đa cho phép</b> = LTV ÷ 3.',
+    example: '• Từ Essay 20: LTV = 810.000 đ → CAC tối đa = 810.000 ÷ 3 = <b>270.000 đ</b>.<br>• Từ Essay 43: LTV = 400.000 đ → CAC tối đa = 400.000 ÷ 3 ≈ <b>133.000 đ</b>.'
+  },
+  {
+    category: 'ltv',
+    title: 'CPC tối đa cho phép theo LTV & CAC (Essay 43)',
+    equation: 'Max CPC = CAC tối đa × CVR (khách mới)',
+    vars: [
+      '<b>CAC tối đa</b>: Ngưỡng chi tối đa để có 1 khách mới (= LTV ÷ 3)',
+      '<b>CVR</b>: Tỷ lệ chuyển đổi từ lượt nhấp sang khách hàng mới'
+    ],
+    tip: '💡 <b>Ứng dụng quản trị:</b> Giúp thiết lập giá thầu trần trên Google/Facebook Ads để không bao giờ chạy quảng cáo bị lỗ về lâu dài.',
+    example: '<b>Essay 43:</b> CAC tối đa = 133.000 đ, CVR = 2,7% → Max CPC = 133.000 × 0,027 ≈ <b>3.600 đ/click</b>.'
+  },
+
+  // FUNNEL
+  {
+    category: 'funnel',
+    title: 'Phễu chuyển đổi TMĐT 4 bước chuẩn (Buổi 5 & Buổi 13)',
+    equation: 'Phiên (Sessions) → Xem SP → Thêm giỏ (Cart) → Thanh toán (Checkout) → Hoàn tất (Success)',
+    vars: [
+      '1. <b>Tỷ lệ xem SP</b> = (Lượt xem SP ÷ Tổng phiên) × 100%',
+      '2. <b>Tỷ lệ thêm giỏ</b> = (Lượt thêm giỏ ÷ Lượt xem SP) × 100%',
+      '3. <b>Tỷ lệ thanh toán</b> = (Lượt bắt đầu thanh toán ÷ Lượt thêm giỏ) × 100%',
+      '4. <b>Tỷ lệ hoàn tất</b> = (Lượt hoàn tất đơn ÷ Lượt thanh toán) × 100%',
+      '<b>Tỷ lệ CVR toàn phễu</b> = (Lượt hoàn tất đơn ÷ Tổng phiên) × 100%'
+    ],
+    tip: '⭐ <b>NGUYÊN TẮC QUẢN TRỊ (Essay 18 & Essay 43):</b><br>Giá trị của cải thiện tỷ lệ thuận với số người đi vào bước đó (ưu tiên theo <i>số tuyệt đối</i>, không theo tỷ lệ %). Bước giữa có số lượng người vào lớn gấp nhiều lần nên một cải thiện nhỏ cũng tạo ra mức tăng đơn hàng vượt bậc.',
+    example: '<b>Essay 18:</b> 10.000 phiên → 4.200 xem SP (42%) → 1.100 thêm giỏ (26%) → 620 thanh toán (56%) → 280 hoàn tất (45%). CVR toàn phễu = 2,8%.'
+  },
+  {
+    category: 'funnel',
+    title: 'Tỷ lệ bỏ giỏ hàng (Cart Abandonment Rate)',
+    equation: 'Cart Abandonment Rate = [1 − (Lượt thanh toán ÷ Lượt thêm giỏ)] × 100%',
+    vars: [
+      'Đo lường tỷ lệ người dùng đã đưa sản phẩm vào giỏ nhưng không tiến hành mua hàng'
+    ],
+    tip: '💡 <b>6 nguyên nhân bỏ giỏ hàng hàng đầu (Buổi 9 & 15):</b> (1) Phí vận chuyển bất ngờ phát sinh ở bước cuối, (2) Bắt buộc tạo tài khoản rườm rà, (3) Quy trình thanh toán quá nhiều bước, (4) Thiếu phương thức thanh toán mong muốn, (5) Lo ngại an toàn bảo mật, (6) Chính sách đổi trả không rõ ràng.',
+    example: 'Trung bình ngành TMĐT thế giới bỏ giỏ hàng từ 65% – 75%. Giảm được 5% bỏ giỏ hàng giúp tăng 20% lợi nhuận.'
+  },
+
+  // OPS & PAYMENT
+  {
+    category: 'ops',
+    title: 'Chi phí Cổng thanh toán & Tỷ trọng trên Lợi nhuận (Essay 15)',
+    equation: 'Phí = Phí cố định + (% phí × Giá trị đơn); Tỷ trọng = Phí ÷ Lợi nhuận gộp',
+    vars: [
+      '<b>Phí cố định</b>: Ví dụ 2.000 đ/giao dịch',
+      '<b>Tỷ lệ %</b>: Ví dụ 1,5% giá trị đơn hàng',
+      '<b>Tỷ trọng phí trên lãi gộp</b>: Thước đo mức độ "ăn sâu" của phí thanh toán vào lợi nhuận'
+    ],
+    tip: '⭐ <b>KẾT LUẬN QUẢN TRỊ:</b> Phần phí cố định chiếm tỷ trọng rất lớn ở đơn hàng giá trị nhỏ, do đó ăn sâu vào lợi nhuận gộp (đơn 150k phí chiếm 11,3% lãi gộp, đơn 1.500k chỉ chiếm 6,5%). Vì vậy, với đơn nhỏ ưu tiên khuyến khích thanh toán phí thấp (chuyển khoản VietQR).',
+    example: '<b>Đơn 150.000 đ (biên gộp 25% = 37.500 đ):</b><br>Phí = 2.000 + (1,5% × 150.000) = 4.250 đ → Tỷ trọng phí = 4.250 ÷ 37.500 ≈ <b>11,3%</b>!'
+  },
+  {
+    category: 'ops',
+    title: 'Hệ chỉ số Logistics & Điểm hòa vốn vận hành (Buổi 10 & Essay 39)',
+    equation: 'Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%',
+    vars: [
+      '<b>Ngưỡng an toàn</b>: Chi phí Logistics mỗi đơn ≤ Lợi nhuận gộp mỗi đơn',
+      '<b>Fulfillment Cycle Time</b>: Thời gian từ lúc đặt hàng đến khi khách nhận (chuẩn TMĐT 2–3 ngày, 5 ngày là điểm nghẽn)'
+    ],
+    tip: '💡 <b>Chẩn đoán:</b> Nếu tỷ lệ hoàn hàng cao (ví dụ 18% ở thời trang), chi phí logistics hai chiều (giao + hoàn) sẽ triệt tiêu toàn bộ lợi nhuận gộp của các đơn hàng thành công.',
+    example: 'Nếu lợi nhuận gộp mỗi đơn là 50.000 đ, chi phí giao 25.000 đ, phí hoàn 15.000 đ. Cứ 1 đơn hoàn làm mất 40.000 đ, cần 1 đơn thành công khác gánh còng lưng!'
+  },
+
+  // SECURITY
+  {
+    category: 'security',
+    title: 'Công thức Rủi ro An ninh thông tin (Buổi 7, Câu 145 & Essay 58)',
+    equation: 'Rủi ro (Risk) = Mối đe dọa (Threat) × Lỗ hổng (Vulnerability) × Tác động (Impact)',
+    vars: [
+      '<b>Mối đe dọa (Threat - T)</b>: Kẻ tấn công, tin tặc, mã độc, lừa đảo AI (yếu tố ngoại cảnh)',
+      '<b>Lỗ hổng (Vulnerability - V)</b>: Điểm yếu bảo mật trong mã nguồn, máy chủ, cấu hình, nhận thức con người',
+      '<b>Tác động (Impact - I)</b>: Mức độ thiệt hại về tài chính, uy tín, gián đoạn kinh doanh, pháp lý'
+    ],
+    tip: '⭐ <b>CÂU HỎI TRỌNG TÂM ĐỀ CƯƠNG:</b> Doanh nghiệp có thể tác động vào thành phần nào?<br>→ Doanh nghiệp <b>KHÔNG THỂ</b> triệt tiêu mối đe dọa (không thể loại bỏ tin tặc trên Internet). Doanh nghiệp chỉ có thể <b>GIẢM LỖ HỔNG (V)</b> bằng các biện pháp kỹ thuật phòng ngừa (vá lỗi, HTTPS, phân quyền) và <b>GIẢM TÁC ĐỘNG (I)</b> bằng kế hoạch ứng phó sự cố, sao lưu dự phòng độc lập và quy trình pháp lý.',
+    example: '<b>Công thức: R = T × V × I.</b> Khi một trong hai yếu tố V hoặc I tiến về 0, rủi ro tổng thể sẽ được khống chế an toàn.'
+  }
+];
+
+function renderFormulas() {
+  const filteredList = FORMULA_LIBRARY.filter(f => {
+    const matchCat = activeFormulaCategory === 'all' || f.category === activeFormulaCategory;
+    const term = formulaSearchTerm.toLowerCase();
+    const matchSearch = !term || f.title.toLowerCase().includes(term) || f.equation.toLowerCase().includes(term) || f.tip.toLowerCase().includes(term);
+    return matchCat && matchSearch;
+  });
+
+  const html = '<div class="formula-hub-container">' +
+    // HERO CARD
+    '<div class="formula-hero-card">' +
+      '<div class="formula-hero-badge">📐 SỔ TAY CÔNG THỨC & BÀI TẬP CHUẨN</div>' +
+      '<h2 class="formula-hero-title">Tổng hợp toàn bộ công thức trên Slide & Đề cương 121 trang</h2>' +
+      '<p class="formula-hero-desc">' +
+        'Bao gồm bài tập quảng cáo số, LTV & CAC, phễu chuyển đổi, chi phí cổng thanh toán, logistics và công thức rủi ro an toàn thông tin kèm máy tính mô phỏng trực tiếp.' +
+      '</p>' +
+      // CATEGORY CHIPS
+      '<div class="formula-filter-row">' +
+        FORMULA_CATEGORIES.map(c => 
+          '<button class="formula-chip ' + (activeFormulaCategory === c.id ? 'active' : '') + '" data-cat="' + c.id + '">' +
+            c.label +
+          '</button>'
+        ).join('') +
+      '</div>' +
+    '</div>' +
+
+    // SECTION 1: SLIDE EXERCISE SHOWCASE
+    (activeFormulaCategory === 'all' || activeFormulaCategory === 'slide' ? 
+      '<div class="slide-showcase-card">' +
+        '<div class="slide-showcase-header">' +
+          '<h3 class="slide-showcase-title">🎯 BÀI TẬP THỰC HÀNH TRÊN SLIDE BÀI GIẢNG (BUỔI 6)</h3>' +
+          '<span class="badge-pill" style="background:#8b5cf6;color:#fff;">CÓ TRONG ĐỀ THI</span>' +
+        '</div>' +
+        
+        '<div>' +
+          '<div style="font-size:13.5px;font-weight:700;color:var(--muted);margin-bottom:8px;">THÔNG SỐ ĐỀ BÀI CHO:</div>' +
+          '<div class="slide-params-grid">' +
+            '<div class="slide-param-box"><span class="slide-param-label">Impressions</span><span class="slide-param-val">200.000</span></div>' +
+            '<div class="slide-param-box"><span class="slide-param-label">Clicks</span><span class="slide-param-val">4.000</span></div>' +
+            '<div class="slide-param-box"><span class="slide-param-label">Ad Cost</span><span class="slide-param-val">20.000.000 đ</span></div>' +
+            '<div class="slide-param-box"><span class="slide-param-label">Orders</span><span class="slide-param-val">100 đơn</span></div>' +
+            '<div class="slide-param-box"><span class="slide-param-label">Revenue</span><span class="slide-param-val">80.000.000 đ</span></div>' +
+            '<div class="slide-param-box"><span class="slide-param-label">Gross Margin</span><span class="slide-param-val">30%</span></div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div>' +
+          '<div style="font-size:13.5px;font-weight:700;color:var(--muted);margin-bottom:8px;">LỜI GIẢI CHI TIẾT TỪNG CHỈ SỐ:</div>' +
+          '<div class="solutions-grid">' +
+            '<div class="solution-item-card">' +
+              '<div class="solution-top-row"><span class="solution-code">CTR</span><span class="solution-res-badge">2,0%</span></div>' +
+              '<div class="solution-math">CTR = (4.000 ÷ 200.000) × 100%</div>' +
+              '<div class="solution-desc">Tỷ lệ nhấp chuột tốt (chuẩn TMĐT 1–2%)</div>' +
+            '</div>' +
+            '<div class="solution-item-card">' +
+              '<div class="solution-top-row"><span class="solution-code">CPC</span><span class="solution-res-badge">5.000 đ</span></div>' +
+              '<div class="solution-math">CPC = 20.000.000 ÷ 4.000</div>' +
+              '<div class="solution-desc">Chi phí trả cho mỗi lượt truy cập</div>' +
+            '</div>' +
+            '<div class="solution-item-card">' +
+              '<div class="solution-top-row"><span class="solution-code">CPM</span><span class="solution-res-badge">100.000 đ</span></div>' +
+              '<div class="solution-math">CPM = (20.000.000 ÷ 200.000) × 1.000</div>' +
+              '<div class="solution-desc">Chi phí cho 1.000 lượt hiển thị</div>' +
+            '</div>' +
+            '<div class="solution-item-card">' +
+              '<div class="solution-top-row"><span class="solution-code">CVR</span><span class="solution-res-badge">2,5%</span></div>' +
+              '<div class="solution-math">CVR = (100 ÷ 4.000) × 100%</div>' +
+              '<div class="solution-desc">Tỷ lệ chuyển đổi từ click sang đơn</div>' +
+            '</div>' +
+            '<div class="solution-item-card">' +
+              '<div class="solution-top-row"><span class="solution-code">CPA</span><span class="solution-res-badge">200.000 đ</span></div>' +
+              '<div class="solution-math">CPA = 20.000.000 ÷ 100 = 5.000 ÷ 0,025</div>' +
+              '<div class="solution-desc">Chi phí quảng cáo để có 1 đơn hàng</div>' +
+            '</div>' +
+            '<div class="solution-item-card">' +
+              '<div class="solution-top-row"><span class="solution-code">AOV</span><span class="solution-res-badge">800.000 đ</span></div>' +
+              '<div class="solution-math">AOV = 80.000.000 ÷ 100</div>' +
+              '<div class="solution-desc">Giá trị trung bình mỗi đơn hàng</div>' +
+            '</div>' +
+            '<div class="solution-item-card">' +
+              '<div class="solution-top-row"><span class="solution-code">ROAS</span><span class="solution-res-badge">4,0x (400%)</span></div>' +
+              '<div class="solution-math">ROAS = 80.000.000 ÷ 20.000.000</div>' +
+              '<div class="solution-desc">1 đồng chi phí mang về 4 đồng doanh thu</div>' +
+            '</div>' +
+            '<div class="solution-item-card">' +
+              '<div class="solution-top-row"><span class="solution-code">ROAS hòa vốn</span><span class="solution-res-badge">3,33x</span></div>' +
+              '<div class="solution-math">ROAS hoà vốn = 1 ÷ 0,3 ≈ 3,33x</div>' +
+              '<div class="solution-desc">Ngưỡng tối thiểu để không bị lỗ</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div>' +
+          '<div style="font-size:13.5px;font-weight:700;color:var(--muted);margin-bottom:8px;">TRẢ LỜI 2 CÂU HỎI QUẢN TRỊ TRÊN SLIDE:</div>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;">' +
+            '<div class="qa-card">' +
+              '<div class="qa-q">❓ Câu 1: Campaign có hiệu quả về mặt quảng cáo không?</div>' +
+              '<div class="qa-ans">' +
+                '<strong>KẾT LUẬN: CÓ HIỆU QUẢ CAO.</strong><br>' +
+                '• <strong>CTR = 2,0%</strong>: Mẫu quảng cáo hấp dẫn, vượt mức trung bình ngành TMĐT (thường 1–1,5%).<br>' +
+                '• <strong>CPC = 5.000 đ</strong>: Chi phí thu hút lượt truy cập ở mức rất cạnh tranh và hợp lý.<br>' +
+                '• <strong>CVR = 2,5%</strong>: Trang đích (Landing Page) thuyết phục tốt, đạt chuẩn vàng của web TMĐT.<br>' +
+                '• <strong>CPA = 200.000 đ</strong>: Chi phí mỗi đơn chỉ chiếm 25% giá trị đơn hàng (AOV = 800.000 đ), nằm trong biên độ an toàn.' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="qa-card" style="border-left-color:var(--red);">' +
+              '<div class="qa-q">❓ Câu 2: ROAS = 4x có đủ để kết luận campaign có lãi không? Vì sao?</div>' +
+              '<div class="qa-ans">' +
+                '<strong>KẾT LUẬN: CHƯA ĐỦ ĐỂ KẾT LUẬN!</strong><br>' +
+                '• <strong>Bản chất:</strong> ROAS (Return On Ad Spend) chỉ đo lường <em>Doanh thu / Chi phí quảng cáo</em>, <strong>hoàn toàn chưa tính đến Giá vốn hàng bán (COGS)</strong> và các chi phí vận hành (đóng gói, giao hàng, nhân sự).<br>' +
+                '• <strong>Muốn kết luận có lãi:</strong> Bắt buộc phải so sánh với <strong>Ngưỡng ROAS hòa vốn = 1 ÷ Biên lợi nhuận gộp</strong>.<br>' +
+                '• <strong>Trong bài toán cụ thể này:</strong> Vì đề bài cho Biên lợi nhuận gộp = 30%, ta tính được ROAS hòa vốn = 1 ÷ 0,3 ≈ <strong>3,33x</strong>. Vì ROAS thực tế (4,0x) > 3,33x nên chiến dịch này <strong>CÓ LÃI</strong> (+4.000.000 đ lãi ròng).<br>' +
+                '• <strong>Ví dụ phản chứng:</strong> Nếu một sản phẩm công nghệ có biên gộp chỉ 20% → ROAS hòa vốn = 1 ÷ 0,2 = 5,0x. Khi đó dù đạt ROAS = 4x thì doanh nghiệp <strong>VẪN BỊ LỖ 4 TRIỆU ĐỒNG</strong> (Lãi gộp 16tr < Chi phí QC 20tr).' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' : ''
+    ) +
+
+    // SECTION 2: INTERACTIVE SIMULATOR
+    (activeFormulaCategory === 'all' || activeFormulaCategory === 'slide' || activeFormulaCategory === 'ads' ? 
+      '<div class="calc-card">' +
+        '<div class="calc-header">' +
+          '<div>' +
+            '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin:0;">⚡ MÁY TÍNH MÔ PHỎNG CHIẾN DỊCH QUẢNG CÁO & LÃI/LỖ</h3>' +
+            '<p style="font-size:12.5px;color:var(--muted);margin:3px 0 0;">Thay đổi các số liệu bên dưới để xem hệ số chỉ số và tự động đánh giá lãi/lỗ theo thời gian thực:</p>' +
+          '</div>' +
+          '<button class="btn" onclick="resetAdSimulator()" style="font-size:12px;padding:6px 12px;">🔄 Giá trị mặc định Slide</button>' +
+        '</div>' +
+
+        '<div class="calc-inputs-grid">' +
+          '<div class="calc-field">' +
+            '<label>Impressions (Lượt hiển thị)</label>' +
+            '<input id="simImp" type="number" value="' + simState.impressions + '" oninput="updateAdSimulator()">' +
+          '</div>' +
+          '<div class="calc-field">' +
+            '<label>Clicks (Lượt nhấp)</label>' +
+            '<input id="simClk" type="number" value="' + simState.clicks + '" oninput="updateAdSimulator()">' +
+          '</div>' +
+          '<div class="calc-field">' +
+            '<label>Ad Cost (Ngân sách QC - đ)</label>' +
+            '<input id="simCost" type="number" step="500000" value="' + simState.cost + '" oninput="updateAdSimulator()">' +
+          '</div>' +
+          '<div class="calc-field">' +
+            '<label>Orders (Số đơn hàng)</label>' +
+            '<input id="simOrd" type="number" value="' + simState.orders + '" oninput="updateAdSimulator()">' +
+          '</div>' +
+          '<div class="calc-field">' +
+            '<label>Revenue (Doanh thu - đ)</label>' +
+            '<input id="simRev" type="number" step="1000000" value="' + simState.revenue + '" oninput="updateAdSimulator()">' +
+          '</div>' +
+          '<div class="calc-field">' +
+            '<label>Gross Margin (Biên gộp %)</label>' +
+            '<input id="simMargin" type="number" step="1" min="1" max="100" value="' + simState.margin + '" oninput="updateAdSimulator()">' +
+          '</div>' +
+        '</div>' +
+
+        '<div id="simVerdictBox" class="calc-verdict-box profit">' +
+          '<div>🎉 <strong>KẾT LUẬN: CHIẾN DỊCH CÓ LÃI</strong><div style="font-size:12.5px;font-weight:500;margin-top:2px;">ROAS thực tế (4.00x) > ROAS hòa vốn (3.33x) · Lãi ròng: +4.000.000 đ</div></div>' +
+          '<div style="font-size:13px;font-weight:800;">Lợi nhuận gộp đủ bù chi phí QC</div>' +
+        '</div>' +
+
+        '<div class="solutions-grid">' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">CTR</span><span id="resCtr" class="solution-res-badge">2.00%</span></div>' +
+            '<div class="solution-desc">Tỷ lệ nhấp chuột</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">CPC</span><span id="resCpc" class="solution-res-badge">5.000 đ</span></div>' +
+            '<div class="solution-desc">Giá mỗi click</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">CPM</span><span id="resCpm" class="solution-res-badge">100.000 đ</span></div>' +
+            '<div class="solution-desc">Giá 1.000 lượt xem</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">CVR</span><span id="resCvr" class="solution-res-badge">2.50%</span></div>' +
+            '<div class="solution-desc">Tỷ lệ chuyển đổi</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">CPA</span><span id="resCpa" class="solution-res-badge">200.000 đ</span></div>' +
+            '<div class="solution-desc">Chi phí cho mỗi đơn</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">AOV</span><span id="resAov" class="solution-res-badge">800.000 đ</span></div>' +
+            '<div class="solution-desc">Giá trị trung bình đơn</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">ROAS</span><span id="resRoas" class="solution-res-badge">4.00x</span></div>' +
+            '<div class="solution-desc">Doanh thu / Chi phí QC</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">ROAS hòa vốn</span><span id="resRoasBe" class="solution-res-badge">3.33x</span></div>' +
+            '<div class="solution-desc">Ngưỡng tối thiểu có lãi</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">Lợi nhuận gộp</span><span id="resGross" class="solution-res-badge">24.000.000 đ</span></div>' +
+            '<div class="solution-desc">Doanh thu × Biên gộp</div>' +
+          '</div>' +
+          '<div class="solution-item-card">' +
+            '<div class="solution-top-row"><span class="solution-code">Lãi ròng (Net)</span><span id="resNet" class="solution-res-badge">+4.000.000 đ</span></div>' +
+            '<div class="solution-desc">Lợi nhuận gộp − Ad Cost</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' : ''
+    ) +
+
+    // SECTION 3: FORMULAS CARDS LIBRARY
+    '<div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">' +
+        '<h3 style="font-size:18px;font-weight:800;color:var(--text);margin:0;">📚 THƯ VIỆN CÔNG THỨC TRỌNG TÂM TRONG ĐỀ CƯƠNG (' + filteredList.length + ' công thức)</h3>' +
+      '</div>' +
+
+      '<div class="formula-cards-grid">' +
+        filteredList.map(item => 
+          '<div class="formula-item-card">' +
+            '<div class="formula-card-top">' +
+              '<h4 class="formula-card-title">' + item.title + '</h4>' +
+              '<span class="formula-category-tag">' + (FORMULA_CATEGORIES.find(c => c.id === item.category)?.label || item.category) + '</span>' +
+            '</div>' +
+            '<div class="formula-equation-box">' + item.equation + '</div>' +
+            '<div>' +
+              '<ul class="formula-vars-list">' +
+                item.vars.map(v => '<li>' + v + '</li>').join('') +
+              '</ul>' +
+            '</div>' +
+            '<div class="formula-tip-box">' + item.tip + '</div>' +
+            (item.example ? '<div class="formula-example-box">' + item.example + '</div>' : '') +
+          '</div>'
+        ).join('') +
+      '</div>' +
+    '</div>' +
+
+  '</div>';
+
+  $('#card').innerHTML = html;
+
+  // Bind category chips
+  $$('[data-cat]').forEach(chip => {
+    chip.onclick = () => {
+      activeFormulaCategory = chip.dataset.cat;
+      renderFormulas();
+      setTimeout(scrollToCard, 10);
+    };
+  });
+}
+
+
 function base() {
+  if (mode === 'formula') return [];
   return (mode === 'essay' ? D.essay : D.quiz).filter(q => session === 'all' || String(q.session) === session);
 }
 
 function rebuild() {
+  if (mode === 'formula') {
+    list = [];
+    index = 0;
+    render();
+    return;
+  }
   const all = base();
   const term = $('#search').value.trim().toLocaleLowerCase('vi');
   const filter = $('#filter').value;
@@ -8105,7 +9115,28 @@ function nav() {
     '</button>';
   }).join('');
 
-  $('#sessions').innerHTML = html;
+  const formulaNavHtml = '<button class="nav-item ' + (mode === 'formula' ? 'active' : '') + '" id="sidebarFormulaBtn" style="margin-bottom:10px;border:1.5px solid #8b5cf6;">' +
+    '<div class="nav-num" style="background:linear-gradient(135deg, #6366f1, #8b5cf6);color:#fff;">📐</div>' +
+    '<div class="nav-content">' +
+      '<div class="nav-title" style="color:var(--primary);font-weight:800;">Công thức & Bài tập tính</div>' +
+      '<div class="nav-meta">' +
+        '<span>Slide & 121 trang</span>' +
+        '<span style="background:var(--green);color:#fff;padding:1px 6px;border-radius:4px;font-size:10.5px;font-weight:700;">HOT</span>' +
+      '</div>' +
+    '</div>' +
+  '</button>';
+
+  $('#sessions').innerHTML = formulaNavHtml + html;
+
+  const sideFormBtn = $('#sidebarFormulaBtn');
+  if (sideFormBtn) {
+    sideFormBtn.onclick = () => {
+      mode = 'formula';
+      closeDrawer();
+      rebuild();
+      setTimeout(scrollToCard, 10);
+    };
+  }
 
   $$('[data-session]').forEach(b => {
     b.onclick = () => {
@@ -8123,6 +9154,16 @@ function nav() {
   const curS = D.sessions.find(s => String(s.id) === session);
   const mTitle = curS ? 'Buổi ' + curS.id + ' · ' + curS.title : session === 'open' ? '✦ Câu hỏi mở tổng hợp' : 'Tất cả buổi học';
   $('#mobileSessionText').textContent = '📍 ' + mTitle;
+}
+
+// Header formula button
+const headerFormulaBtn = $('#headerFormulaBtn');
+if (headerFormulaBtn) {
+  headerFormulaBtn.onclick = () => {
+    mode = 'formula';
+    rebuild();
+    setTimeout(scrollToCard, 10);
+  };
 }
 
 // Drawer Controls for Mobile
@@ -8197,6 +9238,22 @@ function render() {
     b.classList.toggle('active', active);
     b.setAttribute('aria-selected', active);
   });
+
+  if (mode === 'formula') {
+    $('#title').textContent = '📐 Sổ tay Công thức TMĐT & Bài tập tính';
+    $('#subtitle').textContent = 'Tổng hợp tất cả công thức có trên slide và đề cương 121 trang, kèm máy tính tương tác mô phỏng chiến dịch và lời giải chi tiết.';
+    $('#navigation').classList.add('hidden');
+    $('.mobile-bottom-bar').classList.add('hidden');
+    $('.jump-strip-wrap').classList.add('hidden');
+    $('.prog-bar-container').classList.add('hidden');
+    $('.toolbar-wrap').classList.add('hidden');
+    renderFormulas();
+    return;
+  } else {
+    $('.toolbar-wrap').classList.remove('hidden');
+    $('.prog-bar-container').classList.remove('hidden');
+    $('.jump-strip-wrap').classList.remove('hidden');
+  }
 
   const s = D.sessions.find(s => String(s.id) === session);
   $('#title').textContent = s ? 'Buổi ' + s.id + '. ' + s.title : session === 'open' ? 'Câu hỏi mở tổng hợp' : 'Tất cả buổi học';
