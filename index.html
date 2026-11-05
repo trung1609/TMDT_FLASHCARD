@@ -9130,12 +9130,7 @@ function nav() {
 
   const sideFormBtn = $('#sidebarFormulaBtn');
   if (sideFormBtn) {
-    sideFormBtn.onclick = () => {
-      mode = 'formula';
-      closeDrawer();
-      rebuild();
-      setTimeout(scrollToCard, 10);
-    };
+    sideFormBtn.onclick = activateFormulaMode;
   }
 
   $$('[data-session]').forEach(b => {
@@ -9159,11 +9154,7 @@ function nav() {
 // Header formula button
 const headerFormulaBtn = $('#headerFormulaBtn');
 if (headerFormulaBtn) {
-  headerFormulaBtn.onclick = () => {
-    mode = 'formula';
-    rebuild();
-    setTimeout(scrollToCard, 10);
-  };
+  headerFormulaBtn.onclick = activateFormulaMode;
 }
 
 // Drawer Controls for Mobile
