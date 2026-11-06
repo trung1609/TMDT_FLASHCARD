@@ -10789,5 +10789,41 @@ document.addEventListener('keydown', e => {
     if (e.key === '2') {
       const q = list[index];
       if (q) {
-        s
-... [truncated for diff preview]
+        state.flash[q.id] = { correct: true };
+        persist();
+        playCorrectSound();
+        showToast('✅ Đã ghi nhận: Đã nhớ vững');
+        if (index < list.length - 1) move(1); else render();
+      }
+      return;
+    }
+  }
+
+  // Common quick shortcuts
+  if (keyUpper === 'R') {
+    const q = list[index];
+    if (mode === 'quiz' && q && state.quiz[q.id]) {
+      delete state.quiz[q.id];
+      persist();
+      render();
+      showToast('🔄 Đã đặt lại câu hỏi');
+      setTimeout(scrollToCard, 10);
+    }
+  }
+  if (keyUpper === 'S') {
+    const q = list[index];
+    if (q) {
+      const k = key(q);
+      state.star[k] = !state.star[k];
+      persist();
+      render();
+      showToast(state.star[k] ? '⭐ Đã lưu' : '☆ Đã bỏ lưu');
+    }
+  }
+});
+
+// Initial boot
+rebuild();
+  </script>
+</body>
+</html>
