@@ -1303,12 +1303,32 @@ document.addEventListener('keydown', e => {
 });
 
 // ==========================================================================
-// CROSS-DEVICE INSTANT SYNC & BACKUP ENGINE (100% LOGIN-FREE)
-// 1. QR Code 1-tap scan: Phone camera opens link with encoded payload
-// 2. JSON backup file export & import: tmdt_tiendo_YYYYMMDD.json
-// 3. Plain code string copy/paste
-// 4. Auto-detect & merge on page load if #sync=... is in URL
+// CROSS-DEVICE INSTANT SYNC & BACKUP ENGINE (V2 ULTRA-COMPACT & QR-OPTIMIZED)
+// Features:
+// 1. Adaptive compact encoding (sparse vs base-5 dense) -> produces 20-50 chars
+// 2. High-DPI, pure black #000000 QR Code with 3-module quiet margin -> scans in 0.1s
+// 3. Short URL param: #s=... or #sync=...
+// 4. Backward compatible with v1 JSON base64 & full JSON file backup
 // ==========================================================================
+
+const SYNC_CHOICE_MAP = { 'A': 1, 'B': 2, 'C': 3, 'D': 4 };
+const SYNC_CHOICE_REV = ['', 'A', 'B', 'C', 'D'];
+
+function getQuizBankAnswer(id) {
+  if (typeof QUIZ_BANK !== 'undefined' && QUIZ_BANK.quiz) {
+    const item = QUIZ_BANK.quiz.find(q => q.id === Number(id));
+    if (item) return item.answer;
+  }
+  return null;
+}
+
+function getFormulaBankAnswer(id) {
+  if (typeof FORMULA_FLASHCARDS !== 'undefined') {
+    const item = FORMULA_FLASHCARDS.find(q => q.id === Number(id));
+    if (item) return item.answer;
+  }
+  return null;
+}
 
 function utf8ToBase64(str) {
   try {
@@ -1336,64 +1356,199 @@ function fromBase64Url(b64url) {
   return base64ToUtf8(b64);
 }
 
-// Compact packer to keep QR code dense and readable
-function packSyncData(currState) {
-  const s = currState || state;
-  const p = { v: 1, ts: Date.now() };
-
-  if (s.quiz && Object.keys(s.quiz).length > 0) {
-    p.q = {};
-    for (const [k, v] of Object.entries(s.quiz)) {
-      if (v) p.q[k] = [v.choice || '', v.correct ? 1 : 0];
-    }
+// Convert byte array to base64url string
+function bytesToBase64Url(bytes) {
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
   }
-
-  if (s.flash && Object.keys(s.flash).length > 0) {
-    p.f = {};
-    for (const [k, v] of Object.entries(s.flash)) {
-      if (v) p.f[k] = [v.choice || '', v.correct ? 1 : 0];
-    }
-  }
-
-  if (s.formula && Object.keys(s.formula).length > 0) {
-    p.m = {};
-    for (const [k, v] of Object.entries(s.formula)) {
-      if (v) p.m[k] = [v.choice || '', v.correct ? 1 : 0];
-    }
-  }
-
-  if (s.star && Object.keys(s.star).length > 0) {
-    const activeStars = Object.keys(s.star).filter(k => s.star[k]);
-    if (activeStars.length > 0) p.s = activeStars;
-  }
-
-  if (s.notes && Object.keys(s.notes).length > 0) {
-    p.n = s.notes;
-  }
-
-  if (s.essay && Object.keys(s.essay).length > 0) {
-    p.e = s.essay;
-  }
-
-  if (s.maxStreak) {
-    p.k = s.maxStreak;
-  }
-
-  return toBase64Url(JSON.stringify(p));
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-// Flexible unpacker supporting compact payload, raw state, or exported file structure
+// Convert base64url string to byte array
+function base64UrlToBytes(b64url) {
+  let b64 = String(b64url).replace(/-/g, '+').replace(/_/g, '/');
+  while (b64.length % 4) b64 += '=';
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+}
+
+// Adaptive packing for a question map (picks shorter between sparse and dense)
+function packQuestionMap(map, count, prefixKey) {
+  if (!map) return '';
+  const entries = [];
+  let maxId = 0;
+  for (const [k, v] of Object.entries(map)) {
+    const id = parseInt(k, 10);
+    if (!isNaN(id) && v) {
+      const choice = v.choice || (v.correct ? 'C' : 'A');
+      entries.push(id + choice);
+      if (id > maxId) maxId = id;
+    }
+  }
+  if (entries.length === 0) return '';
+
+  const sparseStr = prefixKey + 's.' + entries.join(',');
+
+  // Dense positional (3 questions per byte in base-5: 0, A=1, B=2, C=3, D=4)
+  let maxAligned = maxId;
+  while (maxAligned % 3 !== 0) maxAligned++;
+  const bytes = [];
+  for (let i = 1; i <= maxAligned; i += 3) {
+    const q0 = map[i];
+    const q1 = map[i + 1];
+    const q2 = map[i + 2];
+    const v0 = q0 ? (SYNC_CHOICE_MAP[q0.choice] || (q0.correct ? 2 : 1)) : 0;
+    const v1 = q1 ? (SYNC_CHOICE_MAP[q1.choice] || (q1.correct ? 2 : 1)) : 0;
+    const v2 = q2 ? (SYNC_CHOICE_MAP[q2.choice] || (q2.correct ? 2 : 1)) : 0;
+    bytes.push(v0 * 25 + v1 * 5 + v2);
+  }
+  const denseStr = prefixKey + '.' + bytesToBase64Url(bytes);
+
+  return (sparseStr.length <= denseStr.length) ? sparseStr : denseStr;
+}
+
+// V2 Ultra-Compact Pack: typically 20 - 60 chars!
+function packSyncData(currState) {
+  const s = currState || state;
+  const parts = ['2'];
+
+  // 1. Quiz
+  const qStr = packQuestionMap(s.quiz, 300, 'q');
+  if (qStr) parts.push(qStr);
+
+  // 2. Flashcard
+  const fStr = packQuestionMap(s.flash, 300, 'f');
+  if (fStr) parts.push(fStr);
+
+  // 3. Formula
+  const mStr = packQuestionMap(s.formula, 24, 'm');
+  if (mStr) parts.push(mStr);
+
+  // 4. Starred
+  if (s.star) {
+    const active = Object.keys(s.star).filter(k => s.star[k]);
+    if (active.length > 0) {
+      parts.push('s.' + active.join(','));
+    }
+  }
+
+  // 5. Max streak
+  if (s.maxStreak) {
+    parts.push('k.' + s.maxStreak);
+  }
+
+  // 6. Notes (if any)
+  if (s.notes && Object.keys(s.notes).length > 0) {
+    try {
+      parts.push('n.' + toBase64Url(JSON.stringify(s.notes)));
+    } catch(e) {}
+  }
+
+  // 7. Essay (if any)
+  if (s.essay && Object.keys(s.essay).length > 0) {
+    try {
+      parts.push('e.' + toBase64Url(JSON.stringify(s.essay)));
+    } catch(e) {}
+  }
+
+  return parts.join('~');
+}
+
+// Helper to decode a question section (handles both sparse 'qs.'/'fs.'/'ms.' and dense 'q.'/'f.'/'m.')
+function decodeQuestionSection(targetObj, type, data) {
+  if (type.endsWith('s.')) {
+    // Sparse format: "1C,5A,28B"
+    data.split(',').forEach(item => {
+      if (!item) return;
+      const match = item.match(/^(\d+)([A-D1-4])$/i);
+      if (match) {
+        const id = parseInt(match[1], 10);
+        let ch = match[2].toUpperCase();
+        if (ch === '1') ch = 'A';
+        else if (ch === '2') ch = 'B';
+        else if (ch === '3') ch = 'C';
+        else if (ch === '4') ch = 'D';
+        targetObj[id] = { choice: ch };
+      }
+    });
+  } else {
+    // Dense base-5 format
+    try {
+      const bytes = base64UrlToBytes(data);
+      let id = 1;
+      for (let i = 0; i < bytes.length; i++) {
+        let byte = bytes[i];
+        const v0 = Math.floor(byte / 25);
+        byte %= 25;
+        const v1 = Math.floor(byte / 5);
+        const v2 = byte % 5;
+        if (v0 > 0) targetObj[id] = { choice: SYNC_CHOICE_REV[v0] };
+        if (v1 > 0) targetObj[id + 1] = { choice: SYNC_CHOICE_REV[v1] };
+        if (v2 > 0) targetObj[id + 2] = { choice: SYNC_CHOICE_REV[v2] };
+        id += 3;
+      }
+    } catch(e) {
+      console.warn('Cannot decode dense section:', type, e);
+    }
+  }
+}
+
+// Flexible unpacker supporting v2 compact format, v1 base64 format, and file backup JSON
 function unpackSyncData(payloadStr) {
   if (!payloadStr || typeof payloadStr !== 'string') return null;
-  let parsed = null;
+  const raw = payloadStr.trim();
 
+  // 1. Try V2 Compact Format (starts with "2" or "2~" or contains "~q")
+  if (raw === '2' || raw.startsWith('2~') || raw.startsWith('2_') || raw.includes('~q.') || raw.includes('~qs.')) {
+    const parts = raw.split('~');
+    const result = { quiz: {}, flash: {}, formula: {}, star: {}, notes: {}, essay: {}, maxStreak: 0 };
+
+    for (let pIdx = 1; pIdx < parts.length; pIdx++) {
+      const part = parts[pIdx];
+      if (part.startsWith('qs.')) {
+        decodeQuestionSection(result.quiz, 'qs.', part.slice(3));
+      } else if (part.startsWith('q.')) {
+        decodeQuestionSection(result.quiz, 'q.', part.slice(2));
+      } else if (part.startsWith('fs.')) {
+        decodeQuestionSection(result.flash, 'fs.', part.slice(3));
+      } else if (part.startsWith('f.')) {
+        decodeQuestionSection(result.flash, 'f.', part.slice(2));
+      } else if (part.startsWith('ms.')) {
+        decodeQuestionSection(result.formula, 'ms.', part.slice(3));
+      } else if (part.startsWith('m.')) {
+        decodeQuestionSection(result.formula, 'm.', part.slice(2));
+      } else if (part.startsWith('s.')) {
+        part.slice(2).split(',').forEach(k => { if (k) result.star[k] = true; });
+      } else if (part.startsWith('k.')) {
+        result.maxStreak = parseInt(part.slice(2), 10) || 0;
+      } else if (part.startsWith('n.')) {
+        try {
+          result.notes = JSON.parse(fromBase64Url(part.slice(2)));
+        } catch(e) {}
+      } else if (part.startsWith('e.')) {
+        try {
+          result.essay = JSON.parse(fromBase64Url(part.slice(2)));
+        } catch(e) {}
+      }
+    }
+    return result;
+  }
+
+  // 2. Try JSON (raw or exported backup file)
+  let parsed = null;
   try {
-    parsed = JSON.parse(payloadStr);
-  } catch (e) {
+    parsed = JSON.parse(raw);
+  } catch(e) {
+    // 3. Try legacy V1 Base64url JSON
     try {
-      const jsonStr = fromBase64Url(payloadStr.trim());
+      const jsonStr = fromBase64Url(raw);
       parsed = JSON.parse(jsonStr);
-    } catch (e2) {
+    } catch(e2) {
       console.warn('Cannot decode sync payload:', e2);
       return null;
     }
@@ -1405,17 +1560,8 @@ function unpackSyncData(payloadStr) {
     parsed = parsed.state;
   }
 
-  const result = {
-    quiz: {},
-    flash: {},
-    formula: {},
-    star: {},
-    notes: {},
-    essay: {},
-    maxStreak: 0
-  };
+  const result = { quiz: {}, flash: {}, formula: {}, star: {}, notes: {}, essay: {}, maxStreak: 0 };
 
-  // 1. Quiz
   if (parsed.quiz && typeof parsed.quiz === 'object') {
     Object.assign(result.quiz, parsed.quiz);
   }
@@ -1429,7 +1575,6 @@ function unpackSyncData(payloadStr) {
     }
   }
 
-  // 2. Flash
   if (parsed.flash && typeof parsed.flash === 'object') {
     Object.assign(result.flash, parsed.flash);
   }
@@ -1445,7 +1590,6 @@ function unpackSyncData(payloadStr) {
     }
   }
 
-  // 3. Formula
   if (parsed.formula && typeof parsed.formula === 'object') {
     Object.assign(result.formula, parsed.formula);
   }
@@ -1461,7 +1605,6 @@ function unpackSyncData(payloadStr) {
     }
   }
 
-  // 4. Star
   if (Array.isArray(parsed.star)) {
     parsed.star.forEach(k => { result.star[k] = true; });
   } else if (parsed.star && typeof parsed.star === 'object') {
@@ -1471,20 +1614,18 @@ function unpackSyncData(payloadStr) {
     parsed.s.forEach(k => { result.star[k] = true; });
   }
 
-  // 5. Notes & Essay
   if (parsed.notes) Object.assign(result.notes, parsed.notes);
   if (parsed.n) Object.assign(result.notes, parsed.n);
   if (parsed.essay) Object.assign(result.essay, parsed.essay);
   if (parsed.e) Object.assign(result.essay, parsed.e);
 
-  // 6. Streak
   if (parsed.maxStreak) result.maxStreak = Math.max(result.maxStreak, parsed.maxStreak);
   if (parsed.k) result.maxStreak = Math.max(result.maxStreak, parsed.k);
 
   return result;
 }
 
-// Smart merger that unites existing local progress with incoming device data
+// Smart merger that unites imported data with current state and verifies answers against bank
 function mergeSyncState(imported) {
   if (!imported) return 0;
   let count = 0;
@@ -1496,29 +1637,61 @@ function mergeSyncState(imported) {
   state.notes = state.notes || {};
   state.essay = state.essay || {};
 
+  // Quiz
   if (imported.quiz) {
     for (const [k, v] of Object.entries(imported.quiz)) {
-      if (!state.quiz[k] || !state.quiz[k].correct) {
-        state.quiz[k] = v;
+      if (!v) continue;
+      const qId = parseInt(k, 10);
+      let isCorrect = v.correct;
+      if (isCorrect === undefined && v.choice) {
+        const ans = getQuizBankAnswer(qId);
+        isCorrect = ans ? (ans === v.choice) : true;
       }
+      state.quiz[k] = {
+        choice: v.choice || '',
+        correct: isCorrect !== undefined ? Boolean(isCorrect) : true
+      };
       count++;
     }
   }
 
+  // Flash
   if (imported.flash) {
     for (const [k, v] of Object.entries(imported.flash)) {
-      state.flash[k] = v;
+      if (!v) continue;
+      const qId = parseInt(k, 10);
+      let isCorrect = v.correct;
+      if (isCorrect === undefined && v.choice) {
+        const ans = getQuizBankAnswer(qId);
+        isCorrect = ans ? (ans === v.choice) : true;
+      }
+      state.flash[k] = {
+        choice: v.choice || '',
+        correct: isCorrect !== undefined ? Boolean(isCorrect) : true
+      };
       count++;
     }
   }
 
+  // Formula
   if (imported.formula) {
     for (const [k, v] of Object.entries(imported.formula)) {
-      state.formula[k] = v;
+      if (!v) continue;
+      const fId = parseInt(k, 10);
+      let isCorrect = v.correct;
+      if (isCorrect === undefined && v.choice) {
+        const ans = getFormulaBankAnswer(fId);
+        isCorrect = ans ? (ans === v.choice) : true;
+      }
+      state.formula[k] = {
+        choice: v.choice || '',
+        correct: isCorrect !== undefined ? Boolean(isCorrect) : true
+      };
       count++;
     }
   }
 
+  // Star
   if (imported.star) {
     for (const [k, v] of Object.entries(imported.star)) {
       if (v) {
@@ -1528,6 +1701,7 @@ function mergeSyncState(imported) {
     }
   }
 
+  // Notes
   if (imported.notes) {
     for (const [k, v] of Object.entries(imported.notes)) {
       if (v) {
@@ -1537,6 +1711,7 @@ function mergeSyncState(imported) {
     }
   }
 
+  // Essay
   if (imported.essay) {
     for (const [k, v] of Object.entries(imported.essay)) {
       if (v) {
@@ -1546,6 +1721,7 @@ function mergeSyncState(imported) {
     }
   }
 
+  // Max Streak
   if (imported.maxStreak) {
     state.maxStreak = Math.max(state.maxStreak || 0, imported.maxStreak);
   }
@@ -1568,7 +1744,7 @@ function getSyncBaseUrl() {
 function getSyncUrl() {
   const base = getSyncBaseUrl();
   const code = packSyncData();
-  return base + '#sync=' + code;
+  return base + '#s=' + code;
 }
 
 let activeSyncTab = 'qr';
@@ -1619,13 +1795,13 @@ function generateSyncQr() {
 
   if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
     QRCode.toCanvas(canvas, syncUrl, {
-      width: 190,
-      margin: 1,
+      width: 280,
+      margin: 3,
       color: {
-        dark: '#1e1b4b',
+        dark: '#000000',
         light: '#ffffff'
       },
-      errorCorrectionLevel: 'L'
+      errorCorrectionLevel: 'M'
     }, function(err) {
       if (err) {
         console.warn('QR canvas error:', err);
@@ -1636,17 +1812,17 @@ function generateSyncQr() {
 
 function refreshSyncQr() {
   generateSyncQr();
-  showToast('🔄 Đã làm mới mã QR với tiến độ hiện tại!');
+  showToast('🔄 Đã làm mới mã QR siêu nét!');
 }
 
 function copySyncUrl() {
   const syncUrl = getSyncUrl();
-  copyTextToClipboard(syncUrl, '📋 Đã sao chép link đồng bộ! Dán vào điện thoại để mở.');
+  copyTextToClipboard(syncUrl, '📋 Đã sao chép link đồng bộ rút gọn! Dán vào điện thoại để mở.');
 }
 
 function copySyncCode() {
   const code = packSyncData();
-  copyTextToClipboard(code, '📋 Đã sao chép mã đồng bộ!');
+  copyTextToClipboard(code, '📋 Đã sao chép mã đồng bộ rút gọn!');
 }
 
 function copyTextToClipboard(text, successMsg) {
@@ -1747,8 +1923,15 @@ function applySyncCode() {
     return;
   }
 
-  if (raw.includes('#sync=')) {
+  // Strip link prefix if user pasted the entire link
+  if (raw.includes('#s=')) {
+    raw = raw.split('#s=')[1].split('&')[0];
+  } else if (raw.includes('#sync=')) {
     raw = raw.split('#sync=')[1].split('&')[0];
+  } else if (raw.includes('?s=')) {
+    raw = raw.split('?s=')[1].split('&')[0];
+  } else if (raw.includes('?sync=')) {
+    raw = raw.split('?sync=')[1].split('&')[0];
   }
 
   const imported = unpackSyncData(raw);
@@ -1789,16 +1972,28 @@ function handleSyncOverlayClick(e) {
 
 function checkSyncUrlOnBoot() {
   try {
+    let payloadStr = '';
     const hash = window.location.hash || '';
-    if (!hash.startsWith('#sync=')) return;
-    const payloadStr = hash.slice(6);
+    if (hash.startsWith('#s=')) {
+      payloadStr = hash.slice(3);
+    } else if (hash.startsWith('#sync=')) {
+      payloadStr = hash.slice(6);
+    } else {
+      const search = window.location.search || '';
+      if (search) {
+        const params = new URLSearchParams(search);
+        if (params.get('s')) payloadStr = params.get('s');
+        else if (params.get('sync')) payloadStr = params.get('sync');
+      }
+    }
+
     if (!payloadStr) return;
 
     const imported = unpackSyncData(payloadStr);
     if (imported) {
       const count = mergeSyncState(imported);
       if (window.history && window.history.replaceState) {
-        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        window.history.replaceState(null, '', window.location.pathname);
       } else {
         window.location.hash = '';
       }

@@ -315,7 +315,7 @@
           <span>📁</span> <span>File sao lưu (.json)</span>
         </button>
         <button id="syncTabBtnCode" class="sync-tab-btn" onclick="switchSyncTab('code')">
-          <span>📋</span> <span>Mã văn bản</span>
+          <span>📋</span> <span>Mã rút gọn</span>
         </button>
       </div>
 
@@ -324,29 +324,30 @@
         <div id="syncTabQr" class="sync-tab-panel active">
           <div class="sync-qr-card">
             <div class="sync-qr-frame">
-              <canvas id="syncQrCanvas" width="200" height="200"></canvas>
+              <canvas id="syncQrCanvas" width="280" height="280"></canvas>
             </div>
             <div class="sync-qr-guide">
               <div class="guide-step">
                 <span class="step-num">1</span>
-                <span>Mở <b>Camera</b> trên điện thoại (hoặc tính năng Quét mã trên Zalo)</span>
+                <span>Mở <b>Camera</b> điện thoại hoặc tính năng <b>Quét mã Zalo</b></span>
               </div>
               <div class="guide-step">
                 <span class="step-num">2</span>
-                <span>Hướng camera vào mã QR bên cạnh để nhận diện link</span>
+                <span>Hướng camera vào mã QR sắc nét bên cạnh</span>
               </div>
               <div class="guide-step">
                 <span class="step-num">3</span>
-                <span>Bấm mở link: Toàn bộ tiến độ sẽ <b>tự động nạp vào điện thoại</b> trong 2 giây!</span>
+                <span>Chạm mở link: Tiến độ sẽ <b>tự động lưu vào điện thoại</b> ngay!</span>
               </div>
               <div class="sync-qr-actions">
                 <button class="btn primary" onclick="copySyncUrl()">
-                  <span>📋</span> <span>Sao chép link đồng bộ</span>
+                  <span>📋</span> <span>Sao chép link rút gọn</span>
                 </button>
                 <button class="btn" onclick="refreshSyncQr()" title="Tạo lại mã với dữ liệu mới nhất">
                   <span>🔄</span> <span>Làm mới mã</span>
                 </button>
               </div>
+              <p class="sync-qr-hint">⚡ Mã QR độ nét cao 1 chạm · Link rút gọn siêu ngắn dễ gửi Zalo/Messenger</p>
             </div>
           </div>
         </div>
@@ -384,15 +385,15 @@
         <!-- TAB 3: CODE STRING COPY / PASTE -->
         <div id="syncTabCode" class="sync-tab-panel">
           <div class="sync-code-card">
-            <label class="sync-field-label">Mã đồng bộ hiện tại của bạn:</label>
+            <label class="sync-field-label">Mã đồng bộ rút gọn của bạn:</label>
             <div class="sync-code-box">
               <textarea id="syncExportText" readonly></textarea>
               <button class="btn" onclick="copySyncCode()"><span>📋</span> <span>Sao chép mã</span></button>
             </div>
 
-            <label class="sync-field-label" style="margin-top:16px;">Hoặc dán mã từ thiết bị khác vào đây:</label>
+            <label class="sync-field-label" style="margin-top:16px;">Hoặc dán mã (hoặc link) từ thiết bị khác vào đây:</label>
             <div class="sync-code-box">
-              <textarea id="syncImportText" placeholder="Dán mã đồng bộ vào đây..."></textarea>
+              <textarea id="syncImportText" placeholder="Dán mã rút gọn hoặc link vào đây..."></textarea>
               <button class="btn primary" onclick="applySyncCode()"><span>⚡</span> <span>Áp dụng mã</span></button>
             </div>
           </div>
