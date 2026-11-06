@@ -4475,39 +4475,170 @@ details.settings-box summary {
 .sync-code-card {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
-.sync-field-label {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink-heading);
-  margin-bottom: 6px;
-}
-
-.sync-code-box {
+.sync-code-section {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--surface-subtle);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+}
+
+.sync-code-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sync-section-badge {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  background: rgba(99, 102, 241, 0.12);
+  color: #4f46e5;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.sync-section-badge.input-badge {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.sync-section-hint {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+.sync-code-display-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sync-code-token {
+  width: 100%;
+  height: 52px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 5px;
+  text-align: center;
+  color: #4f46e5;
+  background: var(--surface, #ffffff);
+  border: 2px dashed #818cf8;
+  border-radius: 12px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: all;
+}
+
+.sync-code-token:hover,
+.sync-code-token:focus {
+  outline: none;
+  border-color: #4f46e5;
+  border-style: solid;
+  background: rgba(99, 102, 241, 0.04);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.sync-code-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
-.sync-code-box textarea {
-  width: 100%;
-  height: 52px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 11.5px;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border);
-  background: var(--surface-subtle);
-  color: var(--ink);
-  resize: none;
-  box-sizing: border-box;
+.sync-code-actions button {
+  justify-content: center;
+  font-size: 12.5px;
+  padding: 9px 12px;
+  white-space: nowrap;
 }
 
-.sync-code-box textarea:focus {
+.sync-code-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 2px 0;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.sync-code-divider::before,
+.sync-code-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1.5px dashed var(--border);
+}
+
+.sync-code-divider span {
+  padding: 0 12px;
+  background: var(--surface);
+  border-radius: 20px;
+}
+
+.sync-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.sync-input-row {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sync-import-input {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--surface, #ffffff);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 12px;
+  color: var(--ink);
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.sync-import-input:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.sync-btn-paste {
+  height: 42px;
+  padding: 0 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  justify-content: center;
+}
+
+.sync-btn-apply {
+  height: 42px;
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  justify-content: center;
 }
 
 /* Mobile Responsive */
@@ -4581,8 +4712,15 @@ details.settings-box summary {
     width: 100%;
     justify-content: center;
   }
-  .sync-code-box button {
+  .sync-input-group {
+    flex-direction: column;
+  }
+  .sync-btn-apply {
     width: 100%;
-    justify-content: center;
+  }
+  .sync-code-token {
+    font-size: 22px;
+    letter-spacing: 4px;
+    height: 48px;
   }
 }

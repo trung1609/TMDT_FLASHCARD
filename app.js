@@ -1904,7 +1904,16 @@ function switchSyncTab(tabId) {
   } else if (tabId === 'code') {
     const codeArea = $('#syncExportText');
     if (codeArea) {
-      codeArea.value = currentCloudSyncId || packSyncData();
+      if (currentCloudSyncId) {
+        codeArea.value = currentCloudSyncId;
+      } else {
+        codeArea.value = '⏳ Đang tạo...';
+        uploadStateToCloud().then(() => {
+          if (codeArea && currentCloudSyncId) {
+            codeArea.value = currentCloudSyncId;
+          }
+        });
+      }
     }
   }
 }
@@ -2231,6 +2240,26 @@ function handleImportFile(event) {
   event.target.value = '';
 }
 
+async function pasteToSyncInput() {
+  const inputEl = document.getElementById('syncImportText');
+  if (!inputEl) return;
+  try {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      const text = await navigator.clipboard.readText();
+      if (text && text.trim()) {
+        inputEl.value = text.trim();
+        showToast('📋 Đã dán nội dung từ bộ nhớ tạm!');
+        inputEl.focus();
+        return;
+      }
+    }
+  } catch (err) {
+    console.warn('Clipboard read error:', err);
+  }
+  inputEl.focus();
+  showToast('💡 Vui lòng nhấn giữ vào ô và chọn Dán.');
+}
+
 function applySyncCode() {
   const inputEl = $('#syncImportText');
   if (!inputEl) return;
@@ -2338,6 +2367,7 @@ if (typeof window !== 'undefined') {
   window.exportBackupFile = exportBackupFile;
   window.handleImportFile = handleImportFile;
   window.applySyncCode = applySyncCode;
+  window.pasteToSyncInput = pasteToSyncInput;
   window.downloadQrImage = downloadQrImage;
   window.handleQrImageUpload = handleQrImageUpload;
   window.applyExtractedSyncContent = applyExtractedSyncContent;
