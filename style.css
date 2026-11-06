@@ -341,12 +341,10 @@ header {
   color: var(--green);
 }
 
-/* Layout */
+/* Layout - Full width so sidebar sticks flush against the left edge */
 .layout {
   display: grid;
   grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-  max-width: 1560px;
-  margin: 0 auto;
   width: 100%;
   flex: 1;
   transition: grid-template-columns 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
