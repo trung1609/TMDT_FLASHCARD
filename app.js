@@ -1303,16 +1303,24 @@ document.addEventListener('keydown', e => {
 });
 
 // ==========================================================================
-// CROSS-DEVICE INSTANT SYNC & BACKUP ENGINE (V2 ULTRA-COMPACT & QR-OPTIMIZED)
-// Features:
-// 1. Adaptive compact encoding (sparse vs base-5 dense) -> produces 20-50 chars
-// 2. High-DPI, pure black #000000 QR Code with 3-module quiet margin -> scans in 0.1s
-// 3. Short URL param: #s=... or #sync=...
-// 4. Backward compatible with v1 JSON base64 & full JSON file backup
+// CROSS-DEVICE INSTANT SYNC & BACKUP ENGINE (CLOUD SHORT-LINK & QR OPTIMIZED)
+// 1. Ultra-short link: https://on-tap-cse703102.vercel.app/?c=... (~50-70 chars)
+// 2. High-contrast QR Code with 3-day expiry badge (matching user reference)
+// 3. 3-layer sync: Vercel /api/sync -> Cloud KV -> Offline direct compact fallback
 // ==========================================================================
 
 const SYNC_CHOICE_MAP = { 'A': 1, 'B': 2, 'C': 3, 'D': 4 };
 const SYNC_CHOICE_REV = ['', 'A', 'B', 'C', 'D'];
+let currentCloudSyncId = null;
+
+function getExpiryDateStr(days = 3) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return day + '/' + month + '/' + year;
+}
 
 function getQuizBankAnswer(id) {
   if (typeof QUIZ_BANK !== 'undefined' && QUIZ_BANK.quiz) {
@@ -1356,7 +1364,6 @@ function fromBase64Url(b64url) {
   return base64ToUtf8(b64);
 }
 
-// Convert byte array to base64url string
 function bytesToBase64Url(bytes) {
   let binary = '';
   for (let i = 0; i < bytes.length; i++) {
@@ -1365,7 +1372,6 @@ function bytesToBase64Url(bytes) {
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-// Convert base64url string to byte array
 function base64UrlToBytes(b64url) {
   let b64 = String(b64url).replace(/-/g, '+').replace(/_/g, '/');
   while (b64.length % 4) b64 += '=';
@@ -1377,7 +1383,6 @@ function base64UrlToBytes(b64url) {
   return bytes;
 }
 
-// Adaptive packing for a question map (picks shorter between sparse and dense)
 function packQuestionMap(map, count, prefixKey) {
   if (!map) return '';
   const entries = [];
@@ -1394,7 +1399,6 @@ function packQuestionMap(map, count, prefixKey) {
 
   const sparseStr = prefixKey + 's.' + entries.join(',');
 
-  // Dense positional (3 questions per byte in base-5: 0, A=1, B=2, C=3, D=4)
   let maxAligned = maxId;
   while (maxAligned % 3 !== 0) maxAligned++;
   const bytes = [];
@@ -1412,57 +1416,41 @@ function packQuestionMap(map, count, prefixKey) {
   return (sparseStr.length <= denseStr.length) ? sparseStr : denseStr;
 }
 
-// V2 Ultra-Compact Pack: typically 20 - 60 chars!
 function packSyncData(currState) {
   const s = currState || state;
   const parts = ['2'];
 
-  // 1. Quiz
   const qStr = packQuestionMap(s.quiz, 300, 'q');
   if (qStr) parts.push(qStr);
 
-  // 2. Flashcard
   const fStr = packQuestionMap(s.flash, 300, 'f');
   if (fStr) parts.push(fStr);
 
-  // 3. Formula
   const mStr = packQuestionMap(s.formula, 24, 'm');
   if (mStr) parts.push(mStr);
 
-  // 4. Starred
   if (s.star) {
     const active = Object.keys(s.star).filter(k => s.star[k]);
-    if (active.length > 0) {
-      parts.push('s.' + active.join(','));
-    }
+    if (active.length > 0) parts.push('s.' + active.join(','));
   }
 
-  // 5. Max streak
   if (s.maxStreak) {
     parts.push('k.' + s.maxStreak);
   }
 
-  // 6. Notes (if any)
   if (s.notes && Object.keys(s.notes).length > 0) {
-    try {
-      parts.push('n.' + toBase64Url(JSON.stringify(s.notes)));
-    } catch(e) {}
+    try { parts.push('n.' + toBase64Url(JSON.stringify(s.notes))); } catch(e) {}
   }
 
-  // 7. Essay (if any)
   if (s.essay && Object.keys(s.essay).length > 0) {
-    try {
-      parts.push('e.' + toBase64Url(JSON.stringify(s.essay)));
-    } catch(e) {}
+    try { parts.push('e.' + toBase64Url(JSON.stringify(s.essay))); } catch(e) {}
   }
 
   return parts.join('~');
 }
 
-// Helper to decode a question section (handles both sparse 'qs.'/'fs.'/'ms.' and dense 'q.'/'f.'/'m.')
 function decodeQuestionSection(targetObj, type, data) {
   if (type.endsWith('s.')) {
-    // Sparse format: "1C,5A,28B"
     data.split(',').forEach(item => {
       if (!item) return;
       const match = item.match(/^(\d+)([A-D1-4])$/i);
@@ -1477,7 +1465,6 @@ function decodeQuestionSection(targetObj, type, data) {
       }
     });
   } else {
-    // Dense base-5 format
     try {
       const bytes = base64UrlToBytes(data);
       let id = 1;
@@ -1498,12 +1485,11 @@ function decodeQuestionSection(targetObj, type, data) {
   }
 }
 
-// Flexible unpacker supporting v2 compact format, v1 base64 format, and file backup JSON
 function unpackSyncData(payloadStr) {
   if (!payloadStr || typeof payloadStr !== 'string') return null;
   const raw = payloadStr.trim();
 
-  // 1. Try V2 Compact Format (starts with "2" or "2~" or contains "~q")
+  // 1. Try V2 Compact Format
   if (raw === '2' || raw.startsWith('2~') || raw.startsWith('2_') || raw.includes('~q.') || raw.includes('~qs.')) {
     const parts = raw.split('~');
     const result = { quiz: {}, flash: {}, formula: {}, star: {}, notes: {}, essay: {}, maxStreak: 0 };
@@ -1527,24 +1513,19 @@ function unpackSyncData(payloadStr) {
       } else if (part.startsWith('k.')) {
         result.maxStreak = parseInt(part.slice(2), 10) || 0;
       } else if (part.startsWith('n.')) {
-        try {
-          result.notes = JSON.parse(fromBase64Url(part.slice(2)));
-        } catch(e) {}
+        try { result.notes = JSON.parse(fromBase64Url(part.slice(2))); } catch(e) {}
       } else if (part.startsWith('e.')) {
-        try {
-          result.essay = JSON.parse(fromBase64Url(part.slice(2)));
-        } catch(e) {}
+        try { result.essay = JSON.parse(fromBase64Url(part.slice(2))); } catch(e) {}
       }
     }
     return result;
   }
 
-  // 2. Try JSON (raw or exported backup file)
+  // 2. Try JSON
   let parsed = null;
   try {
     parsed = JSON.parse(raw);
   } catch(e) {
-    // 3. Try legacy V1 Base64url JSON
     try {
       const jsonStr = fromBase64Url(raw);
       parsed = JSON.parse(jsonStr);
@@ -1625,7 +1606,6 @@ function unpackSyncData(payloadStr) {
   return result;
 }
 
-// Smart merger that unites imported data with current state and verifies answers against bank
 function mergeSyncState(imported) {
   if (!imported) return 0;
   let count = 0;
@@ -1637,7 +1617,6 @@ function mergeSyncState(imported) {
   state.notes = state.notes || {};
   state.essay = state.essay || {};
 
-  // Quiz
   if (imported.quiz) {
     for (const [k, v] of Object.entries(imported.quiz)) {
       if (!v) continue;
@@ -1655,7 +1634,6 @@ function mergeSyncState(imported) {
     }
   }
 
-  // Flash
   if (imported.flash) {
     for (const [k, v] of Object.entries(imported.flash)) {
       if (!v) continue;
@@ -1673,7 +1651,6 @@ function mergeSyncState(imported) {
     }
   }
 
-  // Formula
   if (imported.formula) {
     for (const [k, v] of Object.entries(imported.formula)) {
       if (!v) continue;
@@ -1691,7 +1668,6 @@ function mergeSyncState(imported) {
     }
   }
 
-  // Star
   if (imported.star) {
     for (const [k, v] of Object.entries(imported.star)) {
       if (v) {
@@ -1701,7 +1677,6 @@ function mergeSyncState(imported) {
     }
   }
 
-  // Notes
   if (imported.notes) {
     for (const [k, v] of Object.entries(imported.notes)) {
       if (v) {
@@ -1711,7 +1686,6 @@ function mergeSyncState(imported) {
     }
   }
 
-  // Essay
   if (imported.essay) {
     for (const [k, v] of Object.entries(imported.essay)) {
       if (v) {
@@ -1721,7 +1695,6 @@ function mergeSyncState(imported) {
     }
   }
 
-  // Max Streak
   if (imported.maxStreak) {
     state.maxStreak = Math.max(state.maxStreak || 0, imported.maxStreak);
   }
@@ -1741,10 +1714,105 @@ function getSyncBaseUrl() {
   return window.location.origin + window.location.pathname;
 }
 
-function getSyncUrl() {
+function getShortSyncUrl(syncId) {
+  const base = getSyncBaseUrl();
+  return base + (base.endsWith('/') ? '' : '/') + '?c=' + syncId;
+}
+
+function getOfflineSyncUrl() {
   const base = getSyncBaseUrl();
   const code = packSyncData();
-  return base + '#s=' + code;
+  return base + (base.endsWith('/') ? '' : '/') + '#s=' + code;
+}
+
+function getSyncUrl() {
+  if (currentCloudSyncId) {
+    return getShortSyncUrl(currentCloudSyncId);
+  }
+  return getOfflineSyncUrl();
+}
+
+async function uploadStateToCloud() {
+  try {
+    let resp = null;
+    try {
+      resp = await fetch('/api/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+      });
+    } catch(e) {
+      resp = null;
+    }
+
+    if (!resp || !resp.ok) {
+      resp = await fetch('https://api.restful-api.dev/objects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'TMDT_CSE703102_SYNC',
+          data: {
+            state: state,
+            createdAt: Date.now(),
+            expiresAt: Date.now() + 3 * 24 * 60 * 60 * 1000
+          }
+        })
+      });
+    }
+
+    const data = await resp.json();
+    if (data && data.id) {
+      currentCloudSyncId = data.id;
+      const shortUrl = getShortSyncUrl(data.id);
+      renderSyncQrWithUrl(shortUrl);
+      const codeArea = document.getElementById('syncExportText');
+      if (codeArea) codeArea.value = data.id;
+      return data.id;
+    }
+  } catch(err) {
+    console.warn('Cloud sync upload failed, falling back to offline:', err);
+    renderSyncQrWithUrl(getOfflineSyncUrl());
+  }
+}
+
+async function fetchAndApplyCloudSync(syncId) {
+  try {
+    showToast('⏳ Đang kết nối nạp tiến độ từ mã ' + syncId.slice(0, 8) + '...');
+    let resp = null;
+    try {
+      resp = await fetch('/api/sync?id=' + encodeURIComponent(syncId));
+    } catch(e) {
+      resp = null;
+    }
+
+    if (!resp || !resp.ok) {
+      resp = await fetch('https://api.restful-api.dev/objects/' + encodeURIComponent(syncId));
+    }
+
+    if (!resp || !resp.ok) {
+      throw new Error('Mã đồng bộ không tìm thấy hoặc đã hết hạn.');
+    }
+
+    const data = await resp.json();
+    const importedState = (data && data.data && data.data.state) ? data.data.state : (data.state || data);
+    const count = mergeSyncState(importedState);
+
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname);
+    } else {
+      window.location.search = '';
+      window.location.hash = '';
+    }
+
+    setTimeout(() => {
+      playCorrectSound();
+      try { triggerConfetti(); } catch (e) {}
+      showToast('🎉 Đã đồng bộ thành công ' + count + ' mục vào điện thoại!');
+    }, 300);
+  } catch(err) {
+    console.error('Fetch cloud sync failed:', err);
+    showToast('⚠️ Không thể tải dữ liệu: ' + err.message);
+  }
 }
 
 let activeSyncTab = 'qr';
@@ -1763,7 +1831,9 @@ function switchSyncTab(tabId) {
     generateSyncQr();
   } else if (tabId === 'code') {
     const codeArea = $('#syncExportText');
-    if (codeArea) codeArea.value = packSyncData();
+    if (codeArea) {
+      codeArea.value = currentCloudSyncId || packSyncData();
+    }
   }
 }
 
@@ -1785,16 +1855,17 @@ function updateSyncStatsSummary() {
   if (sm) sm.textContent = formulaDone + '/24';
   if (ss) ss.textContent = starDone + ' câu';
   if (sk) sk.textContent = streak + ' 🔥';
+
+  const expEl = document.getElementById('syncExpiryDate');
+  if (expEl) expEl.textContent = getExpiryDateStr(3);
 }
 
-function generateSyncQr() {
+function renderSyncQrWithUrl(targetUrl) {
   const canvas = document.getElementById('syncQrCanvas');
   if (!canvas) return;
 
-  const syncUrl = getSyncUrl();
-
   if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
-    QRCode.toCanvas(canvas, syncUrl, {
+    QRCode.toCanvas(canvas, targetUrl, {
       width: 280,
       margin: 3,
       color: {
@@ -1810,18 +1881,32 @@ function generateSyncQr() {
   }
 }
 
+function generateSyncQr() {
+  const expEl = document.getElementById('syncExpiryDate');
+  if (expEl) expEl.textContent = getExpiryDateStr(3);
+
+  if (currentCloudSyncId) {
+    renderSyncQrWithUrl(getShortSyncUrl(currentCloudSyncId));
+  } else {
+    // Generate QR with direct URL first, then upgrade to cloud URL
+    renderSyncQrWithUrl(getOfflineSyncUrl());
+    uploadStateToCloud();
+  }
+}
+
 function refreshSyncQr() {
+  currentCloudSyncId = null;
   generateSyncQr();
   showToast('🔄 Đã làm mới mã QR siêu nét!');
 }
 
 function copySyncUrl() {
   const syncUrl = getSyncUrl();
-  copyTextToClipboard(syncUrl, '📋 Đã sao chép link đồng bộ rút gọn! Dán vào điện thoại để mở.');
+  copyTextToClipboard(syncUrl, '📋 Đã sao chép link rút gọn!');
 }
 
 function copySyncCode() {
-  const code = packSyncData();
+  const code = currentCloudSyncId || packSyncData();
   copyTextToClipboard(code, '📋 Đã sao chép mã đồng bộ rút gọn!');
 }
 
@@ -1923,15 +2008,30 @@ function applySyncCode() {
     return;
   }
 
-  // Strip link prefix if user pasted the entire link
+  // Check if it's a short cloud code or short cloud link
+  let cloudCode = null;
+  if (raw.includes('?c=')) {
+    cloudCode = raw.split('?c=')[1].split('&')[0];
+  } else if (raw.includes('?code=')) {
+    cloudCode = raw.split('?code=')[1].split('&')[0];
+  } else if (raw.includes('#c=')) {
+    cloudCode = raw.split('#c=')[1].split('&')[0];
+  } else if (/^[a-f0-9]{32}$/i.test(raw)) {
+    cloudCode = raw;
+  }
+
+  if (cloudCode) {
+    closeSyncModal();
+    fetchAndApplyCloudSync(cloudCode);
+    inputEl.value = '';
+    return;
+  }
+
+  // Direct offline code fallback
   if (raw.includes('#s=')) {
     raw = raw.split('#s=')[1].split('&')[0];
   } else if (raw.includes('#sync=')) {
     raw = raw.split('#sync=')[1].split('&')[0];
-  } else if (raw.includes('?s=')) {
-    raw = raw.split('?s=')[1].split('&')[0];
-  } else if (raw.includes('?sync=')) {
-    raw = raw.split('?sync=')[1].split('&')[0];
   }
 
   const imported = unpackSyncData(raw);
@@ -1972,37 +2072,48 @@ function handleSyncOverlayClick(e) {
 
 function checkSyncUrlOnBoot() {
   try {
+    let cloudCode = null;
     let payloadStr = '';
+
+    const search = window.location.search || '';
+    if (search) {
+      const params = new URLSearchParams(search);
+      if (params.get('c')) cloudCode = params.get('c');
+      else if (params.get('code')) cloudCode = params.get('code');
+    }
+
     const hash = window.location.hash || '';
-    if (hash.startsWith('#s=')) {
-      payloadStr = hash.slice(3);
-    } else if (hash.startsWith('#sync=')) {
-      payloadStr = hash.slice(6);
-    } else {
-      const search = window.location.search || '';
-      if (search) {
-        const params = new URLSearchParams(search);
-        if (params.get('s')) payloadStr = params.get('s');
-        else if (params.get('sync')) payloadStr = params.get('sync');
+    if (!cloudCode) {
+      if (hash.startsWith('#c=')) {
+        cloudCode = hash.slice(3);
+      } else if (hash.startsWith('#s=')) {
+        payloadStr = hash.slice(3);
+      } else if (hash.startsWith('#sync=')) {
+        payloadStr = hash.slice(6);
       }
     }
 
-    if (!payloadStr) return;
+    if (cloudCode) {
+      fetchAndApplyCloudSync(cloudCode);
+      return;
+    }
 
-    const imported = unpackSyncData(payloadStr);
-    if (imported) {
-      const count = mergeSyncState(imported);
-      if (window.history && window.history.replaceState) {
-        window.history.replaceState(null, '', window.location.pathname);
-      } else {
-        window.location.hash = '';
+    if (payloadStr) {
+      const imported = unpackSyncData(payloadStr);
+      if (imported) {
+        const count = mergeSyncState(imported);
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState(null, '', window.location.pathname);
+        } else {
+          window.location.hash = '';
+        }
+
+        setTimeout(() => {
+          playCorrectSound();
+          try { triggerConfetti(); } catch (e) {}
+          showToast('🎉 Đã tự động đồng bộ ' + count + ' mục từ thiết bị khác!');
+        }, 400);
       }
-
-      setTimeout(() => {
-        playCorrectSound();
-        try { triggerConfetti(); } catch (e) {}
-        showToast('🎉 Đã tự động đồng bộ ' + count + ' mục từ thiết bị khác!');
-      }, 400);
     }
   } catch (err) {
     console.error('Boot sync check failed:', err);
