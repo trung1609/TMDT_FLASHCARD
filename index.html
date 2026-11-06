@@ -7,6 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Vercel Web Analytics & Speed Insights -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script defer src="/_vercel/speed-insights/script.js"></script>
   <style>
 
 :root {
@@ -24,6 +31,9 @@
   --border: #e2e8f0;
   --border-subtle: #ede9fe;
   --line: #e2e8f0;
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --text: #1e1b4b;
   
   /* Wayground / Quizizz Signature Purple */
   --purple: #7c3aed;
@@ -104,6 +114,9 @@
   --border: #282f48;
   --border-subtle: #242a42;
   --line: #282f48;
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --text: #f1f5f9;
   
   --purple: #9061f9;
   --purple-dark: #7e3af2;
@@ -2190,17 +2203,49 @@ details.settings-box summary {
   color: var(--text);
   cursor: pointer;
   transition: all 0.18s ease;
+  user-select: none;
+  outline: none;
 }
 .formula-chip:hover {
   border-color: var(--primary);
   color: var(--primary);
+  background: var(--surface-hover);
   transform: translateY(-1px);
 }
+.formula-chip:active {
+  transform: scale(0.96);
+}
 .formula-chip.active {
-  background: var(--primary);
+  background: linear-gradient(135deg, #6366f1, #7c3aed) !important;
+  border-color: #6366f1 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+.formula-chip.active:hover {
+  background: linear-gradient(135deg, #4f46e5, #6d28d9) !important;
+  border-color: #4f46e5 !important;
+  color: #ffffff !important;
+}
+[data-theme="dark"] .formula-chip {
+  background: var(--surface-card);
+  border-color: var(--border);
+  color: var(--text);
+}
+[data-theme="dark"] .formula-chip:hover {
   border-color: var(--primary);
-  color: #fff;
-  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.3);
+  color: var(--primary);
+  background: var(--surface-subtle);
+}
+[data-theme="dark"] .formula-chip.active {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.5);
+}
+[data-theme="dark"] .formula-chip.active:hover {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+  color: #ffffff !important;
 }
 
 /* Slide Exercise Showcase Card */
@@ -2503,6 +2548,327 @@ details.settings-box summary {
   color: var(--text);
   line-height: 1.5;
   border: 1px dashed rgba(99, 102, 241, 0.25);
+}
+
+/* ========================================================
+   FORMULA FLASHCARD REVIEW (ABCD MULTIPLE CHOICE)
+   ======================================================== */
+.formula-flash-section {
+  background: var(--surface);
+  border: 2px solid #6366f1;
+  border-radius: 20px;
+  padding: 24px 22px;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.formula-flash-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+}
+.formula-flash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  border-bottom: 1.5px dashed var(--border);
+  padding-bottom: 16px;
+}
+.formula-flash-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 620px;
+}
+.formula-flash-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.15));
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #6366f1;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.formula-flash-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.35;
+}
+.formula-flash-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+.formula-flash-stats-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.flash-stat-pill {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 6px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 64px;
+}
+.flash-stat-num {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+.flash-stat-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Flashcard Container Stage */
+.formula-flashcard-stage {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  transition: all 0.2s ease;
+}
+.stage-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.stage-cat-tag {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+.stage-prompt {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.55;
+}
+.stage-prompt b, .stage-prompt strong {
+  color: #6366f1;
+}
+
+/* 4 Options Grid */
+.stage-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+.stage-opt-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  transition: all 0.18s ease;
+  width: 100%;
+}
+.stage-opt-card:hover:not(:disabled) {
+  border-color: #6366f1;
+  background: var(--surface-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.12);
+}
+.stage-opt-card:disabled {
+  cursor: default;
+}
+
+/* Option Letters */
+.stage-opt-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+  background: var(--surface-subtle);
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  transition: all 0.15s ease;
+}
+
+/* 4-Color Option Styling */
+.stage-opt-card[data-letter="A"] .stage-opt-letter {
+  background: var(--opt-a-bg);
+  border-color: var(--opt-a-border);
+  color: var(--opt-a-text);
+}
+.stage-opt-card[data-letter="B"] .stage-opt-letter {
+  background: var(--opt-b-bg);
+  border-color: var(--opt-b-border);
+  color: var(--opt-b-text);
+}
+.stage-opt-card[data-letter="C"] .stage-opt-letter {
+  background: var(--opt-c-bg);
+  border-color: var(--opt-c-border);
+  color: var(--opt-c-text);
+}
+.stage-opt-card[data-letter="D"] .stage-opt-letter {
+  background: var(--opt-d-bg);
+  border-color: var(--opt-d-border);
+  color: var(--opt-d-text);
+}
+
+/* Correct / Wrong / Dimmed States */
+.stage-opt-card.correct {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: var(--green) !important;
+  color: var(--green) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
+}
+.stage-opt-card.correct .stage-opt-letter {
+  background: var(--green) !important;
+  border-color: var(--green) !important;
+  color: #fff !important;
+}
+.stage-opt-card.wrong {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: var(--red) !important;
+  color: var(--red) !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+}
+.stage-opt-card.wrong .stage-opt-letter {
+  background: var(--red) !important;
+  border-color: var(--red) !important;
+  color: #fff !important;
+}
+.stage-opt-card.dimmed {
+  opacity: 0.45;
+  filter: grayscale(40%);
+}
+
+/* Feedback box */
+.stage-feedback-box {
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn 0.25s ease;
+}
+.stage-feedback-box.good {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1.5px solid var(--green);
+}
+.stage-feedback-box.bad {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1.5px solid var(--red);
+}
+.stage-fb-header {
+  font-size: 15px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stage-feedback-box.good .stage-fb-header { color: var(--green); }
+.stage-feedback-box.bad .stage-fb-header { color: var(--red); }
+.stage-fb-exp {
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Navigation Row */
+.stage-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+/* Mini dots progress */
+.stage-dots-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 320px;
+}
+.stage-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--border);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.stage-dot.current {
+  background: #6366f1;
+  transform: scale(1.35);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+.stage-dot.correct {
+  background: var(--green);
+}
+.stage-dot.wrong {
+  background: var(--red);
+}
+
+[data-theme="dark"] .formula-flash-section {
+  background: var(--surface);
+  border-color: #6366f1;
+}
+[data-theme="dark"] .stage-opt-card {
+  background: var(--surface-card);
+  border-color: var(--border);
+}
+[data-theme="dark"] .stage-opt-card:hover:not(:disabled) {
+  border-color: #818cf8;
+  background: var(--surface-hover);
+}
+[data-theme="dark"] .stage-prompt b, [data-theme="dark"] .stage-prompt strong {
+  color: #818cf8;
 }
 
 @media (max-width: 768px) {
@@ -8249,6 +8615,7 @@ function activateFormulaMode() {
   mode = 'formula';
   shuffled = false;
   try { closeDrawer(); } catch(e) {}
+  if (typeof setupFormulaQuizList === 'function') setupFormulaQuizList();
   rebuild();
   setTimeout(scrollToCard, 10);
 }
@@ -8808,6 +9175,567 @@ const FORMULA_LIBRARY = [
   }
 ];
 
+// Full Flashcard Question Bank for Formula Practice (ABCD Multiple Choice)
+const FORMULA_FLASHCARDS = [
+  {
+    id: 'f_ctr',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức chuẩn xác tính <b>CTR (Click-Through Rate · Tỷ lệ nhấp chuột)</b> là gì?',
+    options: [
+      'CTR = (Clicks ÷ Impressions) × 100%',
+      'CTR = (Impressions ÷ Clicks) × 100%',
+      'CTR = (Orders ÷ Clicks) × 100%',
+      'CTR = (Clicks ÷ Orders) × 100%'
+    ],
+    answer: 'A',
+    explanation: '<b>CTR = (Clicks ÷ Impressions) × 100%</b>.<br>Đo lường tỷ lệ người nhìn thấy quảng cáo bấm vào xem. Chuẩn ngành TMĐT từ 1,0% – 2,5%. CTR cao giúp tăng Điểm chất lượng (Quality Score).'
+  },
+  {
+    id: 'f_cpc',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức chuẩn xác tính <b>CPC (Cost Per Click · Chi phí mỗi lượt nhấp)</b> là gì?',
+    options: [
+      'CPC = Clicks ÷ Ad Cost',
+      'CPC = Ad Cost ÷ Clicks',
+      'CPC = (Ad Cost ÷ Impressions) × 1.000',
+      'CPC = Ad Cost ÷ Orders'
+    ],
+    answer: 'B',
+    explanation: '<b>CPC = Ad Cost ÷ Clicks</b>.<br>Chi phí thực tế nhà quảng cáo phải trả cho mỗi lượt người dùng nhấp chuột vào quảng cáo dẫn về trang đích (Landing Page).'
+  },
+  {
+    id: 'f_cpm',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức chuẩn xác tính <b>CPM (Cost Per Mille · Chi phí 1.000 lượt hiển thị)</b> là gì?',
+    options: [
+      'CPM = (Impressions ÷ Ad Cost) × 1.000',
+      'CPM = (Ad Cost ÷ Clicks) × 1.000',
+      'CPM = (Ad Cost ÷ Impressions) × 1.000',
+      'CPM = Ad Cost ÷ 1.000'
+    ],
+    answer: 'C',
+    explanation: '<b>CPM = (Ad Cost ÷ Impressions) × 1.000</b>.<br>Thước đo chuẩn quốc tế cho chiến dịch giai đoạn Nhận thức / Thương hiệu (Brand Awareness) để tiếp cận độ phủ rộng.'
+  },
+  {
+    id: 'f_cvr',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức chuẩn xác tính <b>CVR (Conversion Rate · Tỷ lệ chuyển đổi từ click sang đơn)</b> là gì?',
+    options: [
+      'CVR = (Clicks ÷ Orders) × 100%',
+      'CVR = (Orders ÷ Impressions) × 100%',
+      'CVR = (Revenue ÷ Clicks) × 100%',
+      'CVR = (Orders ÷ Clicks) × 100%'
+    ],
+    answer: 'D',
+    explanation: '<b>CVR = (Orders ÷ Clicks) × 100%</b>.<br>Thước đo năng lực thuyết phục của Trang đích (Landing Page). CVR cao giúp hạ CPA mà không cần giảm giá thầu.'
+  },
+  {
+    id: 'f_cpa',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức tính <b>CPA (Cost Per Acquisition · Chi phí mỗi đơn hàng)</b> và mối quan hệ với CPC & CVR là gì?',
+    options: [
+      'CPA = Ad Cost × Orders = CPC × CVR',
+      'CPA = Ad Cost ÷ Orders = CPC ÷ CVR',
+      'CPA = Orders ÷ Ad Cost = CVR ÷ CPC',
+      'CPA = Revenue ÷ Orders = AOV ÷ CVR'
+    ],
+    answer: 'B',
+    explanation: '<b>CPA = Ad Cost ÷ Orders = CPC ÷ CVR</b>.<br>⭐ <i>Trọng tâm đề thi:</i> Tăng CVR sẽ kéo CPA giảm xuống mà lưu lượng đơn hàng vẫn giữ nguyên hoặc tăng lên.'
+  },
+  {
+    id: 'f_aov',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức tính <b>AOV (Average Order Value · Giá trị đơn hàng trung bình)</b> là gì?',
+    options: [
+      'AOV = Revenue ÷ Orders',
+      'AOV = Orders ÷ Revenue',
+      'AOV = Revenue ÷ Clicks',
+      'AOV = (Revenue − Ad Cost) ÷ Orders'
+    ],
+    answer: 'A',
+    explanation: '<b>AOV = Revenue ÷ Orders</b>.<br>Tăng AOV bằng bán kèm (cross-sell), combo, chính sách freeship theo ngưỡng là cách tăng trưởng doanh thu không tốn tiền quảng cáo.'
+  },
+  {
+    id: 'f_roas',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức tính <b>ROAS (Return On Ad Spend)</b> và mối liên hệ với AOV & CPA là gì?',
+    options: [
+      'ROAS = Ad Cost ÷ Revenue = CPA ÷ AOV',
+      'ROAS = Lợi nhuận ròng ÷ Ad Cost',
+      'ROAS = Revenue ÷ Ad Cost = AOV ÷ CPA',
+      'ROAS = (Revenue − Ad Cost) ÷ Revenue'
+    ],
+    answer: 'C',
+    explanation: '<b>ROAS = Revenue ÷ Ad Cost = AOV ÷ CPA</b>.<br>⚠️ <i>Lưu ý:</i> ROAS chỉ đo doanh thu trên chi phí quảng cáo, không đo lợi nhuận vì chưa trừ giá vốn hàng bán.'
+  },
+  {
+    id: 'f_roas_be',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức tính <b>Ngưỡng ROAS hòa vốn (Break-even ROAS)</b> của một chiến dịch là gì?',
+    options: [
+      'ROAS hòa vốn = 1 × Biên lợi nhuận gộp (Gross Margin)',
+      'ROAS hòa vốn = 1 ÷ Biên lợi nhuận gộp (Gross Margin)',
+      'ROAS hòa vốn = Doanh thu ÷ Lợi nhuận gộp',
+      'ROAS hòa vốn = 1 ÷ (1 − Biên lợi nhuận gộp)'
+    ],
+    answer: 'B',
+    explanation: '<b>ROAS hòa vốn = 1 ÷ Gross Margin</b>.<br>Ví dụ: Biên gộp 40% (0,4) → ROAS hòa vốn = 2,5x. Biên gộp 30% (0,3) → ROAS hòa vốn = 3,33x.'
+  },
+  {
+    id: 'f_cvr_be',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Công thức tính <b>CVR cần đạt để hòa vốn (Break-even CVR)</b> khi biết CPC, AOV và Biên gộp là gì?',
+    options: [
+      'CVR hòa vốn = (AOV × Gross Margin) ÷ CPC',
+      'CVR hòa vốn = CPC × AOV × Gross Margin',
+      'CVR hòa vốn = CAC ÷ (AOV × Gross Margin)',
+      'CVR hòa vốn = CPC ÷ (AOV × Gross Margin)'
+    ],
+    answer: 'D',
+    explanation: '<b>CVR hòa vốn = CPC ÷ (AOV × Gross Margin)</b>.<br>Trong đó (AOV × Gross Margin) chính là lợi nhuận gộp mỗi đơn (CPA tối đa cho phép).'
+  },
+  {
+    id: 'f_adrank',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: 'Thứ hạng quảng cáo (<b>Ad Rank</b>) trong cơ chế đấu giá được xác định theo công thức nào?',
+    options: [
+      'Thứ hạng QC = Giá thầu (Bid) × Điểm chất lượng (Quality Score)',
+      'Thứ hạng QC = Giá thầu (Bid) + Điểm chất lượng (Quality Score)',
+      'Thứ hạng QC = Tổng ngân sách ngày × CTR',
+      'Thứ hạng QC = Giá thầu (Bid) ÷ Điểm chất lượng (Quality Score)'
+    ],
+    answer: 'A',
+    explanation: '<b>Ad Rank = Bid × Quality Score</b>.<br>Trang đích tốt giúp tăng Quality Score, từ đó vượt qua đối thủ trả giá thầu cao hơn và trả CPC thực tế thấp hơn.'
+  },
+  {
+    id: 'f_ltv',
+    category: 'ltv',
+    categoryLabel: '👥 Khách hàng LTV & CAC',
+    prompt: 'Công thức tính <b>LTV (Customer Lifetime Value · Giá trị vòng đời khách hàng)</b> theo lợi nhuận gộp là gì?',
+    options: [
+      'LTV = AOV ÷ (f × t × Gross Margin)',
+      'LTV = CAC × f × t × Gross Margin',
+      'LTV = AOV × f × t × Gross Margin',
+      'LTV = (AOV × Gross Margin) ÷ (f × t)'
+    ],
+    answer: 'C',
+    explanation: '<b>LTV = AOV × f × t × Gross Margin</b>.<br>Với f là tần suất mua hàng (đơn/năm), t là thời gian gắn bó (năm), Gross Margin là tỷ lệ lợi nhuận gộp.'
+  },
+  {
+    id: 'f_cac',
+    category: 'ltv',
+    categoryLabel: '👥 Khách hàng LTV & CAC',
+    prompt: 'Công thức xác định <b>CAC (Customer Acquisition Cost · Chi phí thu hút 1 khách hàng mới)</b> là gì?',
+    options: [
+      'CAC = Số khách hàng mới ÷ Tổng chi phí Marketing & Sales',
+      'CAC = Tổng chi phí Marketing & Sales ÷ Số khách hàng mới',
+      'CAC = Tổng chi phí Marketing ÷ Tổng số đơn hàng (Orders)',
+      'CAC = LTV ÷ Biên lợi nhuận gộp'
+    ],
+    answer: 'B',
+    explanation: '<b>CAC = Tổng chi phí Marketing & Sales ÷ Số khách hàng mới</b>.<br>Mẫu số bắt buộc là số khách hàng mới, không phải tổng số đơn hàng.'
+  },
+  {
+    id: 'f_ltv_cac_ratio',
+    category: 'ltv',
+    categoryLabel: '👥 Khách hàng LTV & CAC',
+    prompt: 'Theo chuẩn tài chính TMĐT bền vững, tỷ số <b>LTV / CAC</b> nên đạt ngưỡng tối thiểu nào?',
+    options: [
+      'LTV / CAC ≥ 3 (CAC tối đa = LTV ÷ 3)',
+      'LTV / CAC ≥ 1 (Hòa vốn là đủ)',
+      'LTV / CAC ≥ 10',
+      'LTV / CAC ≤ 2'
+    ],
+    answer: 'A',
+    explanation: '<b>LTV / CAC ≥ 3</b> là chuẩn vàng của mô hình TMĐT bền vững. Nếu LTV / CAC < 1, doanh nghiệp đang chảy máu tiền tệ trên từng khách mới.'
+  },
+  {
+    id: 'f_max_cpc',
+    category: 'ltv',
+    categoryLabel: '👥 Khách hàng LTV & CAC',
+    prompt: 'Công thức xác định <b>CPC tối đa cho phép (Max CPC)</b> theo LTV và CAC là gì?',
+    options: [
+      'Max CPC = CAC tối đa ÷ CVR (khách mới)',
+      'Max CPC = LTV × CVR (khách mới)',
+      'Max CPC = CAC tối đa × AOV',
+      'Max CPC = CAC tối đa × CVR (khách mới)'
+    ],
+    answer: 'D',
+    explanation: '<b>Max CPC = CAC tối đa × CVR (khách mới)</b>.<br>Với CAC tối đa = LTV ÷ 3. Giúp đặt giá thầu trần trên Google/Facebook Ads để không bao giờ bị lỗ dài hạn.'
+  },
+  {
+    id: 'f_cart_abandon',
+    category: 'funnel',
+    categoryLabel: '🔄 Phễu chuyển đổi TMĐT',
+    prompt: 'Công thức tính <b>Tỷ lệ bỏ giỏ hàng (Cart Abandonment Rate)</b> trong phễu TMĐT là gì?',
+    options: [
+      'Tỷ lệ bỏ giỏ = (Lượt thêm giỏ ÷ Lượt xem SP) × 100%',
+      'Tỷ lệ bỏ giỏ = [1 − (Lượt xem SP ÷ Tổng phiên)] × 100%',
+      'Tỷ lệ bỏ giỏ = [1 − (Lượt thanh toán ÷ Lượt thêm giỏ)] × 100%',
+      'Tỷ lệ bỏ giỏ = (Lượt thanh toán ÷ Lượt thêm giỏ) × 100%'
+    ],
+    answer: 'C',
+    explanation: '<b>Tỷ lệ bỏ giỏ = [1 − (Lượt thanh toán ÷ Lượt thêm giỏ)] × 100%</b>.<br>6 nguyên nhân hàng đầu: phí ship bất ngờ, bắt tạo tài khoản, thiếu cổng thanh toán quen thuộc, bảo mật kém.'
+  },
+  {
+    id: 'f_full_cvr',
+    category: 'funnel',
+    categoryLabel: '🔄 Phễu chuyển đổi TMĐT',
+    prompt: 'Trong phễu TMĐT 4 bước (Phiên → Xem SP → Thêm giỏ → Thanh toán → Hoàn tất), <b>CVR toàn phễu</b> tính bằng:',
+    options: [
+      'CVR toàn phễu = (Lượt thanh toán ÷ Tổng phiên) × 100%',
+      'CVR toàn phễu = (Lượt hoàn tất đơn ÷ Tổng phiên) × 100%',
+      'CVR toàn phễu = (Lượt thêm giỏ ÷ Lượt xem SP) × 100%',
+      'CVR toàn phễu = (Lượt hoàn tất đơn ÷ Lượt thanh toán) × 100%'
+    ],
+    answer: 'B',
+    explanation: '<b>CVR toàn phễu = (Lượt hoàn tất đơn ÷ Tổng phiên) × 100%</b>.<br>Đo lường năng lực chuyển hóa tổng thể từ lượt truy cập ban đầu thành doanh thu cuối cùng.'
+  },
+  {
+    id: 'f_payment_fee',
+    category: 'ops',
+    categoryLabel: '📦 Vận hành & Phí cổng',
+    prompt: 'Công thức tính <b>Tổng chi phí cổng thanh toán</b> cho một đơn hàng là gì?',
+    options: [
+      'Phí = Phí cố định + (% phí × Giá trị đơn hàng)',
+      'Phí = Phí cố định × (% phí × Giá trị đơn hàng)',
+      'Phí = % phí × Giá trị đơn hàng − Phí cố định',
+      'Phí = (Giá trị đơn hàng ÷ % phí) + Phí cố định'
+    ],
+    answer: 'A',
+    explanation: '<b>Phí = Phí cố định + (% phí × Giá trị đơn hàng)</b>.<br>Phần phí cố định chiếm tỷ trọng rất lớn ở đơn hàng nhỏ, ăn sâu vào lãi gộp (đơn 150k phí chiếm 11,3% lãi gộp).'
+  },
+  {
+    id: 'f_logistics',
+    category: 'ops',
+    categoryLabel: '📦 Vận hành & Phí cổng',
+    prompt: 'Công thức tính <b>Tỷ lệ hoàn hàng (Return Rate)</b> trong Logistics TMĐT là gì?',
+    options: [
+      'Tỷ lệ hoàn hàng = (Tổng số đơn xuất ÷ Số đơn hoàn hủy) × 100%',
+      'Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Số đơn giao thành công) × 100%',
+      'Tỷ lệ hoàn hàng = (Chi phí hoàn ÷ Tổng chi phí vận chuyển) × 100%',
+      'Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%'
+    ],
+    answer: 'D',
+    explanation: '<b>Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%</b>.<br>Ngưỡng an toàn tài chính: Chi phí logistics mỗi đơn ≤ Lợi nhuận gộp mỗi đơn.'
+  },
+  {
+    id: 'f_security_risk',
+    category: 'security',
+    categoryLabel: '🛡️ An ninh thông tin',
+    prompt: 'Công thức định lượng <b>Rủi ro an ninh thông tin (Information Security Risk)</b> trong TMĐT là:',
+    options: [
+      'Rủi ro (R) = Mối đe dọa (T) + Lỗ hổng (V) + Tác động (I)',
+      'Rủi ro (R) = Mối đe dọa (T) × Lỗ hổng (V) × Tác động (I)',
+      'Rủi ro (R) = (Mối đe dọa + Lỗ hổng) ÷ Tác động',
+      'Rủi ro (R) = Lỗ hổng (V) × Tác động (I) − Mối đe dọa (T)'
+    ],
+    answer: 'B',
+    explanation: '<b>R = T × V × I (Threat × Vulnerability × Impact)</b>.<br>Doanh nghiệp không thể triệt tiêu mối đe dọa (T), chỉ có thể giảm lỗ hổng (V) và giảm tác động (I).'
+  },
+  {
+    id: 'f_slide_ctr',
+    category: 'slide',
+    categoryLabel: '🎯 Bài tập trên Slide',
+    prompt: '[Bài tập Slide] Chiến dịch có <b>200.000 lượt hiển thị (Impressions)</b> và thu được <b>4.000 lượt nhấp (Clicks)</b>. Tỷ lệ CTR là:',
+    options: [
+      '0,2%',
+      '5,0%',
+      '2,0%',
+      '1,0%'
+    ],
+    answer: 'C',
+    explanation: '<b>CTR = (4.000 ÷ 200.000) × 100% = 2,0%</b>.<br>Chuẩn ngành TMĐT thường từ 1,0% – 2,5%, do đó 2,0% là mức hiệu quả tốt.'
+  },
+  {
+    id: 'f_slide_cpa',
+    category: 'slide',
+    categoryLabel: '🎯 Bài tập trên Slide',
+    prompt: '[Bài tập Slide] Chi phí QC <b>20.000.000 đ</b>, thu được <b>4.000 clicks</b> và <b>100 đơn hàng</b>. Giá CPC và CPA lần lượt là:',
+    options: [
+      'CPC = 5.000 đ · CPA = 200.000 đ',
+      'CPC = 4.000 đ · CPA = 150.000 đ',
+      'CPC = 5.000 đ · CPA = 800.000 đ',
+      'CPC = 2.000 đ · CPA = 200.000 đ'
+    ],
+    answer: 'A',
+    explanation: '<b>CPC = 20.000.000 ÷ 4.000 = 5.000 đ</b>.<br><b>CPA = 20.000.000 ÷ 100 = 200.000 đ</b> (hoặc CPC ÷ CVR = 5.000 ÷ 0,025 = 200.000 đ).'
+  },
+  {
+    id: 'f_slide_roas',
+    category: 'slide',
+    categoryLabel: '🎯 Bài tập trên Slide',
+    prompt: '[Bài tập Slide] Sản phẩm có <b>Biên lợi nhuận gộp là 30%</b>. Ngưỡng ROAS hòa vốn của chiến dịch là:',
+    options: [
+      '2,50x',
+      '3,33x',
+      '4,00x',
+      '3,00x'
+    ],
+    answer: 'B',
+    explanation: '<b>ROAS hòa vốn = 1 ÷ 0,3 ≈ 3,33x</b>.<br>Vì ROAS thực tế trên slide đạt 4,0x (80tr / 20tr) > 3,33x nên chiến dịch CÓ LÃI (+4 triệu).'
+  },
+  {
+    id: 'f_exam_123',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: '[Đề cương · Câu 123] Chiến dịch chi <b>6 triệu đồng</b>, đạt <b>2 triệu lượt hiển thị</b>. Chi phí CPM là:',
+    options: [
+      '300 đ',
+      '30.000 đ',
+      '6.000 đ',
+      '3.000 đ'
+    ],
+    answer: 'D',
+    explanation: '<b>CPM = (Ad Cost ÷ Impressions) × 1.000</b> = (6.000.000 ÷ 2.000.000) × 1.000 = <b>3.000 đ</b>.'
+  },
+  {
+    id: 'f_exam_125',
+    category: 'ads',
+    categoryLabel: '📊 Quảng cáo số',
+    prompt: '[Đề cương · Câu 125] Doanh nghiệp có <b>Biên lợi nhuận gộp 40%</b>. Ngưỡng ROAS hòa vốn là:',
+    options: [
+      '2,5x',
+      '3,33x',
+      '4,0x',
+      '2,0x'
+    ],
+    answer: 'A',
+    explanation: '<b>ROAS hòa vốn = 1 ÷ Gross Margin</b> = 1 ÷ 0,4 = <b>2,5x</b> (tương đương 250%).'
+  }
+];
+
+let formulaQuizIndex = 0;
+let formulaQuizShuffled = false;
+let formulaQuizActiveList = [];
+let formulaQuizState = state.formula || {};
+let formulaQuizStreak = 0;
+
+function setupFormulaQuizList() {
+  let list = FORMULA_FLASHCARDS.filter(q => {
+    if (activeFormulaCategory === 'all') return true;
+    if (activeFormulaCategory === 'slide') return q.category === 'slide';
+    return q.category === activeFormulaCategory;
+  });
+  if (!list.length) list = [...FORMULA_FLASHCARDS];
+  if (formulaQuizShuffled) {
+    list = [...list].sort(() => Math.random() - 0.5);
+  }
+  formulaQuizActiveList = list;
+  if (formulaQuizIndex >= formulaQuizActiveList.length) {
+    formulaQuizIndex = 0;
+  }
+}
+setupFormulaQuizList();
+
+function renderFormulaQuizBox() {
+  const box = $('#formulaFlashcardBox');
+  if (!box) return;
+
+  const list = formulaQuizActiveList;
+  if (!list || !list.length) {
+    box.innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);font-weight:600;">Không có câu hỏi ôn tập nào cho danh mục này.</div>';
+    return;
+  }
+
+  if (formulaQuizIndex >= list.length) formulaQuizIndex = 0;
+  if (formulaQuizIndex < 0) formulaQuizIndex = list.length - 1;
+
+  const q = list[formulaQuizIndex];
+  const r = formulaQuizState[q.id];
+  const total = list.length;
+  const current = formulaQuizIndex + 1;
+
+  // Stats bar updates
+  const progressEl = $('#fqProgress');
+  if (progressEl) progressEl.textContent = current + ' / ' + total;
+
+  const scoreEl = $('#fqScore');
+  const answeredCount = list.filter(item => formulaQuizState[item.id] && formulaQuizState[item.id].correct).length;
+  if (scoreEl) scoreEl.textContent = answeredCount + ' / ' + total;
+
+  const streakEl = $('#fqStreak');
+  if (streakEl) streakEl.textContent = formulaQuizStreak + ' 🔥';
+
+  const shuffleBtn = $('#fqShuffleBtn');
+  if (shuffleBtn) {
+    shuffleBtn.classList.toggle('primary', formulaQuizShuffled);
+    shuffleBtn.innerHTML = formulaQuizShuffled ? '<span>✓</span> Đang trộn' : '<span>⇄</span> Trộn thẻ';
+  }
+
+  // Dots
+  const dotsHtml = '<div class="stage-dots-wrap">' +
+    list.map((item, idx) => {
+      const stateItem = formulaQuizState[item.id];
+      let dotCls = 'stage-dot';
+      if (idx === formulaQuizIndex) dotCls += ' current';
+      else if (stateItem) {
+        dotCls += stateItem.correct ? ' correct' : ' wrong';
+      }
+      return '<span class="' + dotCls + '" onclick="jumpFormulaQuiz(' + idx + ')" title="Thẻ ' + (idx + 1) + '"></span>';
+    }).join('') +
+  '</div>';
+
+  let optionsHtml = '<div class="stage-options-grid">';
+  ['A', 'B', 'C', 'D'].forEach((letter, i) => {
+    const optText = q.options[i];
+    let cardCls = 'stage-opt-card';
+    let statusBadge = '';
+    if (r) {
+      if (letter === q.answer) {
+        cardCls += ' correct';
+        statusBadge = '<span class="option-status-tag" style="margin-left:auto;font-size:11.5px;font-weight:700;color:var(--green);">✓ Đáp án đúng</span>';
+      } else if (letter === r.choice) {
+        cardCls += ' wrong';
+        statusBadge = '<span class="option-status-tag" style="margin-left:auto;font-size:11.5px;font-weight:700;color:var(--red);">✕ Bạn đã chọn</span>';
+      } else {
+        cardCls += ' dimmed';
+      }
+    }
+    optionsHtml += '<button class="' + cardCls + '" data-letter="' + letter + '" onclick="answerFormulaQuiz(\'' + letter + '\')" ' + (r ? 'disabled' : '') + '>' +
+      '<span class="stage-opt-letter">' + letter + '</span>' +
+      '<span style="flex:1;line-height:1.45;">' + optText + '</span>' +
+      statusBadge +
+    '</button>';
+  });
+  optionsHtml += '</div>';
+
+  let feedbackHtml = '';
+  if (r) {
+    feedbackHtml = '<div class="stage-feedback-box ' + (r.correct ? 'good' : 'bad') + '">' +
+      '<div class="stage-fb-header">' +
+        '<span>' + (r.correct ? '🎉 Xuất sắc! Bạn đã chọn đáp án chính xác!' : '💡 Chưa chính xác! Đáp án chuẩn là: <b>' + q.answer + '</b>') + '</span>' +
+      '</div>' +
+      '<div class="stage-fb-exp">' + q.explanation + '</div>' +
+    '</div>';
+  }
+
+  const isFirst = formulaQuizIndex === 0;
+  const isLast = formulaQuizIndex === total - 1;
+
+  const cardHtml = '<div class="formula-flashcard-stage">' +
+    '<div class="stage-top-row">' +
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+        '<span class="badge-pill" style="background:#6366f1;color:#fff;font-weight:800;">THẺ ' + current + ' / ' + total + '</span>' +
+        '<span class="stage-cat-tag">' + q.categoryLabel + '</span>' +
+      '</div>' +
+      dotsHtml +
+    '</div>' +
+
+    '<div class="stage-prompt">' + q.prompt + '</div>' +
+
+    optionsHtml +
+
+    feedbackHtml +
+
+    '<div class="stage-nav-row">' +
+      '<button class="btn" onclick="navFormulaQuiz(-1)" ' + (isFirst ? 'disabled style="opacity:0.5;"' : '') + '>← Thẻ trước (←)</button>' +
+      '<div style="display:flex;gap:8px;align-items:center;">' +
+        (r ? '<button class="btn" onclick="retryFormulaQuiz()" style="font-size:12.5px;">🔄 Làm lại (R)</button>' : '') +
+        '<button class="btn primary" onclick="navFormulaQuiz(1)">' +
+          (isLast && r ? 'Hoàn thành 🎉' : 'Thẻ tiếp theo (Enter) →') +
+        '</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+
+  box.innerHTML = cardHtml;
+}
+
+function answerFormulaQuiz(choice) {
+  const list = formulaQuizActiveList;
+  if (!list || !list.length) return;
+  const q = list[formulaQuizIndex];
+  if (!q) return;
+
+  if (formulaQuizState[q.id]) return;
+
+  const isCorrect = choice === q.answer;
+  formulaQuizState[q.id] = { choice: choice, correct: isCorrect };
+
+  if (isCorrect) {
+    formulaQuizStreak++;
+    if (formulaQuizStreak > (state.maxStreak || 0)) {
+      state.maxStreak = formulaQuizStreak;
+    }
+    playCorrectSound();
+    if (formulaQuizStreak >= 5 && formulaQuizStreak % 5 === 0) {
+      playStreakCelebration();
+      triggerConfetti();
+      showToast('🔥 Chuỗi ' + formulaQuizStreak + ' câu đúng liên tiếp! Quá đỉnh!');
+    }
+  } else {
+    formulaQuizStreak = 0;
+    playWrongSound();
+  }
+
+  state.formula[q.id] = { choice: choice, correct: isCorrect };
+  persist();
+  stats();
+  renderFormulaQuizBox();
+}
+
+function navFormulaQuiz(dir) {
+  const list = formulaQuizActiveList;
+  if (!list || !list.length) return;
+  const nextIdx = formulaQuizIndex + dir;
+  if (nextIdx >= 0 && nextIdx < list.length) {
+    formulaQuizIndex = nextIdx;
+    renderFormulaQuizBox();
+  } else if (nextIdx >= list.length) {
+    triggerConfetti();
+    showToast('🎉 Bạn đã hoàn thành toàn bộ thẻ ôn tập công thức!');
+  }
+}
+
+function jumpFormulaQuiz(idx) {
+  formulaQuizIndex = idx;
+  renderFormulaQuizBox();
+}
+
+function retryFormulaQuiz() {
+  const list = formulaQuizActiveList;
+  const q = list[formulaQuizIndex];
+  if (q && formulaQuizState[q.id]) {
+    delete formulaQuizState[q.id];
+    delete state.formula[q.id];
+    persist();
+    stats();
+    renderFormulaQuizBox();
+  }
+}
+
+function resetFormulaQuiz() {
+  formulaQuizIndex = 0;
+  formulaQuizStreak = 0;
+  formulaQuizActiveList.forEach(q => {
+    delete formulaQuizState[q.id];
+    delete state.formula[q.id];
+  });
+  persist();
+  stats();
+  showToast('🔄 Đã đặt lại toàn bộ tiến độ ôn tập công thức');
+  renderFormulaQuizBox();
+}
+
+function toggleFormulaQuizShuffle() {
+  formulaQuizShuffled = !formulaQuizShuffled;
+  formulaQuizIndex = 0;
+  setupFormulaQuizList();
+  showToast(formulaQuizShuffled ? '⇄ Đang trộn thứ tự thẻ ôn tập' : '↩ Thứ tự chuẩn theo đề cương');
+  renderFormulaQuizBox();
+}
+
 function renderFormulas() {
   const filteredList = FORMULA_LIBRARY.filter(f => {
     const matchCat = activeFormulaCategory === 'all' || f.category === activeFormulaCategory;
@@ -8832,6 +9760,26 @@ function renderFormulas() {
           '</button>'
         ).join('') +
       '</div>' +
+    '</div>' +
+
+    // SECTION 0: FORMULA FLASHCARD REVIEW (ABCD MULTIPLE CHOICE)
+    '<div class="formula-flash-section">' +
+      '<div class="formula-flash-header">' +
+        '<div class="formula-flash-title-wrap">' +
+          '<span class="formula-flash-badge">⚡ FLASHCARD TRẮC NGHIỆM ABCD</span>' +
+          '<h3 class="formula-flash-title">🃏 Ôn tập công thức · Chọn đáp án ABCD đúng</h3>' +
+          '<p class="formula-flash-desc">Luyện phản xạ nhớ nhanh toàn bộ công thức trên Slide & Đề cương 121 trang. Chọn A, B, C, D để kiểm tra kết quả tức thì (hỗ trợ phím 1-4, Enter, R, ←/→).' +
+          '</p>' +
+        '</div>' +
+        '<div class="formula-flash-stats-bar">' +
+          '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqProgress">1 / ' + formulaQuizActiveList.length + '</span><span class="flash-stat-lbl">Tiến độ</span></div>' +
+          '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqScore" style="color:var(--green);">0 / ' + formulaQuizActiveList.length + '</span><span class="flash-stat-lbl">Đúng</span></div>' +
+          '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqStreak" style="color:var(--amber);">' + formulaQuizStreak + ' 🔥</span><span class="flash-stat-lbl">Chuỗi đúng</span></div>' +
+          '<button class="btn" id="fqShuffleBtn" onclick="toggleFormulaQuizShuffle()" title="Trộn thứ tự thẻ"><span>⇄</span> Trộn thẻ</button>' +
+          '<button class="btn" onclick="resetFormulaQuiz()" title="Đặt lại toàn bộ tiến độ" style="padding:6px 12px;font-size:12px;">🔄 Đặt lại</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="formula-flashcard-box" id="formulaFlashcardBox"></div>' +
     '</div>' +
 
     // SECTION 1: SLIDE EXERCISE SHOWCASE
@@ -9047,10 +9995,14 @@ function renderFormulas() {
 
   $('#card').innerHTML = html;
 
+  // Render flashcard quiz box inside formula hub
+  renderFormulaQuizBox();
+
   // Bind category chips
   $$('[data-cat]').forEach(chip => {
     chip.onclick = () => {
       activeFormulaCategory = chip.dataset.cat;
+      setupFormulaQuizList();
       renderFormulas();
       setTimeout(scrollToCard, 10);
     };
@@ -9186,14 +10138,20 @@ $('#mobileSessionBtn').onclick = openDrawer;
 // Stats Calculation
 function stats() {
   if (mode === 'formula') {
-    $('#total').textContent = FORMULA_LIBRARY.length;
-    $('#done').textContent = 'Slide & 121 trang';
-    $('#donePercent').textContent = 'Đầy đủ';
-    $('#accuracy').textContent = '100%';
-    $('#accuracy').style.color = 'var(--green)';
-    $('#accDetail').textContent = 'Công thức chuẩn';
-    $('#streakCount').textContent = currentStreak;
-    $('#streakBadge').classList.toggle('active', currentStreak > 0);
+    const list = FORMULA_FLASHCARDS;
+    const answered = list.filter(q => formulaQuizState[q.id]);
+    const correctCount = answered.filter(q => formulaQuizState[q.id].correct).length;
+    const pct = list.length ? Math.round((answered.length / list.length) * 100) : 0;
+    const accPct = answered.length ? Math.round((correctCount / answered.length) * 100) : 100;
+
+    $('#total').textContent = list.length;
+    $('#done').textContent = answered.length;
+    $('#donePercent').textContent = pct + '% tiến độ';
+    $('#accuracy').textContent = answered.length ? accPct + '%' : '—';
+    $('#accuracy').style.color = accPct >= 80 ? 'var(--green)' : 'var(--amber)';
+    $('#accDetail').textContent = answered.length ? (correctCount + '/' + answered.length + ' đúng') : 'Chưa làm';
+    $('#streakCount').textContent = formulaQuizStreak;
+    $('#streakBadge').classList.toggle('active', formulaQuizStreak > 0);
     $('#maxStreakVal').textContent = state.maxStreak || 0;
     return;
   }
@@ -9752,13 +10710,39 @@ document.addEventListener('keydown', e => {
   // Navigation Arrows
   if (e.key === 'ArrowRight') {
     e.preventDefault();
-    move(1);
+    if (mode === 'formula') navFormulaQuiz(1);
+    else move(1);
     return;
   }
   if (e.key === 'ArrowLeft') {
     e.preventDefault();
-    move(-1);
+    if (mode === 'formula') navFormulaQuiz(-1);
+    else move(-1);
     return;
+  }
+
+  // Formula Mode Flashcard Selection with A, B, C, D or 1, 2, 3, 4
+  if (mode === 'formula') {
+    if (['A', 'B', 'C', 'D'].includes(keyUpper)) {
+      e.preventDefault();
+      answerFormulaQuiz(keyUpper);
+      return;
+    }
+    if (/^[1-4]$/.test(e.key)) {
+      e.preventDefault();
+      answerFormulaQuiz('ABCD'[+e.key - 1]);
+      return;
+    }
+    if (keyUpper === 'R') {
+      e.preventDefault();
+      retryFormulaQuiz();
+      return;
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      navFormulaQuiz(1);
+      return;
+    }
   }
 
   // Quiz Mode Selection with A, B, C, D or 1, 2, 3, 4
@@ -9805,41 +10789,5 @@ document.addEventListener('keydown', e => {
     if (e.key === '2') {
       const q = list[index];
       if (q) {
-        state.flash[q.id] = { correct: true };
-        persist();
-        playCorrectSound();
-        showToast('✅ Đã ghi nhận: Đã nhớ vững');
-        if (index < list.length - 1) move(1); else render();
-      }
-      return;
-    }
-  }
-
-  // Common quick shortcuts
-  if (keyUpper === 'R') {
-    const q = list[index];
-    if (mode === 'quiz' && q && state.quiz[q.id]) {
-      delete state.quiz[q.id];
-      persist();
-      render();
-      showToast('🔄 Đã đặt lại câu hỏi');
-      setTimeout(scrollToCard, 10);
-    }
-  }
-  if (keyUpper === 'S') {
-    const q = list[index];
-    if (q) {
-      const k = key(q);
-      state.star[k] = !state.star[k];
-      persist();
-      render();
-      showToast(state.star[k] ? '⭐ Đã lưu' : '☆ Đã bỏ lưu');
-    }
-  }
-});
-
-// Initial boot
-rebuild();
-  </script>
-</body>
-</html>
+        s
+... [truncated for diff preview]
