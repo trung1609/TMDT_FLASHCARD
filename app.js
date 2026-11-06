@@ -297,7 +297,7 @@ function rebuild() {
   const filter = $('#filter').value;
 
   list = all.filter(q => {
-    const r = state[mode][q.id];
+    const r = (mode === 'flash') ? (state.flash[q.id] || state.quiz[q.id]) : state[mode][q.id];
     const matchTerm = !term || String(q.id) === term || (q.prompt + ' ' + (q.options || []).join(' ')).toLocaleLowerCase('vi').includes(term);
     const matchFilter = filter === 'all' ||
       (filter === 'star' && state.star[key(q)]) ||
@@ -604,15 +604,54 @@ function render() {
   } else if (mode === 'flash') {
     const cropSrc = 'answers/q_' + q.id + '.png';
 
+    // Flashcard Options (ABCD) for Multiple Choice Questions
+    let optionsHtml = '';
+    if (q.options && q.options.length) {
+      optionsHtml = '<div class="flash-options-grid">' +
+        q.options.map((opt, i) => {
+          const letter = 'ABCD'[i];
+          let btnCls = 'flash-opt-card';
+          let statusBadge = '';
+          if (r) {
+            if (letter === q.answer) {
+              btnCls += ' correct';
+              statusBadge = '<span class="option-status-tag" style="margin-left:auto;font-size:11.5px;font-weight:700;color:var(--green);">✓ Đáp án đúng</span>';
+            } else if (letter === r.choice) {
+              btnCls += ' wrong';
+              statusBadge = '<span class="option-status-tag" style="margin-left:auto;font-size:11.5px;font-weight:700;color:var(--red);">✕ Bạn đã chọn</span>';
+            } else {
+              btnCls += ' dimmed';
+            }
+          }
+          return '<button type="button" class="' + btnCls + '" data-flash-choice="' + letter + '" ' + (r ? 'disabled' : '') + '>' +
+            '<span class="flash-opt-letter">' + letter + '</span>' +
+            '<span class="flash-opt-text">' + esc(opt) + '</span>' +
+            statusBadge +
+          '</button>';
+        }).join('') +
+      '</div>';
+    }
+
+    let userResultBadge = '';
+    if (r) {
+      userResultBadge = r.correct
+        ? '<span class="flash-user-choice-badge good">✓ Bạn đã chọn đúng: <b>' + (r.choice || q.answer) + '</b></span>'
+        : '<span class="flash-user-choice-badge bad">✕ Bạn đã chọn: <b>' + (r.choice || 'Chưa đúng') + '</b> (Đáp án đúng: <b>' + q.answer + '</b>)</span>';
+    }
+
     body = '<div id="flashcard" class="flash-container ' + (flipped ? 'is-flipped' : '') + '" role="button" tabindex="0" aria-pressed="' + flipped + '">' +
       '<div class="flash-inner">' +
         '<div class="flash-face flash-front">' +
-          '<span class="eyebrow">CÂU HỎI</span>' +
+          '<span class="eyebrow">CÂU HỎI TRẮC NGHIỆM</span>' +
           '<h2 class="flash-prompt">' + esc(q.prompt) + '</h2>' +
-          '<div class="flash-flip-hint"><span>🔄</span> Chạm hoặc nhấn Space để lật xem ảnh đáp án ↻</div>' +
+          optionsHtml +
+          '<div class="flash-flip-hint"><span>🔄</span> ' + (r ? 'Chạm vào thẻ hoặc nhấn Space để lật xem ảnh đáp án ↻' : 'Chọn đáp án A, B, C, D để kiểm tra & lật 3D · Hoặc bấm Space để lật ngay ↻') + '</div>' +
         '</div>' +
         '<div class="flash-face flash-back">' +
-          '<span class="flash-answer-badge">ĐÁP ÁN ĐÚNG · ' + q.answer + '</span>' +
+          '<div class="flash-back-top-row">' +
+            '<span class="flash-answer-badge">ĐÁP ÁN ĐÚNG · ' + q.answer + '</span>' +
+            userResultBadge +
+          '</div>' +
           '<h3 class="flash-answer-title">' + esc(q.options['ABCD'.indexOf(q.answer)]) + '</h3>' +
           '<div class="flash-answer-exp">' + esc(q.explanation) + '</div>' +
           
@@ -627,7 +666,10 @@ function render() {
           '</div>' +
 
           source(q, true) +
-          '<div class="flash-flip-hint"><span>🔄</span> Chạm để quay lại câu hỏi ↻</div>' +
+          '<div class="flash-back-footer-row">' +
+            (r ? '<button type="button" id="flashRetryBtn" class="btn flash-retry-btn">🔄 Làm lại câu này (R)</button>' : '') +
+            '<div class="flash-flip-hint"><span>🔄</span> Chạm để quay lại câu hỏi (Space) ↻</div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -731,7 +773,26 @@ function render() {
   if ($('#flashcard')) {
     $('#flashcard').onclick = e => {
       if (e.target.closest('[data-zoom-img]')) return;
+      if (e.target.closest('[data-flash-choice]')) return;
+      if (e.target.closest('#flashRetryBtn') || e.target.closest('.flash-retry-btn')) return;
       flipCard();
+    };
+  }
+
+  // Flashcard Option Selection
+  $$('[data-flash-choice]').forEach(btn => {
+    btn.onclick = e => {
+      e.stopPropagation();
+      const choice = btn.dataset.flashChoice;
+      answerFlashcard(choice);
+    };
+  });
+
+  // Flashcard Retry
+  if ($('#flashRetryBtn')) {
+    $('#flashRetryBtn').onclick = e => {
+      e.stopPropagation();
+      retryFlashcard();
     };
     $('#flashcard').onkeydown = e => {
       if (e.key === 'Enter' || e.code === 'Space') {
@@ -828,6 +889,83 @@ function flipCard() {
   playFlipSound();
 }
 
+// Answer Flashcard Action (Select ABCD & Flip 3D)
+function answerFlashcard(choice) {
+  const q = list[index];
+  if (mode !== 'flash' || !q) return;
+
+  const isCorrect = choice === q.answer;
+  state.flash[q.id] = { choice: choice, correct: isCorrect };
+  if (!state.quiz[q.id]) {
+    state.quiz[q.id] = { choice: choice, correct: isCorrect };
+  }
+
+  if (isCorrect) {
+    currentStreak++;
+    if (currentStreak > (state.maxStreak || 0)) {
+      state.maxStreak = currentStreak;
+    }
+    playCorrectSound();
+    if (currentStreak >= 5 && currentStreak % 5 === 0) {
+      playStreakCelebration();
+      triggerConfetti();
+      showToast('🔥 Chuỗi ' + currentStreak + ' câu đúng liên tiếp! Quá đỉnh!');
+    }
+  } else {
+    currentStreak = 0;
+    playWrongSound();
+  }
+
+  persist();
+  stats();
+
+  // Visually highlight chosen options on front card immediately
+  const allBtns = document.querySelectorAll('[data-flash-choice]');
+  allBtns.forEach(btn => {
+    btn.disabled = true;
+    const letter = btn.dataset.flashChoice;
+    if (letter === q.answer) {
+      btn.classList.add('correct');
+      if (!btn.querySelector('.option-status-tag')) {
+        btn.insertAdjacentHTML('beforeend', '<span class="option-status-tag" style="margin-left:auto;font-size:11.5px;font-weight:700;color:var(--green);">✓ Đáp án đúng</span>');
+      }
+    } else if (letter === choice) {
+      btn.classList.add('wrong');
+      if (!btn.querySelector('.option-status-tag')) {
+        btn.insertAdjacentHTML('beforeend', '<span class="option-status-tag" style="margin-left:auto;font-size:11.5px;font-weight:700;color:var(--red);">✕ Bạn đã chọn</span>');
+      }
+    } else {
+      btn.classList.add('dimmed');
+    }
+  });
+
+  // Flip after a short moment to reveal answer ("xong lật ra đáp án")
+  setTimeout(() => {
+    flipped = true;
+    const card = $('#flashcard');
+    if (card) {
+      card.classList.add('is-flipped');
+      card.setAttribute('aria-pressed', 'true');
+    }
+    playFlipSound();
+    render();
+    setTimeout(scrollToCard, 10);
+  }, 400);
+}
+
+// Retry Flashcard Action
+function retryFlashcard() {
+  const q = list[index];
+  if (!q) return;
+  delete state.flash[q.id];
+  delete state.quiz[q.id];
+  flipped = false;
+  persist();
+  stats();
+  render();
+  setTimeout(scrollToCard, 10);
+}
+
 // Answer Action
 function answer(letter) {
   const q = list[index];
@@ -917,13 +1055,15 @@ $('#matrixModal').onclick = e => {
 };
 
 // Mode Switching
+function setAppMode(m) {
+  mode = m;
+  shuffled = false;
+  rebuild();
+  setTimeout(scrollToCard, 10);
+}
+
 $$('[data-mode]').forEach(b => {
-  b.onclick = () => {
-    mode = b.dataset.mode;
-    shuffled = false;
-    rebuild();
-    setTimeout(scrollToCard, 10);
-  };
+  b.onclick = () => setAppMode(b.dataset.mode);
 });
 
 // Event Listeners
@@ -1082,32 +1222,56 @@ document.addEventListener('keydown', e => {
 
   // Flashcard Mode Controls
   if (mode === 'flash') {
-    if (e.code === 'Space' && list.length) {
-      e.preventDefault();
-      if (!e.repeat) flipCard();
-      return;
-    }
-    if (e.key === '1') {
-      const q = list[index];
-      if (q) {
-        state.flash[q.id] = { correct: false };
-        persist();
-        playWrongSound();
-        showToast('📌 Đã lưu: Cần ôn lại');
-        if (index < list.length - 1) move(1); else render();
+    const curQ = list[index];
+    if (!flipped) {
+      // Front face: options can be selected with A, B, C, D or 1, 2, 3, 4
+      if (['A', 'B', 'C', 'D'].includes(keyUpper) && curQ && curQ.options && curQ.options.length) {
+        e.preventDefault();
+        answerFlashcard(keyUpper);
+        return;
       }
-      return;
-    }
-    if (e.key === '2') {
-      const q = list[index];
-      if (q) {
-        state.flash[q.id] = { correct: true };
-        persist();
-        playCorrectSound();
-        showToast('✅ Đã ghi nhận: Đã nhớ vững');
-        if (index < list.length - 1) move(1); else render();
+      if (/^[1-4]$/.test(e.key) && curQ && curQ.options && curQ.options.length) {
+        e.preventDefault();
+        answerFlashcard('ABCD'[+e.key - 1]);
+        return;
       }
-      return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        flipCard();
+        return;
+      }
+    } else {
+      // Back face: Space flips back, 1/2 grades, R retries
+      if (e.code === 'Space') {
+        e.preventDefault();
+        flipCard();
+        return;
+      }
+      if (keyUpper === 'R') {
+        e.preventDefault();
+        retryFlashcard();
+        return;
+      }
+      if (e.key === '1') {
+        if (curQ) {
+          state.flash[curQ.id] = { correct: false };
+          persist();
+          playWrongSound();
+          showToast('📌 Đã lưu: Cần ôn lại');
+          if (index < list.length - 1) move(1); else render();
+        }
+        return;
+      }
+      if (e.key === '2') {
+        if (curQ) {
+          state.flash[curQ.id] = { correct: true };
+          persist();
+          playCorrectSound();
+          showToast('✅ Đã ghi nhận: Đã nhớ vững');
+          if (index < list.length - 1) move(1); else render();
+        }
+        return;
+      }
     }
   }
 
@@ -1136,3 +1300,9 @@ document.addEventListener('keydown', e => {
 
 // Initial boot
 rebuild();
+
+if (typeof window !== 'undefined') {
+  window.setAppMode = setAppMode;
+  window.answerFlashcard = answerFlashcard;
+  window.retryFlashcard = retryFlashcard;
+}

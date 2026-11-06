@@ -3905,3 +3905,211 @@ details.settings-box summary {
     padding: 7px 10px;
   }
 }
+
+
+/* ==========================================================================
+   FLASHCARD 3D - ABCD OPTIONS & ANSWER FLIP
+   ========================================================================== */
+
+.flash-inner {
+  min-height: 420px;
+}
+
+.flash-face.flash-front {
+  justify-content: flex-start;
+  padding: 26px 24px;
+}
+
+.flash-prompt {
+  font-size: 18.5px;
+  font-weight: 750;
+  line-height: 1.5;
+  margin: 10px 0 16px;
+  color: var(--ink-heading);
+  max-width: 820px;
+}
+
+.flash-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 820px;
+  margin: 8px 0 18px;
+  text-align: left;
+}
+
+.flash-opt-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 15px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 550;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.flash-opt-card:hover:not(:disabled) {
+  border-color: #6366f1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.15);
+  background: rgba(99, 102, 241, 0.03);
+}
+
+.flash-opt-card:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.flash-opt-letter {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 850;
+  font-size: 14px;
+  flex-shrink: 0;
+  color: #fff;
+  transition: transform 0.15s ease;
+}
+
+.flash-opt-card:hover:not(:disabled) .flash-opt-letter {
+  transform: scale(1.08);
+}
+
+.flash-opt-card[data-flash-choice="A"] .flash-opt-letter {
+  background: #ef4444;
+}
+
+.flash-opt-card[data-flash-choice="B"] .flash-opt-letter {
+  background: #3b82f6;
+}
+
+.flash-opt-card[data-flash-choice="C"] .flash-opt-letter {
+  background: #f59e0b;
+}
+
+.flash-opt-card[data-flash-choice="D"] .flash-opt-letter {
+  background: #10b981;
+}
+
+.flash-opt-text {
+  flex: 1;
+}
+
+.flash-opt-card.correct {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25) !important;
+}
+
+.flash-opt-card.wrong {
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.flash-opt-card.dimmed {
+  opacity: 0.45;
+}
+
+.flash-user-choice-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 750;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+.flash-user-choice-badge.good {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.flash-user-choice-badge.bad {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.flash-retry-btn {
+  font-size: 12px;
+  font-weight: 650;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.flash-retry-btn:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
+.flash-back-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.flash-back-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@media (max-width: 640px) {
+  .flash-face.flash-front {
+    padding: 20px 14px;
+  }
+  .flash-prompt {
+    font-size: 16px;
+    margin: 8px 0 12px;
+  }
+  .flash-options-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 6px 0 14px;
+  }
+  .flash-opt-card {
+    padding: 11px 13px;
+    font-size: 13.5px;
+  }
+  .flash-opt-letter {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+  .flash-back-top-row,
+  .flash-back-footer-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
