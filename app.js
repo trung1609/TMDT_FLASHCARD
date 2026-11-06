@@ -1910,6 +1910,148 @@ function copySyncCode() {
   copyTextToClipboard(code, '📋 Đã sao chép mã đồng bộ rút gọn!');
 }
 
+function downloadQrImage() {
+  const canvas = document.getElementById('syncQrCanvas');
+  if (!canvas) {
+    showToast('⚠️ Không tìm thấy ảnh mã QR.');
+    return;
+  }
+  try {
+    const frameCanvas = document.createElement('canvas');
+    const fctx = frameCanvas.getContext('2d');
+    const padding = 20;
+    const footerHeight = 40;
+    frameCanvas.width = canvas.width + padding * 2;
+    frameCanvas.height = canvas.height + padding * 2 + footerHeight;
+
+    // White card background with subtle border
+    fctx.fillStyle = '#ffffff';
+    fctx.fillRect(0, 0, frameCanvas.width, frameCanvas.height);
+
+    // Draw main QR code
+    fctx.drawImage(canvas, padding, padding);
+
+    // Draw footer text with expiry date
+    fctx.fillStyle = '#0d9488';
+    fctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    fctx.textAlign = 'center';
+    fctx.textBaseline = 'middle';
+    fctx.fillText('🕒 Hết hạn: ' + getExpiryDateStr(3), frameCanvas.width / 2, canvas.height + padding + footerHeight / 2);
+
+    const dataUrl = frameCanvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    const d = new Date();
+    const dateStr = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    a.download = 'tmdt_qr_dongbo_' + dateStr + '.png';
+    a.href = dataUrl;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('📥 Đã tải ảnh mã QR về máy thành công!');
+  } catch(e) {
+    console.error('Download QR failed:', e);
+    showToast('⚠️ Không thể tải ảnh: ' + e.message);
+  }
+}
+
+function handleQrImageUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (typeof jsQR === 'undefined') {
+    alert('Thư viện quét ảnh mã QR chưa sẵn sàng. Vui lòng tải lại trang.');
+    event.target.value = '';
+    return;
+  }
+
+  showToast('🔍 Đang phân tích mã QR từ ảnh...');
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      try {
+        const scanCanvas = document.createElement('canvas');
+        const sctx = scanCanvas.getContext('2d');
+        scanCanvas.width = img.width;
+        scanCanvas.height = img.height;
+        sctx.drawImage(img, 0, 0);
+
+        const imgData = sctx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
+        let qr = jsQR(imgData.data, imgData.width, imgData.height, {
+          inversionAttempts: 'dontInvert'
+        });
+
+        if (!qr || !qr.data) {
+          qr = jsQR(imgData.data, imgData.width, imgData.height, {
+            inversionAttempts: 'attemptBoth'
+          });
+        }
+
+        if (!qr || !qr.data) {
+          throw new Error('Không nhận diện được mã QR trong bức ảnh này. Vui lòng chọn ảnh chụp rõ nét hơn.');
+        }
+
+        const decoded = qr.data.trim();
+        closeSyncModal();
+        applyExtractedSyncContent(decoded);
+      } catch(err) {
+        console.error('QR decode error:', err);
+        alert('⚠️ ' + err.message);
+      }
+    };
+    img.onerror = function() {
+      alert('Không thể mở tệp hình ảnh đã chọn.');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function applyExtractedSyncContent(raw) {
+  if (!raw || typeof raw !== 'string') return;
+  const content = raw.trim();
+
+  // 1. Check cloud code
+  let cloudCode = null;
+  if (content.includes('?c=')) {
+    cloudCode = content.split('?c=')[1].split('&')[0];
+  } else if (content.includes('?code=')) {
+    cloudCode = content.split('?code=')[1].split('&')[0];
+  } else if (content.includes('#c=')) {
+    cloudCode = content.split('#c=')[1].split('&')[0];
+  } else if (/^[a-f0-9]{32}$/i.test(content)) {
+    cloudCode = content;
+  }
+
+  if (cloudCode) {
+    closeSyncModal();
+    fetchAndApplyCloudSync(cloudCode);
+    return;
+  }
+
+  // 2. Direct offline code
+  let payloadStr = content;
+  if (content.includes('#s=')) {
+    payloadStr = content.split('#s=')[1].split('&')[0];
+  } else if (content.includes('#sync=')) {
+    payloadStr = content.split('#sync=')[1].split('&')[0];
+  }
+
+  const imported = unpackSyncData(payloadStr);
+  if (!imported) {
+    alert('Mã QR không chứa dữ liệu tiến độ ôn tập hợp lệ.');
+    return;
+  }
+
+  const count = mergeSyncState(imported);
+  closeSyncModal();
+  playCorrectSound();
+  try { triggerConfetti(); } catch (e) {}
+  showToast('🎉 Đã nạp thành công ' + count + ' mục tiến độ từ ảnh mã QR!');
+}
+
 function copyTextToClipboard(text, successMsg) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(() => {
@@ -2007,45 +2149,8 @@ function applySyncCode() {
     showToast('⚠️ Vui lòng dán mã đồng bộ vào ô.');
     return;
   }
-
-  // Check if it's a short cloud code or short cloud link
-  let cloudCode = null;
-  if (raw.includes('?c=')) {
-    cloudCode = raw.split('?c=')[1].split('&')[0];
-  } else if (raw.includes('?code=')) {
-    cloudCode = raw.split('?code=')[1].split('&')[0];
-  } else if (raw.includes('#c=')) {
-    cloudCode = raw.split('#c=')[1].split('&')[0];
-  } else if (/^[a-f0-9]{32}$/i.test(raw)) {
-    cloudCode = raw;
-  }
-
-  if (cloudCode) {
-    closeSyncModal();
-    fetchAndApplyCloudSync(cloudCode);
-    inputEl.value = '';
-    return;
-  }
-
-  // Direct offline code fallback
-  if (raw.includes('#s=')) {
-    raw = raw.split('#s=')[1].split('&')[0];
-  } else if (raw.includes('#sync=')) {
-    raw = raw.split('#sync=')[1].split('&')[0];
-  }
-
-  const imported = unpackSyncData(raw);
-  if (!imported) {
-    alert('Mã đồng bộ không hợp lệ hoặc đã bị lỗi ký tự!');
-    return;
-  }
-
-  const count = mergeSyncState(imported);
+  applyExtractedSyncContent(raw);
   inputEl.value = '';
-  closeSyncModal();
-  playCorrectSound();
-  try { triggerConfetti(); } catch (e) {}
-  showToast('🎉 Đã đồng bộ thành công ' + count + ' mục!');
 }
 
 function openSyncModal() {
@@ -2143,4 +2248,7 @@ if (typeof window !== 'undefined') {
   window.exportBackupFile = exportBackupFile;
   window.handleImportFile = handleImportFile;
   window.applySyncCode = applySyncCode;
+  window.downloadQrImage = downloadQrImage;
+  window.handleQrImageUpload = handleQrImageUpload;
+  window.applyExtractedSyncContent = applyExtractedSyncContent;
 }

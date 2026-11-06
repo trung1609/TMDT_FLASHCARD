@@ -4412,10 +4412,17 @@ details.settings-box summary {
 }
 
 .sync-qr-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 6px;
-  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.sync-qr-actions button {
+  justify-content: center;
+  font-size: 12.5px;
+  padding: 8px 10px;
+  white-space: nowrap;
 }
 
 /* Tab 2: File Card */
@@ -4561,11 +4568,9 @@ details.settings-box summary {
     height: 200px;
   }
   .sync-qr-actions {
-    flex-direction: column;
-  }
-  .sync-qr-actions button {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
     width: 100%;
-    justify-content: center;
   }
   .sync-file-section {
     flex-direction: column;

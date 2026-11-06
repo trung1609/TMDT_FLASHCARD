@@ -343,13 +343,20 @@
                 <span>Chạm mở link: Tiến độ sẽ <b>tự động lưu vào điện thoại</b> ngay!</span>
               </div>
               <div class="sync-qr-actions">
-                <button class="btn primary" onclick="copySyncUrl()">
-                  <span>📋</span> <span>Sao chép link rút gọn</span>
+                <button class="btn primary" onclick="copySyncUrl()" title="Sao chép đường dẫn rút gọn để gửi qua Zalo/Messenger">
+                  <span>📋</span> <span>Sao chép link</span>
+                </button>
+                <button class="btn" onclick="downloadQrImage()" title="Tải file ảnh mã QR về máy hoặc điện thoại">
+                  <span>📥</span> <span>Tải ảnh QR</span>
+                </button>
+                <button class="btn" onclick="document.getElementById('qrImageFileInput').click()" title="Tải ảnh QR có sẵn trong máy để nạp tiến độ">
+                  <span>📤</span> <span>Tải lên ảnh QR</span>
                 </button>
                 <button class="btn" onclick="refreshSyncQr()" title="Tạo lại mã với dữ liệu mới nhất">
-                  <span>🔄</span> <span>Làm mới mã</span>
+                  <span>🔄</span> <span>Làm mới</span>
                 </button>
               </div>
+              <input type="file" id="qrImageFileInput" accept="image/*" style="display:none;" onchange="handleQrImageUpload(event)">
               <p class="sync-qr-hint">⚡ Mã QR độ nét cao 1 chạm · Link rút gọn siêu ngắn dễ gửi Zalo/Messenger</p>
             </div>
           </div>
@@ -414,6 +421,7 @@
 
   <!-- Modular Scripts -->
   <script src="qrcode.min.js"></script>
+  <script src="jsqr.min.js"></script>
   <script src="data.js"></script>
   <script src="formulas.js"></script>
   <script src="app.js"></script>
