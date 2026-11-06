@@ -964,6 +964,10 @@ $('#reset').onclick = () => {
 // Key: Enter to advance to next question after answering
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
+    if ($('#formulaModal') && $('#formulaModal').classList.contains('open')) {
+      closeFormulaModal();
+      return;
+    }
     if ($('#imageLightbox').classList.contains('open')) {
       closeLightbox();
       return;
@@ -978,6 +982,42 @@ document.addEventListener('keydown', e => {
   if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.ctrlKey || e.metaKey || e.altKey) return;
 
   const keyUpper = e.key.toUpperCase();
+
+  // FORMULA 3D FLASHCARD MODAL SHORTCUTS (WAYGROUND / QUIZIZZ STYLE)
+  const formulaModalEl = $('#formulaModal');
+  if (formulaModalEl && formulaModalEl.classList.contains('open')) {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      flipFormulaCard();
+      return;
+    }
+    if (['A', 'B', 'C', 'D'].includes(keyUpper)) {
+      e.preventDefault();
+      answerFormulaQuiz(keyUpper);
+      return;
+    }
+    if (/^[1-4]$/.test(e.key)) {
+      e.preventDefault();
+      answerFormulaQuiz('ABCD'[+e.key - 1]);
+      return;
+    }
+    if (keyUpper === 'R') {
+      e.preventDefault();
+      retryFormulaQuiz();
+      return;
+    }
+    if (e.key === 'Enter' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      navFormulaQuiz(1);
+      return;
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      navFormulaQuiz(-1);
+      return;
+    }
+    return;
+  }
 
   // Navigation Arrows
   if (e.key === 'ArrowRight') {

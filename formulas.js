@@ -655,6 +655,7 @@ let formulaQuizShuffled = false;
 let formulaQuizActiveList = [];
 let formulaQuizState = (typeof state !== 'undefined' && state.formula) ? state.formula : {};
 let formulaQuizStreak = 0;
+let formulaCardFlipped = false;
 
 function setupFormulaQuizList() {
   let list = FORMULA_FLASHCARDS.filter(q => {
@@ -673,16 +674,107 @@ function setupFormulaQuizList() {
 }
 setupFormulaQuizList();
 
-function renderFormulaQuizBox() {
-  const box = $('#formulaFlashcardBox');
-  if (!box) return;
-
-  const list = formulaQuizActiveList;
-  if (!list || !list.length) {
-    box.innerHTML = '<div style="padding:24px;text-align:center;color:var(--muted);font-weight:600;">Không có câu hỏi ôn tập nào cho danh mục này.</div>';
-    return;
+function findFormulaDetails(q) {
+  if (!q) return null;
+  const qPromptLower = (q.prompt || '').toLowerCase();
+  const qIdLower = (q.id || '').toLowerCase();
+  let match = FORMULA_LIBRARY.find(f => {
+    if (f.category !== q.category) return false;
+    const titleWords = f.title.toLowerCase().split(/[\s·,()]+/);
+    return titleWords.some(w => w.length > 2 && (qPromptLower.includes(w) || qIdLower.includes(w)));
+  });
+  if (!match) {
+    match = FORMULA_LIBRARY.find(f => f.category === q.category);
   }
+  return match;
+}
 
+function openFormulaModal() {
+  const modal = $('#formulaModal');
+  if (!modal) return;
+  modal.classList.add('open');
+  document.body.classList.add('modal-open');
+  formulaCardFlipped = false;
+  setupFormulaQuizList();
+  renderFormulaModalContent();
+  if (typeof playFlipSound === 'function') playFlipSound();
+}
+
+function closeFormulaModal() {
+  const modal = $('#formulaModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  updateFormulaHeroStats();
+}
+
+function handleFormulaOverlayClick(event) {
+  if (event.target && event.target.id === 'formulaModal') {
+    closeFormulaModal();
+  }
+}
+
+function flipFormulaCard() {
+  const card = $('#formula3DCard');
+  if (!card) return;
+  formulaCardFlipped = !formulaCardFlipped;
+  card.classList.toggle('is-flipped', formulaCardFlipped);
+  if (typeof playFlipSound === 'function') playFlipSound();
+
+  const flipBtns = document.querySelectorAll('.flip-toggle-btn');
+  flipBtns.forEach(btn => {
+    btn.innerHTML = formulaCardFlipped
+      ? '<span>↩</span> <span class="hide-mobile">Lật lại câu hỏi (Space)</span><span class="show-mobile">Câu hỏi</span>'
+      : '<span>🔄</span> <span class="hide-mobile">Lật thẻ 3D (Space)</span><span class="show-mobile">Lật 3D</span>';
+  });
+}
+
+function updateFormulaHeroStats() {
+  const correctEl = $('#fpCorrectCount');
+  const streakEl = $('#fpStreakRecord');
+  const total = FORMULA_FLASHCARDS.length;
+  const correctCount = FORMULA_FLASHCARDS.filter(item => formulaQuizState[item.id] && formulaQuizState[item.id].correct).length;
+  if (correctEl) correctEl.textContent = correctCount + '/' + total;
+  if (streakEl) streakEl.textContent = (state.maxStreak || formulaQuizStreak || 0) + ' 🔥';
+}
+
+function renderFormulaPracticeHero() {
+  const total = FORMULA_FLASHCARDS.length;
+  const correctCount = FORMULA_FLASHCARDS.filter(item => formulaQuizState[item.id] && formulaQuizState[item.id].correct).length;
+  const streak = (typeof state !== 'undefined' && state.maxStreak) ? state.maxStreak : formulaQuizStreak;
+
+  return '<div class="formula-practice-card">' +
+    '<div class="formula-practice-info">' +
+      '<div class="formula-practice-badge">⚡ ĐẤU TRƯỜNG CÔNG THỨC 3D · QUIZIZZ / WAYGROUND STYLE</div>' +
+      '<h3 class="formula-practice-title">Ôn tập Flashcard 3D & Trắc nghiệm ABCD</h3>' +
+      '<p class="formula-practice-desc">' +
+        'Luyện phản xạ ghi nhớ toàn bộ <b>' + total + ' thẻ công thức</b> trọng tâm trên Slide & Đề cương 121 trang. Chế độ lật thẻ 3D trực quan với phân tích biến số chi tiết, giải thích chuyên sâu, tính điểm và đếm chuỗi streak!' +
+      '</p>' +
+      '<div class="formula-practice-stats-preview">' +
+        '<span class="fp-stat-tag">📚 <b>' + total + '</b> Thẻ công thức</span>' +
+        '<span class="fp-stat-tag">🎯 Đã đúng: <b id="fpCorrectCount">' + correctCount + '/' + total + '</b></span>' +
+        '<span class="fp-stat-tag">🔥 Kỷ lục chuỗi: <b id="fpStreakRecord">' + streak + ' 🔥</b></span>' +
+        '<span class="fp-stat-tag hide-mobile">⌨ Phím tắt A-D, Space, Enter</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="formula-practice-cta">' +
+      '<button class="btn-launch-flashcard" onclick="openFormulaModal()" title="Mở phòng ôn tập Flashcard 3D">' +
+        '<span class="launch-icon">🚀</span>' +
+        '<div class="launch-text">' +
+          '<span class="launch-title">Bắt đầu ôn tập Flashcard 3D</span>' +
+          '<span class="launch-sub">' + total + ' thẻ trắc nghiệm & công thức</span>' +
+        '</div>' +
+        '<span class="launch-arrow">➔</span>' +
+      '</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderFormulaModalContent() {
+  const container = $('#formulaModalContent');
+  if (!container) return;
+
+  const list = formulaQuizActiveList && formulaQuizActiveList.length ? formulaQuizActiveList : FORMULA_FLASHCARDS;
   if (formulaQuizIndex >= list.length) formulaQuizIndex = 0;
   if (formulaQuizIndex < 0) formulaQuizIndex = list.length - 1;
 
@@ -690,107 +782,186 @@ function renderFormulaQuizBox() {
   const r = formulaQuizState[q.id];
   const total = list.length;
   const current = formulaQuizIndex + 1;
-
-  // Stats bar updates
-  const progressEl = $('#fqProgress');
-  if (progressEl) progressEl.textContent = current + ' / ' + total;
-
-  const scoreEl = $('#fqScore');
   const answeredCount = list.filter(item => formulaQuizState[item.id] && formulaQuizState[item.id].correct).length;
-  if (scoreEl) scoreEl.textContent = answeredCount + ' / ' + total;
+  const matchedFormula = findFormulaDetails(q);
+  const correctOptionText = q.options[['A', 'B', 'C', 'D'].indexOf(q.answer)];
 
-  const streakEl = $('#fqStreak');
-  if (streakEl) streakEl.textContent = formulaQuizStreak + ' 🔥';
-
-  const shuffleBtn = $('#fqShuffleBtn');
-  if (shuffleBtn) {
-    shuffleBtn.classList.toggle('primary', formulaQuizShuffled);
-    shuffleBtn.innerHTML = formulaQuizShuffled
-      ? '<span>✓</span> <span class="hide-mobile">Đang trộn</span><span class="show-mobile">Trộn</span>'
-      : '<span>⇄</span> <span class="hide-mobile">Trộn thẻ</span><span class="show-mobile">Trộn</span>';
-  }
-
-  // Dots
-  const dotsHtml = '<div class="stage-dots-wrap">' +
+  // Dots progress bar
+  const dotsHtml = '<div class="f3d-dots-bar">' +
     list.map((item, idx) => {
       const stateItem = formulaQuizState[item.id];
-      let dotCls = 'stage-dot';
+      let dotCls = 'f3d-dot';
       if (idx === formulaQuizIndex) dotCls += ' current';
-      else if (stateItem) {
-        dotCls += stateItem.correct ? ' correct' : ' wrong';
-      }
+      else if (stateItem) dotCls += stateItem.correct ? ' correct' : ' wrong';
       return '<span class="' + dotCls + '" onclick="jumpFormulaQuiz(' + idx + ')" title="Thẻ ' + (idx + 1) + '"></span>';
     }).join('') +
   '</div>';
 
-  let optionsHtml = '<div class="stage-options-grid">';
+  // Options Grid
+  let optionsHtml = '<div class="f3d-options-grid">';
   ['A', 'B', 'C', 'D'].forEach((letter, i) => {
     const optText = q.options[i];
-    let cardCls = 'stage-opt-card';
+    let btnCls = 'f3d-opt-btn';
     let statusBadge = '';
     if (r) {
       if (letter === q.answer) {
-        cardCls += ' correct';
-        statusBadge = '<span class="option-status-tag" style="margin-left:auto;font-size:11.5px;font-weight:700;color:var(--green);">✓ Đáp án đúng</span>';
+        btnCls += ' correct';
+        statusBadge = '<span class="f3d-opt-status-tag" style="color:#059669;">✓ Đúng</span>';
       } else if (letter === r.choice) {
-        cardCls += ' wrong';
-        statusBadge = '<span class="option-status-tag" style="margin-left:auto;font-size:11.5px;font-weight:700;color:var(--red);">✕ Bạn đã chọn</span>';
+        btnCls += ' wrong';
+        statusBadge = '<span class="f3d-opt-status-tag" style="color:#dc2626;">✕ Đã chọn</span>';
       } else {
-        cardCls += ' dimmed';
+        btnCls += ' dimmed';
       }
     }
-    optionsHtml += '<button class="' + cardCls + '" data-letter="' + letter + '" onclick="answerFormulaQuiz(\'' + letter + '\')" ' + (r ? 'disabled' : '') + '>' +
-      '<span class="stage-opt-letter">' + letter + '</span>' +
-      '<span style="flex:1;line-height:1.45;">' + optText + '</span>' +
+    optionsHtml += '<button class="' + btnCls + '" data-opt="' + letter + '" onclick="answerFormulaQuiz(\'' + letter + '\')" ' + (r ? 'disabled' : '') + '>' +
+      '<span class="f3d-opt-letter">' + letter + '</span>' +
+      '<span class="f3d-opt-text">' + optText + '</span>' +
       statusBadge +
     '</button>';
   });
   optionsHtml += '</div>';
 
+  // Feedback Box (Front Face)
   let feedbackHtml = '';
   if (r) {
-    feedbackHtml = '<div class="stage-feedback-box ' + (r.correct ? 'good' : 'bad') + '">' +
-      '<div class="stage-fb-header">' +
+    feedbackHtml = '<div class="f3d-feedback ' + (r.correct ? 'good' : 'bad') + '">' +
+      '<div class="f3d-fb-title">' +
         '<span>' + (r.correct ? '🎉 Xuất sắc! Bạn đã chọn đáp án chính xác!' : '💡 Chưa chính xác! Đáp án chuẩn là: <b>' + q.answer + '</b>') + '</span>' +
       '</div>' +
-      '<div class="stage-fb-exp">' + q.explanation + '</div>' +
+      '<div class="f3d-fb-body">' + q.explanation + '</div>' +
+      '<div class="f3d-fb-action">' +
+        '<button class="btn btn-sm" onclick="flipFormulaCard()" style="font-size:12px;padding:6px 12px;background:rgba(99,102,241,0.12);color:#6366f1;border:1px solid rgba(99,102,241,0.3);border-radius:8px;font-weight:700;cursor:pointer;">' +
+          '🔄 Lật xem công thức 3D & biến số chi tiết (Space) ➔' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // Back Face: Formula Equation + Variables + Tip + Example
+  let varsHtml = '';
+  if (matchedFormula && matchedFormula.vars && matchedFormula.vars.length) {
+    varsHtml = '<div class="f3d-section-block">' +
+      '<div class="f3d-section-title">🔍 Ý nghĩa các biến số trong công thức:</div>' +
+      '<ul class="f3d-vars-list">' +
+        matchedFormula.vars.map(v => '<li>' + v + '</li>').join('') +
+      '</ul>' +
+    '</div>';
+  }
+
+  let tipHtml = '';
+  if (matchedFormula && matchedFormula.tip) {
+    tipHtml = '<div class="f3d-tip-callout">' + matchedFormula.tip + '</div>';
+  }
+
+  let exampleHtml = '';
+  if (matchedFormula && matchedFormula.example) {
+    exampleHtml = '<div class="f3d-example-callout">' +
+      '<div style="font-weight:750;margin-bottom:4px;color:#4f46e5;">📝 Ví dụ bài tập áp dụng thực tế:</div>' +
+      matchedFormula.example +
     '</div>';
   }
 
   const isFirst = formulaQuizIndex === 0;
   const isLast = formulaQuizIndex === total - 1;
 
-  const cardHtml = '<div class="formula-flashcard-stage">' +
-    '<div class="stage-top-row">' +
-      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-        '<span class="badge-pill" style="background:#6366f1;color:#fff;font-weight:800;">THẺ ' + current + ' / ' + total + '</span>' +
-        '<span class="stage-cat-tag">' + q.categoryLabel + '</span>' +
+  const modalHtml = 
+    // MODAL HEADER
+    '<div class="f3d-modal-header">' +
+      '<div class="f3d-header-left">' +
+        '<span class="f3d-brand-badge">⚡ FLASHCARD 3D</span>' +
+        '<span class="f3d-counter-pill" id="formulaModalTitle">Thẻ ' + current + ' / ' + total + '</span>' +
       '</div>' +
-      dotsHtml +
+      '<div class="f3d-header-stats">' +
+        '<span class="f3d-stat-pill score" title="Số câu đúng">🎯 ' + answeredCount + '/' + total + '</span>' +
+        '<span class="f3d-stat-pill streak" title="Chuỗi đúng liên tiếp">🔥 ' + formulaQuizStreak + '</span>' +
+      '</div>' +
+      '<div class="f3d-header-actions">' +
+        '<button class="f3d-btn-icon ' + (formulaQuizShuffled ? 'active' : '') + '" onclick="toggleFormulaQuizShuffle()" title="Trộn ngẫu nhiên">' +
+          '<span>⇄</span> <span class="hide-mobile">Trộn</span>' +
+        '</button>' +
+        '<button class="f3d-btn-icon" onclick="resetFormulaQuiz()" title="Đặt lại toàn bộ tiến độ">' +
+          '<span>🔄</span> <span class="hide-mobile">Đặt lại</span>' +
+        '</button>' +
+        '<button class="f3d-close-btn" onclick="closeFormulaModal()" title="Đóng phòng ôn tập (Esc)">✕</button>' +
+      '</div>' +
     '</div>' +
 
-    '<div class="stage-prompt">' + q.prompt + '</div>' +
+    // DOTS PROGRESS STRIP
+    dotsHtml +
 
-    optionsHtml +
+    // STAGE / 3D CARD
+    '<div class="f3d-stage">' +
+      '<div class="f3d-card-wrap">' +
+        '<div id="formula3DCard" class="f3d-card ' + (formulaCardFlipped ? 'is-flipped' : '') + '">' +
+          
+          // FRONT FACE
+          '<div class="f3d-face f3d-front">' +
+            '<div class="f3d-top-meta">' +
+              '<span class="f3d-cat-pill">' + q.categoryLabel + '</span>' +
+              '<button class="f3d-flip-hint-pill" onclick="flipFormulaCard()" title="Bấm phím Space để lật thẻ">' +
+                '<span>🔄 Lật xem công thức (Space)</span>' +
+              '</button>' +
+            '</div>' +
+            '<div class="f3d-prompt">' + q.prompt + '</div>' +
+            optionsHtml +
+            feedbackHtml +
+          '</div>' +
 
-    feedbackHtml +
+          // BACK FACE (3D FLIPPED)
+          '<div class="f3d-face f3d-back">' +
+            '<div class="f3d-back-header">' +
+              '<span class="f3d-back-title">📐 CHI TIẾT CÔNG THỨC & BIẾN SỐ</span>' +
+              '<span class="f3d-cat-pill">' + q.categoryLabel + '</span>' +
+            '</div>' +
+            '<div class="f3d-eq-box">' +
+              '<div class="f3d-eq-label">Công thức chuẩn:</div>' +
+              '<div class="f3d-eq-math">' + (matchedFormula ? matchedFormula.equation : correctOptionText) + '</div>' +
+            '</div>' +
+            '<div class="f3d-section-block">' +
+              '<div class="f3d-section-title">💡 Giải thích chi tiết & logic ghi nhớ:</div>' +
+              '<div>' + q.explanation + '</div>' +
+            '</div>' +
+            varsHtml +
+            tipHtml +
+            exampleHtml +
+            '<div class="f3d-back-action-row">' +
+              '<button class="btn primary" onclick="flipFormulaCard()" style="font-size:13px;padding:8px 18px;">' +
+                '↩ Quay lại câu hỏi trắc nghiệm (Space)' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
 
-    '<div class="stage-nav-row">' +
-      '<button class="btn" onclick="navFormulaQuiz(-1)" ' + (isFirst ? 'disabled style="opacity:0.5;"' : '') + '>← <span class="hide-mobile">Thẻ trước (←)</span><span class="show-mobile">Trước</span></button>' +
-      '<div style="display:flex;gap:6px;align-items:center;">' +
-        (r ? '<button class="btn" onclick="retryFormulaQuiz()" style="font-size:12px;padding:7px 10px;">🔄 <span class="hide-mobile">Làm lại (R)</span><span class="show-mobile">Lại</span></button>' : '') +
-        '<button class="btn primary" onclick="navFormulaQuiz(1)" style="padding:7px 12px;font-size:12px;">' +
-          (isLast && r ? 'Hoàn thành 🎉' : '<span class="hide-mobile">Thẻ tiếp theo (Enter) </span><span class="show-mobile">Tiếp </span>→') +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // MODAL FOOTER
+    '<div class="f3d-modal-footer">' +
+      '<div class="f3d-footer-nav">' +
+        '<button class="btn" onclick="navFormulaQuiz(-1)" ' + (isFirst ? 'disabled style="opacity:0.4;"' : '') + '>' +
+          '← <span class="hide-mobile">Thẻ trước (←)</span><span class="show-mobile">Trước</span>' +
+        '</button>' +
+        '<div class="f3d-footer-center">' +
+          (r ? '<button class="btn" onclick="retryFormulaQuiz()" style="font-size:12px;padding:7px 11px;">🔄 <span class="hide-mobile">Làm lại (R)</span><span class="show-mobile">Lại</span></button>' : '') +
+          '<button class="btn flip-toggle-btn" onclick="flipFormulaCard()" style="font-size:12px;padding:7px 12px;border-color:#6366f1;color:#6366f1;">' +
+            '<span>🔄</span> <span class="hide-mobile">Lật thẻ 3D (Space)</span><span class="show-mobile">Lật 3D</span>' +
+          '</button>' +
+        '</div>' +
+        '<button class="btn primary" onclick="navFormulaQuiz(1)">' +
+          (isLast && r ? '🎉 Hoàn thành' : '<span class="hide-mobile">Thẻ tiếp theo (Enter)</span><span class="show-mobile">Tiếp</span> →') +
         '</button>' +
       '</div>' +
-    '</div>' +
-  '</div>';
+      '<div class="f3d-footer-hint hide-mobile">' +
+        'Phím tắt: <b>1-4 / A-D</b> chọn đáp án • <b>Space</b> lật thẻ 3D • <b>Enter / →</b> câu tiếp • <b>←</b> câu trước • <b>R</b> làm lại • <b>Esc</b> đóng' +
+      '</div>' +
+    '</div>';
 
-  box.innerHTML = cardHtml;
+  container.innerHTML = modalHtml;
 }
 
 function answerFormulaQuiz(choice) {
-  const list = formulaQuizActiveList;
+  const list = formulaQuizActiveList && formulaQuizActiveList.length ? formulaQuizActiveList : FORMULA_FLASHCARDS;
   if (!list || !list.length) return;
   const q = list[formulaQuizIndex];
   if (!q) return;
@@ -802,80 +973,105 @@ function answerFormulaQuiz(choice) {
 
   if (isCorrect) {
     formulaQuizStreak++;
-    if (formulaQuizStreak > (state.maxStreak || 0)) {
+    if (typeof state !== 'undefined' && formulaQuizStreak > (state.maxStreak || 0)) {
       state.maxStreak = formulaQuizStreak;
     }
-    playCorrectSound();
+    if (typeof playCorrectSound === 'function') playCorrectSound();
     if (formulaQuizStreak >= 5 && formulaQuizStreak % 5 === 0) {
-      playStreakCelebration();
-      triggerConfetti();
-      showToast('🔥 Chuỗi ' + formulaQuizStreak + ' câu đúng liên tiếp! Quá đỉnh!');
+      if (typeof playStreakCelebration === 'function') playStreakCelebration();
+      if (typeof triggerConfetti === 'function') triggerConfetti();
+      if (typeof showToast === 'function') showToast('🔥 Chuỗi ' + formulaQuizStreak + ' câu đúng liên tiếp! Quá đỉnh!');
     }
   } else {
     formulaQuizStreak = 0;
-    playWrongSound();
+    if (typeof playWrongSound === 'function') playWrongSound();
   }
 
-  state.formula[q.id] = { choice: choice, correct: isCorrect };
-  persist();
-  stats();
-  renderFormulaQuizBox();
+  if (typeof state !== 'undefined' && state.formula) {
+    state.formula[q.id] = { choice: choice, correct: isCorrect };
+  }
+  if (typeof persist === 'function') persist();
+  if (typeof stats === 'function') stats();
+  updateFormulaHeroStats();
+  if ($('#formulaModal')?.classList.contains('open')) {
+    renderFormulaModalContent();
+  }
 }
 
 function navFormulaQuiz(dir) {
-  const list = formulaQuizActiveList;
+  const list = formulaQuizActiveList && formulaQuizActiveList.length ? formulaQuizActiveList : FORMULA_FLASHCARDS;
   if (!list || !list.length) return;
+  formulaCardFlipped = false;
   const nextIdx = formulaQuizIndex + dir;
   if (nextIdx >= 0 && nextIdx < list.length) {
     formulaQuizIndex = nextIdx;
-    renderFormulaQuizBox();
-    setTimeout(scrollToCard, 10);
+    if ($('#formulaModal')?.classList.contains('open')) {
+      renderFormulaModalContent();
+    }
+    if (typeof playFlipSound === 'function') playFlipSound();
   } else if (nextIdx >= list.length) {
-    triggerConfetti();
-    showToast('🎉 Bạn đã hoàn thành toàn bộ thẻ ôn tập công thức!');
+    if (typeof triggerConfetti === 'function') triggerConfetti();
+    if (typeof showToast === 'function') showToast('🎉 Bạn đã hoàn thành toàn bộ thẻ ôn tập công thức!');
   }
 }
 
 function jumpFormulaQuiz(idx) {
+  formulaCardFlipped = false;
   formulaQuizIndex = idx;
-  renderFormulaQuizBox();
-  setTimeout(scrollToCard, 10);
+  if ($('#formulaModal')?.classList.contains('open')) {
+    renderFormulaModalContent();
+  }
+  if (typeof playFlipSound === 'function') playFlipSound();
 }
 
 function retryFormulaQuiz() {
-  const list = formulaQuizActiveList;
+  const list = formulaQuizActiveList && formulaQuizActiveList.length ? formulaQuizActiveList : FORMULA_FLASHCARDS;
   const q = list[formulaQuizIndex];
+  formulaCardFlipped = false;
   if (q && formulaQuizState[q.id]) {
     delete formulaQuizState[q.id];
-    delete state.formula[q.id];
-    persist();
-    stats();
-    renderFormulaQuizBox();
-    setTimeout(scrollToCard, 10);
+    if (typeof state !== 'undefined' && state.formula) {
+      delete state.formula[q.id];
+    }
+    if (typeof persist === 'function') persist();
+    if (typeof stats === 'function') stats();
+    updateFormulaHeroStats();
+    if ($('#formulaModal')?.classList.contains('open')) {
+      renderFormulaModalContent();
+    }
   }
 }
 
 function resetFormulaQuiz() {
+  formulaCardFlipped = false;
   formulaQuizIndex = 0;
   formulaQuizStreak = 0;
-  formulaQuizActiveList.forEach(q => {
+  FORMULA_FLASHCARDS.forEach(q => {
     delete formulaQuizState[q.id];
-    delete state.formula[q.id];
+    if (typeof state !== 'undefined' && state.formula) {
+      delete state.formula[q.id];
+    }
   });
-  persist();
-  stats();
-  showToast('🔄 Đã đặt lại toàn bộ tiến độ ôn tập công thức');
-  renderFormulaQuizBox();
-  setTimeout(scrollToCard, 10);
+  if (typeof persist === 'function') persist();
+  if (typeof stats === 'function') stats();
+  if (typeof showToast === 'function') showToast('🔄 Đã đặt lại toàn bộ tiến độ ôn tập công thức');
+  updateFormulaHeroStats();
+  if ($('#formulaModal')?.classList.contains('open')) {
+    renderFormulaModalContent();
+  }
 }
 
 function toggleFormulaQuizShuffle() {
+  formulaCardFlipped = false;
   formulaQuizShuffled = !formulaQuizShuffled;
   formulaQuizIndex = 0;
   setupFormulaQuizList();
-  showToast(formulaQuizShuffled ? '⇄ Đang trộn thứ tự thẻ ôn tập' : '↩ Thứ tự chuẩn theo đề cương');
-  renderFormulaQuizBox();
-  setTimeout(scrollToCard, 10);
+  if (typeof showToast === 'function') {
+    showToast(formulaQuizShuffled ? '⇄ Đang trộn thứ tự thẻ ôn tập' : '↩ Thứ tự chuẩn theo đề cương');
+  }
+  if ($('#formulaModal')?.classList.contains('open')) {
+    renderFormulaModalContent();
+  }
 }
 
 function renderFormulas() {
@@ -905,25 +1101,8 @@ function renderFormulas() {
       '</div>' +
     '</div>' +
 
-    // SECTION 0: FORMULA FLASHCARD REVIEW (ABCD MULTIPLE CHOICE)
-    '<div class="formula-flash-section">' +
-      '<div class="formula-flash-header">' +
-        '<div class="formula-flash-title-wrap">' +
-          '<span class="formula-flash-badge">⚡ FLASHCARD TRẮC NGHIỆM ABCD</span>' +
-          '<h3 class="formula-flash-title">🃏 Ôn tập công thức · Chọn đáp án ABCD đúng</h3>' +
-          '<p class="formula-flash-desc">Luyện phản xạ nhớ nhanh toàn bộ công thức trên Slide & Đề cương 121 trang. Chọn A, B, C, D để kiểm tra kết quả tức thì (hỗ trợ phím 1-4, Enter, R, ←/→).' +
-          '</p>' +
-        '</div>' +
-        '<div class="formula-flash-stats-bar">' +
-          '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqProgress">1 / ' + formulaQuizActiveList.length + '</span><span class="flash-stat-lbl">Tiến độ</span></div>' +
-          '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqScore" style="color:var(--green);">0 / ' + formulaQuizActiveList.length + '</span><span class="flash-stat-lbl">Đúng</span></div>' +
-          '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqStreak" style="color:var(--amber);">' + formulaQuizStreak + ' 🔥</span><span class="flash-stat-lbl">Chuỗi đúng</span></div>' +
-          '<button class="btn" id="fqShuffleBtn" onclick="toggleFormulaQuizShuffle()" title="Trộn thứ tự thẻ"><span>⇄</span> <span class="hide-mobile">Trộn thẻ</span><span class="show-mobile">Trộn</span></button>' +
-          '<button class="btn" onclick="resetFormulaQuiz()" title="Đặt lại toàn bộ tiến độ" style="padding:6px 12px;font-size:12px;">🔄 <span class="hide-mobile">Đặt lại</span><span class="show-mobile">Lại</span></button>' +
-        '</div>' +
-      '</div>' +
-      '<div class="formula-flashcard-box" id="formulaFlashcardBox"></div>' +
-    '</div>' +
+    // SECTION 0: HERO ACTION CARD FOR 3D FLASHCARD MODAL (WAYGROUND / QUIZIZZ STYLE)
+    renderFormulaPracticeHero() +
 
     // SECTION 1: SLIDE EXERCISE SHOWCASE
     (activeFormulaCategory === 'all' || activeFormulaCategory === 'slide' ? 
@@ -1139,7 +1318,7 @@ function renderFormulas() {
   $('#card').innerHTML = html;
 
   // Render flashcard quiz box inside formula hub
-  renderFormulaQuizBox();
+  updateFormulaHeroStats();
 
   // Bind category chips
   $$('[data-cat]').forEach(chip => {
@@ -1150,4 +1329,23 @@ function renderFormulas() {
       setTimeout(scrollToCard, 10);
     };
   });
+}
+
+// Expose formula functions globally to window
+if (typeof window !== 'undefined') {
+  window.FORMULA_FLASHCARDS = FORMULA_FLASHCARDS;
+  window.FORMULA_LIBRARY = FORMULA_LIBRARY;
+  window.FORMULA_CATEGORIES = FORMULA_CATEGORIES;
+  window.openFormulaModal = openFormulaModal;
+  window.closeFormulaModal = closeFormulaModal;
+  window.handleFormulaOverlayClick = handleFormulaOverlayClick;
+  window.flipFormulaCard = flipFormulaCard;
+  window.answerFormulaQuiz = answerFormulaQuiz;
+  window.navFormulaQuiz = navFormulaQuiz;
+  window.jumpFormulaQuiz = jumpFormulaQuiz;
+  window.retryFormulaQuiz = retryFormulaQuiz;
+  window.resetFormulaQuiz = resetFormulaQuiz;
+  window.toggleFormulaQuizShuffle = toggleFormulaQuizShuffle;
+  window.renderFormulas = renderFormulas;
+  window.updateFormulaHeroStats = updateFormulaHeroStats;
 }
