@@ -715,6 +715,14 @@ h1.page-title {
   margin-bottom: 16px;
 }
 
+/* Responsive visibility utility classes */
+.show-mobile {
+  display: none !important;
+}
+.hide-mobile {
+  display: inline;
+}
+
 .tabs-segmented {
   display: inline-flex;
   background: var(--surface-subtle);
@@ -2045,52 +2053,115 @@ details.settings-box summary {
     display: none;
   }
   
+  .show-mobile {
+    display: inline !important;
+  }
+  .hide-mobile {
+    display: none !important;
+  }
+
   .tabs-segmented {
     width: 100%;
     display: flex;
+    gap: 3px;
+    padding: 4px 3px;
   }
   .tab-btn {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     justify-content: center;
-    padding: 8px 6px;
-    font-size: 12px;
+    padding: 7px 2px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    gap: 3px;
+    letter-spacing: -0.2px;
   }
 
   .toolbar-wrap {
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 7px;
     margin-bottom: 14px;
+    align-items: center;
   }
   .search-box {
+    grid-column: 1 / -1;
     min-width: 100%;
+    width: 100%;
   }
   .filter-select {
-    flex: 1;
+    min-width: 0;
+    width: 100%;
+    padding: 8px 8px;
+    font-size: 12.5px;
+    height: 38px;
+  }
+  #shuffle, #openMatrixBtn {
+    padding: 8px 10px;
+    font-size: 12.5px;
+    height: 38px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  /* Feedback actions on mobile */
+  .feedback-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .feedback-actions .btn {
+    flex: 1 1 calc(50% - 4px);
+    justify-content: center;
+    text-align: center;
+    padding: 8px 6px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .feedback-actions .source-link {
+    flex: 1 1 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 10px;
   }
 }
 
 @media (max-width: 480px) {
   header {
-    padding: 8px 10px;
+    padding: 8px 8px;
+  }
+  .header-actions {
+    gap: 4px;
+  }
+  .formula-header-btn {
+    padding: 5px 8px;
+    font-size: 11.5px;
+    gap: 4px;
   }
   .brand-text strong {
-    font-size: 14px;
+    font-size: 13.5px;
   }
   .brand-text .sub {
-    font-size: 10.5px;
+    font-size: 10px;
   }
   .logo-badge {
-    width: 34px;
-    height: 34px;
-    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
   }
   .streak-pill {
-    padding: 4px 8px;
-    font-size: 11px;
+    padding: 4px 6px;
+    font-size: 10.5px;
   }
   .icon-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 15px;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
   }
 
   main.main {
@@ -2101,11 +2172,56 @@ details.settings-box summary {
     border-radius: 14px;
   }
   .question-prompt {
-    font-size: 15.5px;
+    font-size: 15px;
   }
   .option-card {
     padding: 12px 10px;
     font-size: 13.5px;
+  }
+  .grade-btn-group {
+    gap: 6px;
+    flex: 1;
+  }
+  .grade-btn-group .btn {
+    flex: 1;
+    padding: 8px 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    justify-content: center;
+  }
+  .card-top {
+    gap: 6px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+  .session-pill, .level-pill {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+  #star {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  .jump-strip-wrap {
+    margin-top: 14px;
+  }
+  .jump-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+    border-radius: 7px;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-text .sub {
+    display: none;
+  }
+  .formula-header-btn span:not(:first-child) {
+    display: none;
+  }
+  .streak-pill span:last-child {
+    display: none;
   }
 }
 
@@ -2884,6 +3000,84 @@ details.settings-box summary {
   .calc-inputs-grid {
     grid-template-columns: 1fr 1fr;
   }
+  .formula-hero-card {
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+  .formula-hero-title {
+    font-size: 18px;
+  }
+  .formula-filter-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    gap: 7px;
+    padding: 4px 2px 8px 2px;
+    margin: 2px -4px 0;
+    scrollbar-width: none;
+  }
+  .formula-filter-row::-webkit-scrollbar {
+    display: none;
+  }
+  .formula-chip {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .formula-flash-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .formula-flash-stats-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+  .formula-flash-stats-bar .flash-stat-pill {
+    flex: 1 1 0;
+    min-width: 60px;
+    padding: 6px 4px;
+    text-align: center;
+  }
+  .formula-flash-stats-bar .btn {
+    flex: 1 1 0;
+    min-width: 80px;
+    padding: 7px 8px;
+    font-size: 12px;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .formula-flashcard-stage {
+    padding: 16px 12px;
+    border-radius: 14px;
+  }
+  .stage-prompt {
+    font-size: 15px;
+    margin: 10px 0 14px;
+  }
+  .stage-opts-grid {
+    gap: 8px;
+  }
+  .stage-opt-card {
+    padding: 11px 10px;
+    font-size: 13px;
+  }
+  .stage-nav-row {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+  .stage-nav-row > .btn,
+  .stage-nav-row > div > .btn {
+    padding: 7px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
 }
 @media (max-width: 480px) {
   .calc-inputs-grid {
@@ -2891,6 +3085,27 @@ details.settings-box summary {
   }
   .slide-params-grid {
     grid-template-columns: 1fr;
+  }
+  .formula-flash-title {
+    font-size: 16px;
+  }
+  .formula-flash-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  .stage-dots-wrap {
+    gap: 3px;
+  }
+  .stage-dot {
+    width: 6px;
+    height: 6px;
+  }
+  .solution-item-card {
+    padding: 12px 10px;
+  }
+  .calc-card, .slide-showcase-card {
+    padding: 16px 12px;
+    border-radius: 14px;
   }
 }
 
@@ -3019,13 +3234,13 @@ details.settings-box summary {
             <span>⚡</span> Trắc nghiệm
           </button>
           <button class="tab-btn" data-mode="flash" role="tab" aria-selected="false">
-            <span>🎴</span> Flashcard 3D
+            <span>🎴</span> Flashcard<span class="hide-mobile"> 3D</span>
           </button>
           <button class="tab-btn" data-mode="essay" role="tab" aria-selected="false">
             <span>✍️</span> Tự luận
           </button>
           <button class="tab-btn" data-mode="formula" role="tab" aria-selected="false">
-            <span>📐</span> Công thức cần nhớ
+            <span>📐</span> Công thức<span class="hide-mobile"> cần nhớ</span>
           </button>
         </div>
       </div>
@@ -3045,11 +3260,11 @@ details.settings-box summary {
         </select>
 
         <button id="shuffle" class="btn">
-          <span>⇄</span> Trộn câu
+          <span>⇄</span> <span class="hide-mobile">Trộn câu</span><span class="show-mobile">Trộn</span>
         </button>
 
         <button id="openMatrixBtn" class="btn" title="Mở bảng lưới toàn bộ câu hỏi">
-          <span>🗂️</span> Lưới câu
+          <span>🗂️</span> <span class="hide-mobile">Lưới câu</span><span class="show-mobile">Lưới</span>
         </button>
       </div>
 
@@ -8867,13 +9082,13 @@ const key = q => (mode === 'essay' ? 'e' : 'q') + q.id;
 // SỔ TAY CÔNG THỨC TMĐT & BÀI TẬP TÍNH TOÁN TOÀN DIỆN
 // ========================================================
 const FORMULA_CATEGORIES = [
-  { id: 'all', label: 'Tất cả' },
-  { id: 'slide', label: '🎯 Bài tập trên Slide' },
-  { id: 'ads', label: '📊 Quảng cáo số (Buổi 6)' },
-  { id: 'ltv', label: '👥 Khách hàng LTV & CAC (Buổi 5, 13)' },
-  { id: 'funnel', label: '🔄 Phễu chuyển đổi TMĐT (Buổi 13)' },
-  { id: 'ops', label: '📦 Vận hành & Phí cổng (Buổi 4, 10)' },
-  { id: 'security', label: '🛡️ An ninh thông tin (Buổi 7)' }
+  { id: 'all', label: 'Tất cả', shortLabel: 'Tất cả' },
+  { id: 'slide', label: '🎯 Bài tập trên Slide', shortLabel: '🎯 Bài tập Slide' },
+  { id: 'ads', label: '📊 Quảng cáo số (Buổi 6)', shortLabel: '📊 Quảng cáo' },
+  { id: 'ltv', label: '👥 Khách hàng LTV & CAC (Buổi 5, 13)', shortLabel: '👥 LTV & CAC' },
+  { id: 'funnel', label: '🔄 Phễu chuyển đổi TMĐT (Buổi 13)', shortLabel: '🔄 Phễu TMĐT' },
+  { id: 'ops', label: '📦 Vận hành & Phí cổng (Buổi 4, 10)', shortLabel: '📦 Vận hành & Phí' },
+  { id: 'security', label: '🛡️ An ninh thông tin (Buổi 7)', shortLabel: '🛡️ An ninh TT' }
 ];
 
 let activeFormulaCategory = 'all';
@@ -9570,7 +9785,9 @@ function renderFormulaQuizBox() {
   const shuffleBtn = $('#fqShuffleBtn');
   if (shuffleBtn) {
     shuffleBtn.classList.toggle('primary', formulaQuizShuffled);
-    shuffleBtn.innerHTML = formulaQuizShuffled ? '<span>✓</span> Đang trộn' : '<span>⇄</span> Trộn thẻ';
+    shuffleBtn.innerHTML = formulaQuizShuffled
+      ? '<span>✓</span> <span class="hide-mobile">Đang trộn</span><span class="show-mobile">Trộn</span>'
+      : '<span>⇄</span> <span class="hide-mobile">Trộn thẻ</span><span class="show-mobile">Trộn</span>';
   }
 
   // Dots
@@ -9639,11 +9856,11 @@ function renderFormulaQuizBox() {
     feedbackHtml +
 
     '<div class="stage-nav-row">' +
-      '<button class="btn" onclick="navFormulaQuiz(-1)" ' + (isFirst ? 'disabled style="opacity:0.5;"' : '') + '>← Thẻ trước (←)</button>' +
-      '<div style="display:flex;gap:8px;align-items:center;">' +
-        (r ? '<button class="btn" onclick="retryFormulaQuiz()" style="font-size:12.5px;">🔄 Làm lại (R)</button>' : '') +
-        '<button class="btn primary" onclick="navFormulaQuiz(1)">' +
-          (isLast && r ? 'Hoàn thành 🎉' : 'Thẻ tiếp theo (Enter) →') +
+      '<button class="btn" onclick="navFormulaQuiz(-1)" ' + (isFirst ? 'disabled style="opacity:0.5;"' : '') + '>← <span class="hide-mobile">Thẻ trước (←)</span><span class="show-mobile">Trước</span></button>' +
+      '<div style="display:flex;gap:6px;align-items:center;">' +
+        (r ? '<button class="btn" onclick="retryFormulaQuiz()" style="font-size:12px;padding:7px 10px;">🔄 <span class="hide-mobile">Làm lại (R)</span><span class="show-mobile">Lại</span></button>' : '') +
+        '<button class="btn primary" onclick="navFormulaQuiz(1)" style="padding:7px 12px;font-size:12px;">' +
+          (isLast && r ? 'Hoàn thành 🎉' : '<span class="hide-mobile">Thẻ tiếp theo (Enter) </span><span class="show-mobile">Tiếp </span>→') +
         '</button>' +
       '</div>' +
     '</div>' +
@@ -9756,7 +9973,8 @@ function renderFormulas() {
       '<div class="formula-filter-row">' +
         FORMULA_CATEGORIES.map(c => 
           '<button class="formula-chip ' + (activeFormulaCategory === c.id ? 'active' : '') + '" data-cat="' + c.id + '">' +
-            c.label +
+            '<span class="hide-mobile">' + c.label + '</span>' +
+            '<span class="show-mobile">' + (c.shortLabel || c.label) + '</span>' +
           '</button>'
         ).join('') +
       '</div>' +
@@ -9775,8 +9993,8 @@ function renderFormulas() {
           '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqProgress">1 / ' + formulaQuizActiveList.length + '</span><span class="flash-stat-lbl">Tiến độ</span></div>' +
           '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqScore" style="color:var(--green);">0 / ' + formulaQuizActiveList.length + '</span><span class="flash-stat-lbl">Đúng</span></div>' +
           '<div class="flash-stat-pill"><span class="flash-stat-num" id="fqStreak" style="color:var(--amber);">' + formulaQuizStreak + ' 🔥</span><span class="flash-stat-lbl">Chuỗi đúng</span></div>' +
-          '<button class="btn" id="fqShuffleBtn" onclick="toggleFormulaQuizShuffle()" title="Trộn thứ tự thẻ"><span>⇄</span> Trộn thẻ</button>' +
-          '<button class="btn" onclick="resetFormulaQuiz()" title="Đặt lại toàn bộ tiến độ" style="padding:6px 12px;font-size:12px;">🔄 Đặt lại</button>' +
+          '<button class="btn" id="fqShuffleBtn" onclick="toggleFormulaQuizShuffle()" title="Trộn thứ tự thẻ"><span>⇄</span> <span class="hide-mobile">Trộn thẻ</span><span class="show-mobile">Trộn</span></button>' +
+          '<button class="btn" onclick="resetFormulaQuiz()" title="Đặt lại toàn bộ tiến độ" style="padding:6px 12px;font-size:12px;">🔄 <span class="hide-mobile">Đặt lại</span><span class="show-mobile">Lại</span></button>' +
         '</div>' +
       '</div>' +
       '<div class="formula-flashcard-box" id="formulaFlashcardBox"></div>' +
@@ -9885,7 +10103,7 @@ function renderFormulas() {
             '<h3 style="font-size:18px;font-weight:800;color:var(--primary);margin:0;">⚡ MÁY TÍNH MÔ PHỎNG CHIẾN DỊCH QUẢNG CÁO & LÃI/LỖ</h3>' +
             '<p style="font-size:12.5px;color:var(--muted);margin:3px 0 0;">Thay đổi các số liệu bên dưới để xem hệ số chỉ số và tự động đánh giá lãi/lỗ theo thời gian thực:</p>' +
           '</div>' +
-          '<button class="btn" onclick="resetAdSimulator()" style="font-size:12px;padding:6px 12px;">🔄 Giá trị mặc định Slide</button>' +
+          '<button class="btn" onclick="resetAdSimulator()" style="font-size:12px;padding:6px 12px;">🔄 <span class="hide-mobile">Giá trị mặc định Slide</span><span class="show-mobile">Mặc định Slide</span></button>' +
         '</div>' +
 
         '<div class="calc-inputs-grid">' +
@@ -10187,7 +10405,7 @@ function stats() {
 function source(q, answer = false) {
   const p = answer ? q.answerPage : q.page;
   return '<a class="source-link" href="de-cuong-goc.pdf#page=' + p + '" target="_blank" rel="noopener">' +
-    '<span>📄</span> ' + (answer ? 'Mở PDF gốc · trang ' + p : 'Đề bài gốc · trang ' + p) + ' ↗</a>';
+    '<span>📄</span> <span class="hide-mobile">' + (answer ? 'Mở PDF gốc · ' : 'Đề bài gốc · ') + '</span>trang ' + p + ' ↗</a>';
 }
 
 function getLevelClass(lvl) {
@@ -10236,7 +10454,9 @@ function render() {
     : 'Bấm phím A, B, C, D (hoặc 1-4) để chọn. Đáp án đúng sáng lên, sai đỏ lên, câu khác mờ đi.';
 
   $('#shuffle').classList.toggle('primary', shuffled);
-  $('#shuffle').innerHTML = shuffled ? '<span>✓</span> Đang trộn câu' : '<span>⇄</span> Trộn câu';
+  $('#shuffle').innerHTML = shuffled
+    ? '<span>✓</span> <span class="hide-mobile">Đang trộn câu</span><span class="show-mobile">Đang trộn</span>'
+    : '<span>⇄</span> <span class="hide-mobile">Trộn câu</span><span class="show-mobile">Trộn</span>';
 
   if (!list.length) {
     $('#card').innerHTML = '<div class="empty-state"><h2>Không tìm thấy câu hỏi phù hợp</h2><p>Vui lòng chọn “Tất cả câu hỏi”, đổi buổi học hoặc xóa từ khóa tìm kiếm để tiếp tục.</p></div>';
@@ -10322,8 +10542,8 @@ function render() {
 
         '<div class="feedback-actions">' +
           source(q, true) +
-          '<button id="retry" class="btn" style="padding:6px 14px;font-size:12.5px;">🔄 Làm lại câu này (R)</button>' +
-          '<button id="nextInline" class="btn primary" style="padding:6px 16px;font-size:12.5px;">Câu tiếp theo (Enter) →</button>' +
+          '<button id="retry" class="btn" style="padding:7px 10px;font-size:12px;">🔄 <span class="hide-mobile">Làm lại câu này (R)</span><span class="show-mobile">Làm lại</span></button>' +
+          '<button id="nextInline" class="btn primary" style="padding:7px 12px;font-size:12px;"><span class="hide-mobile">Câu tiếp theo (Enter) </span><span class="show-mobile">Tiếp </span>→</button>' +
         '</div>' +
       '</div>';
     } else {
@@ -10362,8 +10582,8 @@ function render() {
     '<div class="flash-actions-bar">' +
       '<span class="pos-indicator">' + (r ? (r.correct ? '✅ Đã nhớ vững' : '⚠️ Cần ôn lại') : 'Chưa đánh giá') + '</span>' +
       '<div class="grade-btn-group">' +
-        '<button class="btn" data-grade="no" style="color:var(--red);">❌ Cần ôn lại (1)</button>' +
-        '<button class="btn primary" data-grade="yes">✅ Đã nhớ (2)</button>' +
+        '<button class="btn" data-grade="no" style="color:var(--red);">❌ <span class="hide-mobile">Cần ôn lại (1)</span><span class="show-mobile">Ôn lại</span></button>' +
+        '<button class="btn primary" data-grade="yes">✅ <span class="hide-mobile">Đã nhớ (2)</span><span class="show-mobile">Đã nhớ</span></button>' +
       '</div>' +
     '</div>';
   } else {
@@ -10381,7 +10601,7 @@ function render() {
       '</div>' +
       '<textarea id="notes" class="essay-textarea" placeholder="Gõ câu trả lời, phân tích ý chính, cấu trúc lập luận và ví dụ minh họa…">' + esc(userNote) + '</textarea>' +
       '<div class="card-nav-row" style="margin-top:16px;">' +
-        '<button id="reveal" class="btn primary">' + (revealed ? 'Ẩn gợi ý đáp án' : '👁️ Xem ảnh chụp gợi ý đáp án theo đề cương') + '</button>' +
+        '<button id="reveal" class="btn primary">' + (revealed ? 'Ẩn gợi ý đáp án' : '<span class="hide-mobile">👁️ Xem ảnh chụp gợi ý đáp án theo đề cương</span><span class="show-mobile">👁️ Xem gợi ý đáp án</span>') + '</button>' +
         source(q) +
       '</div>';
 
@@ -10395,8 +10615,8 @@ function render() {
           '<div class="answer-crop-header">' +
             '<span>📸 Ảnh chụp lời giải gốc (Đề cương · Trang ' + ansPage + ')</span>' +
             '<div style="display:flex;gap:6px;">' +
-              '<button type="button" class="crop-action-btn" data-zoom-img="' + cropSrc + '" data-zoom-title="Ảnh lời giải Câu tự luận ' + q.id + ' (Trang ' + ansPage + ')">🔍 Phóng to</button>' +
-              '<button type="button" class="crop-action-btn" data-zoom-img="' + fullPageSrc + '" data-zoom-title="Toàn bộ Trang ' + ansPage + ' trong đề cương">📖 Xem cả trang ' + ansPage + '</button>' +
+              '<button type="button" class="crop-action-btn" data-zoom-img="' + cropSrc + '" data-zoom-title="Ảnh lời giải Câu tự luận ' + q.id + ' (Trang ' + ansPage + ')">🔍 <span class="hide-mobile">Phóng to</span></button>' +
+              '<button type="button" class="crop-action-btn" data-zoom-img="' + fullPageSrc + '" data-zoom-title="Toàn bộ Trang ' + ansPage + ' trong đề cương">📖 <span class="hide-mobile">Xem cả trang </span><span class="show-mobile">Trang </span>' + ansPage + '</button>' +
             '</div>' +
           '</div>' +
           '<div class="answer-crop-img-wrap" data-zoom-img="' + cropSrc + '" data-zoom-title="Ảnh lời giải Câu tự luận ' + q.id + ' (Trang ' + ansPage + ')">' +
@@ -10410,8 +10630,8 @@ function render() {
       '<div class="card-nav-row" style="margin-top:18px;">' +
         '<span class="pos-indicator">Đánh giá mức độ nắm bài:</span>' +
         '<div class="grade-btn-group">' +
-          '<button class="btn" data-grade="no" style="color:var(--red);">❌ Cần ôn lại</button>' +
-          '<button class="btn primary" data-grade="yes">✅ Đã nắm vững ✓</button>' +
+          '<button class="btn" data-grade="no" style="color:var(--red);">❌ <span class="hide-mobile">Cần ôn lại</span><span class="show-mobile">Ôn lại</span></button>' +
+          '<button class="btn primary" data-grade="yes">✅ <span class="hide-mobile">Đã nắm vững ✓</span><span class="show-mobile">Đã nhớ ✓</span></button>' +
         '</div>' +
       '</div>';
     }
