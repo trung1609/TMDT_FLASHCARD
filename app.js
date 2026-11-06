@@ -1312,6 +1312,7 @@ document.addEventListener('keydown', e => {
 const SYNC_CHOICE_MAP = { 'A': 1, 'B': 2, 'C': 3, 'D': 4 };
 const SYNC_CHOICE_REV = ['', 'A', 'B', 'C', 'D'];
 let currentCloudSyncId = null;
+let currentShortUrl = null;
 
 function getExpiryDateStr(days = 3) {
   const d = new Date();
@@ -1726,76 +1727,147 @@ function getOfflineSyncUrl() {
 }
 
 function getSyncUrl() {
+  if (currentShortUrl) {
+    return currentShortUrl;
+  }
   if (currentCloudSyncId) {
-    return getShortSyncUrl(currentCloudSyncId);
+    return 'https://is.gd/' + currentCloudSyncId;
   }
   return getOfflineSyncUrl();
 }
 
 async function uploadStateToCloud() {
+  const canvas = document.getElementById('syncQrCanvas');
   try {
-    let resp = null;
+    if (canvas && !currentShortUrl) {
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#4f46e5';
+      ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('⏳ Đang tạo mã QR siêu nét...', canvas.width / 2, canvas.height / 2);
+    }
+
+    const offlineUrl = getOfflineSyncUrl();
+    let shortUrl = null;
+    let shortId = null;
+
+    // 1. Try Vercel Serverless Relay (/api/sync)
     try {
-      resp = await fetch('/api/sync', {
+      const resp = await fetch('/api/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(state)
+        body: JSON.stringify({ url: offlineUrl })
       });
+      if (resp && resp.ok) {
+        const data = await resp.json();
+        if (data && data.shortUrl) {
+          shortUrl = data.shortUrl;
+          shortId = data.id || shortUrl.split('/').filter(Boolean).pop();
+        }
+      }
     } catch(e) {
-      resp = null;
+      console.warn('/api/sync failed, trying direct is.gd:', e);
     }
 
-    if (!resp || !resp.ok) {
-      resp = await fetch('https://api.restful-api.dev/objects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'TMDT_CSE703102_SYNC',
-          data: {
-            state: state,
-            createdAt: Date.now(),
-            expiresAt: Date.now() + 3 * 24 * 60 * 60 * 1000
+    // 2. Direct client-side call to is.gd (CORS enabled)
+    if (!shortUrl) {
+      try {
+        const isgdResp = await fetch('https://is.gd/create.php?format=json&url=' + encodeURIComponent(offlineUrl));
+        if (isgdResp && isgdResp.ok) {
+          const isgdData = await isgdResp.json();
+          if (isgdData && isgdData.shorturl) {
+            shortUrl = isgdData.shorturl;
+            shortId = shortUrl.split('/').filter(Boolean).pop();
           }
-        })
-      });
+        }
+      } catch(err2) {
+        console.warn('Direct is.gd failed, trying TinyURL:', err2);
+      }
     }
 
-    const data = await resp.json();
-    if (data && data.id) {
-      currentCloudSyncId = data.id;
-      const shortUrl = getShortSyncUrl(data.id);
+    // 3. Fallback to TinyURL
+    if (!shortUrl) {
+      try {
+        const tinyResp = await fetch('https://tinyurl.com/api-create.php?url=' + encodeURIComponent(offlineUrl));
+        if (tinyResp && tinyResp.ok) {
+          shortUrl = (await tinyResp.text()).trim();
+          shortId = shortUrl.split('/').filter(Boolean).pop();
+        }
+      } catch(err3) {
+        console.warn('TinyURL fallback failed:', err3);
+      }
+    }
+
+    if (shortUrl) {
+      currentShortUrl = shortUrl;
+      currentCloudSyncId = shortId || shortUrl;
       renderSyncQrWithUrl(shortUrl);
       const codeArea = document.getElementById('syncExportText');
-      if (codeArea) codeArea.value = data.id;
-      return data.id;
+      if (codeArea) codeArea.value = shortId || shortUrl;
+      return shortUrl;
     }
+
+    throw new Error('Không thể rút gọn link');
   } catch(err) {
-    console.warn('Cloud sync upload failed, falling back to offline:', err);
+    console.warn('Shortening failed, falling back to offline QR:', err);
     renderSyncQrWithUrl(getOfflineSyncUrl());
   }
 }
 
 async function fetchAndApplyCloudSync(syncId) {
   try {
-    showToast('⏳ Đang kết nối nạp tiến độ từ mã ' + syncId.slice(0, 8) + '...');
-    let resp = null;
+    showToast('⏳ Đang kết nối nạp tiến độ từ mã ' + syncId + '...');
+
+    let resolvedUrl = null;
+    let target = syncId;
+    if (!target.startsWith('http://') && !target.startsWith('https://')) {
+      target = 'https://is.gd/' + target;
+    }
+
+    // 1. Try /api/sync?url=...
     try {
-      resp = await fetch('/api/sync?id=' + encodeURIComponent(syncId));
+      const resp = await fetch('/api/sync?url=' + encodeURIComponent(target));
+      if (resp && resp.ok) {
+        const data = await resp.json();
+        if (data && data.url) resolvedUrl = data.url;
+      }
     } catch(e) {
-      resp = null;
+      resolvedUrl = null;
     }
 
-    if (!resp || !resp.ok) {
-      resp = await fetch('https://api.restful-api.dev/objects/' + encodeURIComponent(syncId));
+    // 2. Direct is.gd forward.php
+    if (!resolvedUrl && target.includes('is.gd')) {
+      try {
+        const fresp = await fetch('https://is.gd/forward.php?format=json&shorturl=' + encodeURIComponent(target));
+        if (fresp && fresp.ok) {
+          const fdata = await fresp.json();
+          if (fdata && fdata.url) resolvedUrl = fdata.url;
+        }
+      } catch(e2) {
+        resolvedUrl = null;
+      }
     }
 
-    if (!resp || !resp.ok) {
+    // 3. Extract payload from resolvedUrl or target
+    const finalUrl = resolvedUrl || target;
+    let payloadStr = '';
+    if (finalUrl.includes('#s=')) {
+      payloadStr = finalUrl.split('#s=')[1].split('&')[0];
+    } else if (finalUrl.includes('#sync=')) {
+      payloadStr = finalUrl.split('#sync=')[1].split('&')[0];
+    } else {
       throw new Error('Mã đồng bộ không tìm thấy hoặc đã hết hạn.');
     }
 
-    const data = await resp.json();
-    const importedState = (data && data.data && data.data.state) ? data.data.state : (data.state || data);
-    const count = mergeSyncState(importedState);
+    const imported = unpackSyncData(payloadStr);
+    if (!imported) {
+      throw new Error('Dữ liệu đồng bộ bị lỗi hoặc không tương thích.');
+    }
+
+    const count = mergeSyncState(imported);
 
     if (window.history && window.history.replaceState) {
       window.history.replaceState(null, '', window.location.pathname);
@@ -1885,19 +1957,18 @@ function generateSyncQr() {
   const expEl = document.getElementById('syncExpiryDate');
   if (expEl) expEl.textContent = getExpiryDateStr(3);
 
-  if (currentCloudSyncId) {
-    renderSyncQrWithUrl(getShortSyncUrl(currentCloudSyncId));
+  if (currentShortUrl) {
+    renderSyncQrWithUrl(currentShortUrl);
   } else {
-    // Generate QR with direct URL first, then upgrade to cloud URL
-    renderSyncQrWithUrl(getOfflineSyncUrl());
     uploadStateToCloud();
   }
 }
 
 function refreshSyncQr() {
   currentCloudSyncId = null;
+  currentShortUrl = null;
   generateSyncQr();
-  showToast('🔄 Đã làm mới mã QR siêu nét!');
+  showToast('🔄 Đang tạo mã QR rút gọn mới...');
 }
 
 function copySyncUrl() {
@@ -1906,7 +1977,7 @@ function copySyncUrl() {
 }
 
 function copySyncCode() {
-  const code = currentCloudSyncId || packSyncData();
+  const code = currentCloudSyncId || (currentShortUrl ? currentShortUrl.split('/').pop() : packSyncData());
   copyTextToClipboard(code, '📋 Đã sao chép mã đồng bộ rút gọn!');
 }
 
@@ -1973,9 +2044,21 @@ function handleQrImageUpload(event) {
       try {
         const scanCanvas = document.createElement('canvas');
         const sctx = scanCanvas.getContext('2d');
-        scanCanvas.width = img.width;
-        scanCanvas.height = img.height;
-        sctx.drawImage(img, 0, 0);
+        let width = img.width;
+        let height = img.height;
+        const maxDim = 1200;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        scanCanvas.width = width;
+        scanCanvas.height = height;
+        sctx.drawImage(img, 0, 0, width, height);
 
         const imgData = sctx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
         let qr = jsQR(imgData.data, imgData.width, imgData.height, {
@@ -2013,43 +2096,50 @@ function applyExtractedSyncContent(raw) {
   if (!raw || typeof raw !== 'string') return;
   const content = raw.trim();
 
-  // 1. Check cloud code
-  let cloudCode = null;
-  if (content.includes('?c=')) {
-    cloudCode = content.split('?c=')[1].split('&')[0];
-  } else if (content.includes('?code=')) {
-    cloudCode = content.split('?code=')[1].split('&')[0];
-  } else if (content.includes('#c=')) {
-    cloudCode = content.split('#c=')[1].split('&')[0];
-  } else if (/^[a-f0-9]{32}$/i.test(content)) {
-    cloudCode = content;
+  // 1. Direct offline code in hash or param
+  if (content.includes('#s=') || content.includes('#sync=')) {
+    let payloadStr = content.includes('#s=') ? content.split('#s=')[1].split('&')[0] : content.split('#sync=')[1].split('&')[0];
+    const imported = unpackSyncData(payloadStr);
+    if (imported) {
+      closeSyncModal();
+      const count = mergeSyncState(imported);
+      setTimeout(() => {
+        playCorrectSound();
+        try { triggerConfetti(); } catch (e) {}
+        showToast('🎉 Đã đồng bộ thành công ' + count + ' mục từ mã QR!');
+      }, 300);
+      return;
+    }
   }
 
-  if (cloudCode) {
+  // 2. Short link from is.gd or tinyurl
+  if (content.includes('is.gd/') || content.includes('tinyurl.com/')) {
     closeSyncModal();
-    fetchAndApplyCloudSync(cloudCode);
+    fetchAndApplyCloudSync(content);
     return;
   }
 
-  // 2. Direct offline code
-  let payloadStr = content;
-  if (content.includes('#s=')) {
-    payloadStr = content.split('#s=')[1].split('&')[0];
-  } else if (content.includes('#sync=')) {
-    payloadStr = content.split('#sync=')[1].split('&')[0];
-  }
-
-  const imported = unpackSyncData(payloadStr);
-  if (!imported) {
-    alert('Mã QR không chứa dữ liệu tiến độ ôn tập hợp lệ.');
+  // 3. Short code (e.g. 4 to 16 alphanumeric characters)
+  if (/^[a-zA-Z0-9_-]{4,16}$/.test(content)) {
+    closeSyncModal();
+    fetchAndApplyCloudSync(content);
     return;
   }
 
-  const count = mergeSyncState(imported);
-  closeSyncModal();
-  playCorrectSound();
-  try { triggerConfetti(); } catch (e) {}
-  showToast('🎉 Đã nạp thành công ' + count + ' mục tiến độ từ ảnh mã QR!');
+  // 4. Try unpackSyncData directly if raw encoded string
+  const imported = unpackSyncData(content);
+  if (imported) {
+    closeSyncModal();
+    const count = mergeSyncState(imported);
+    setTimeout(() => {
+      playCorrectSound();
+      try { triggerConfetti(); } catch (e) {}
+      showToast('🎉 Đã đồng bộ thành công ' + count + ' mục từ mã!');
+    }, 300);
+    return;
+  }
+
+  alert('Mã QR hoặc chuỗi ký tự không chứa dữ liệu tiến độ ôn tập hợp lệ.');
 }
 
 function copyTextToClipboard(text, successMsg) {
