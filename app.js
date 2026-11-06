@@ -1104,6 +1104,10 @@ $('#reset').onclick = () => {
 // Key: Enter to advance to next question after answering
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
+    if ($('#syncModal') && $('#syncModal').classList.contains('open')) {
+      closeSyncModal();
+      return;
+    }
     if ($('#formulaModal') && $('#formulaModal').classList.contains('open')) {
       closeFormulaModal();
       return;
@@ -1298,11 +1302,539 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ==========================================================================
+// CROSS-DEVICE INSTANT SYNC & BACKUP ENGINE (100% LOGIN-FREE)
+// 1. QR Code 1-tap scan: Phone camera opens link with encoded payload
+// 2. JSON backup file export & import: tmdt_tiendo_YYYYMMDD.json
+// 3. Plain code string copy/paste
+// 4. Auto-detect & merge on page load if #sync=... is in URL
+// ==========================================================================
+
+function utf8ToBase64(str) {
+  try {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (m, p1) => String.fromCharCode(parseInt(p1, 16))));
+  } catch (e) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+}
+
+function base64ToUtf8(b64) {
+  try {
+    return decodeURIComponent(Array.prototype.map.call(atob(b64), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+  } catch (e) {
+    return decodeURIComponent(escape(atob(b64)));
+  }
+}
+
+function toBase64Url(str) {
+  return utf8ToBase64(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function fromBase64Url(b64url) {
+  let b64 = String(b64url).replace(/-/g, '+').replace(/_/g, '/');
+  while (b64.length % 4) b64 += '=';
+  return base64ToUtf8(b64);
+}
+
+// Compact packer to keep QR code dense and readable
+function packSyncData(currState) {
+  const s = currState || state;
+  const p = { v: 1, ts: Date.now() };
+
+  if (s.quiz && Object.keys(s.quiz).length > 0) {
+    p.q = {};
+    for (const [k, v] of Object.entries(s.quiz)) {
+      if (v) p.q[k] = [v.choice || '', v.correct ? 1 : 0];
+    }
+  }
+
+  if (s.flash && Object.keys(s.flash).length > 0) {
+    p.f = {};
+    for (const [k, v] of Object.entries(s.flash)) {
+      if (v) p.f[k] = [v.choice || '', v.correct ? 1 : 0];
+    }
+  }
+
+  if (s.formula && Object.keys(s.formula).length > 0) {
+    p.m = {};
+    for (const [k, v] of Object.entries(s.formula)) {
+      if (v) p.m[k] = [v.choice || '', v.correct ? 1 : 0];
+    }
+  }
+
+  if (s.star && Object.keys(s.star).length > 0) {
+    const activeStars = Object.keys(s.star).filter(k => s.star[k]);
+    if (activeStars.length > 0) p.s = activeStars;
+  }
+
+  if (s.notes && Object.keys(s.notes).length > 0) {
+    p.n = s.notes;
+  }
+
+  if (s.essay && Object.keys(s.essay).length > 0) {
+    p.e = s.essay;
+  }
+
+  if (s.maxStreak) {
+    p.k = s.maxStreak;
+  }
+
+  return toBase64Url(JSON.stringify(p));
+}
+
+// Flexible unpacker supporting compact payload, raw state, or exported file structure
+function unpackSyncData(payloadStr) {
+  if (!payloadStr || typeof payloadStr !== 'string') return null;
+  let parsed = null;
+
+  try {
+    parsed = JSON.parse(payloadStr);
+  } catch (e) {
+    try {
+      const jsonStr = fromBase64Url(payloadStr.trim());
+      parsed = JSON.parse(jsonStr);
+    } catch (e2) {
+      console.warn('Cannot decode sync payload:', e2);
+      return null;
+    }
+  }
+
+  if (!parsed || typeof parsed !== 'object') return null;
+
+  if (parsed.state && typeof parsed.state === 'object') {
+    parsed = parsed.state;
+  }
+
+  const result = {
+    quiz: {},
+    flash: {},
+    formula: {},
+    star: {},
+    notes: {},
+    essay: {},
+    maxStreak: 0
+  };
+
+  // 1. Quiz
+  if (parsed.quiz && typeof parsed.quiz === 'object') {
+    Object.assign(result.quiz, parsed.quiz);
+  }
+  if (parsed.q && typeof parsed.q === 'object') {
+    for (const [k, v] of Object.entries(parsed.q)) {
+      if (Array.isArray(v)) {
+        result.quiz[k] = { choice: v[0], correct: Boolean(v[1]) };
+      } else if (typeof v === 'object') {
+        result.quiz[k] = v;
+      }
+    }
+  }
+
+  // 2. Flash
+  if (parsed.flash && typeof parsed.flash === 'object') {
+    Object.assign(result.flash, parsed.flash);
+  }
+  if (parsed.f && typeof parsed.f === 'object') {
+    for (const [k, v] of Object.entries(parsed.f)) {
+      if (Array.isArray(v)) {
+        result.flash[k] = { choice: v[0], correct: Boolean(v[1]) };
+      } else if (typeof v === 'object') {
+        result.flash[k] = v;
+      } else {
+        result.flash[k] = { correct: Boolean(v) };
+      }
+    }
+  }
+
+  // 3. Formula
+  if (parsed.formula && typeof parsed.formula === 'object') {
+    Object.assign(result.formula, parsed.formula);
+  }
+  if (parsed.m && typeof parsed.m === 'object') {
+    for (const [k, v] of Object.entries(parsed.m)) {
+      if (Array.isArray(v)) {
+        result.formula[k] = { choice: v[0], correct: Boolean(v[1]) };
+      } else if (typeof v === 'object') {
+        result.formula[k] = v;
+      } else {
+        result.formula[k] = { correct: Boolean(v) };
+      }
+    }
+  }
+
+  // 4. Star
+  if (Array.isArray(parsed.star)) {
+    parsed.star.forEach(k => { result.star[k] = true; });
+  } else if (parsed.star && typeof parsed.star === 'object') {
+    Object.assign(result.star, parsed.star);
+  }
+  if (Array.isArray(parsed.s)) {
+    parsed.s.forEach(k => { result.star[k] = true; });
+  }
+
+  // 5. Notes & Essay
+  if (parsed.notes) Object.assign(result.notes, parsed.notes);
+  if (parsed.n) Object.assign(result.notes, parsed.n);
+  if (parsed.essay) Object.assign(result.essay, parsed.essay);
+  if (parsed.e) Object.assign(result.essay, parsed.e);
+
+  // 6. Streak
+  if (parsed.maxStreak) result.maxStreak = Math.max(result.maxStreak, parsed.maxStreak);
+  if (parsed.k) result.maxStreak = Math.max(result.maxStreak, parsed.k);
+
+  return result;
+}
+
+// Smart merger that unites existing local progress with incoming device data
+function mergeSyncState(imported) {
+  if (!imported) return 0;
+  let count = 0;
+
+  state.quiz = state.quiz || {};
+  state.flash = state.flash || {};
+  state.formula = state.formula || {};
+  state.star = state.star || {};
+  state.notes = state.notes || {};
+  state.essay = state.essay || {};
+
+  if (imported.quiz) {
+    for (const [k, v] of Object.entries(imported.quiz)) {
+      if (!state.quiz[k] || !state.quiz[k].correct) {
+        state.quiz[k] = v;
+      }
+      count++;
+    }
+  }
+
+  if (imported.flash) {
+    for (const [k, v] of Object.entries(imported.flash)) {
+      state.flash[k] = v;
+      count++;
+    }
+  }
+
+  if (imported.formula) {
+    for (const [k, v] of Object.entries(imported.formula)) {
+      state.formula[k] = v;
+      count++;
+    }
+  }
+
+  if (imported.star) {
+    for (const [k, v] of Object.entries(imported.star)) {
+      if (v) {
+        state.star[k] = true;
+        count++;
+      }
+    }
+  }
+
+  if (imported.notes) {
+    for (const [k, v] of Object.entries(imported.notes)) {
+      if (v) {
+        state.notes[k] = v;
+        count++;
+      }
+    }
+  }
+
+  if (imported.essay) {
+    for (const [k, v] of Object.entries(imported.essay)) {
+      if (v) {
+        state.essay[k] = v;
+        count++;
+      }
+    }
+  }
+
+  if (imported.maxStreak) {
+    state.maxStreak = Math.max(state.maxStreak || 0, imported.maxStreak);
+  }
+
+  persist();
+  try { rebuild(); } catch (e) {}
+  try { updateSyncStatsSummary(); } catch (e) {}
+
+  return count;
+}
+
+function getSyncBaseUrl() {
+  const isLocal = !window.location.hostname || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  if (isLocal) {
+    return 'https://on-tap-cse703102.vercel.app/';
+  }
+  return window.location.origin + window.location.pathname;
+}
+
+function getSyncUrl() {
+  const base = getSyncBaseUrl();
+  const code = packSyncData();
+  return base + '#sync=' + code;
+}
+
+let activeSyncTab = 'qr';
+
+function switchSyncTab(tabId) {
+  activeSyncTab = tabId;
+  const tabs = ['qr', 'file', 'code'];
+  tabs.forEach(t => {
+    const btn = $('#syncTabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+    const panel = $('#syncTab' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (btn) btn.classList.toggle('active', t === tabId);
+    if (panel) panel.classList.toggle('active', t === tabId);
+  });
+
+  if (tabId === 'qr') {
+    generateSyncQr();
+  } else if (tabId === 'code') {
+    const codeArea = $('#syncExportText');
+    if (codeArea) codeArea.value = packSyncData();
+  }
+}
+
+function updateSyncStatsSummary() {
+  const quizDone = Object.keys(state.quiz || {}).length;
+  const flashDone = Object.keys(state.flash || {}).length;
+  const formulaDone = Object.keys(state.formula || {}).length;
+  const starDone = Object.values(state.star || {}).filter(Boolean).length;
+  const streak = state.maxStreak || 0;
+
+  const sq = $('#syncStatQuiz');
+  const sf = $('#syncStatFlash');
+  const sm = $('#syncStatFormula');
+  const ss = $('#syncStatStar');
+  const sk = $('#syncStatStreak');
+
+  if (sq) sq.textContent = quizDone + '/300';
+  if (sf) sf.textContent = flashDone + '/300';
+  if (sm) sm.textContent = formulaDone + '/24';
+  if (ss) ss.textContent = starDone + ' câu';
+  if (sk) sk.textContent = streak + ' 🔥';
+}
+
+function generateSyncQr() {
+  const canvas = document.getElementById('syncQrCanvas');
+  if (!canvas) return;
+
+  const syncUrl = getSyncUrl();
+
+  if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
+    QRCode.toCanvas(canvas, syncUrl, {
+      width: 190,
+      margin: 1,
+      color: {
+        dark: '#1e1b4b',
+        light: '#ffffff'
+      },
+      errorCorrectionLevel: 'L'
+    }, function(err) {
+      if (err) {
+        console.warn('QR canvas error:', err);
+      }
+    });
+  }
+}
+
+function refreshSyncQr() {
+  generateSyncQr();
+  showToast('🔄 Đã làm mới mã QR với tiến độ hiện tại!');
+}
+
+function copySyncUrl() {
+  const syncUrl = getSyncUrl();
+  copyTextToClipboard(syncUrl, '📋 Đã sao chép link đồng bộ! Dán vào điện thoại để mở.');
+}
+
+function copySyncCode() {
+  const code = packSyncData();
+  copyTextToClipboard(code, '📋 Đã sao chép mã đồng bộ!');
+}
+
+function copyTextToClipboard(text, successMsg) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(successMsg);
+    }).catch(() => {
+      fallbackCopy(text, successMsg);
+    });
+  } else {
+    fallbackCopy(text, successMsg);
+  }
+}
+
+function fallbackCopy(text, successMsg) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast(successMsg);
+  } catch (e) {
+    showToast('⚠️ Không thể sao chép tự động, vui lòng copy thủ công.');
+  }
+  document.body.removeChild(ta);
+}
+
+function exportBackupFile() {
+  try {
+    const backupData = {
+      appName: 'Góc ôn tập TMĐT CSE703102',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      summary: {
+        quizDone: Object.keys(state.quiz || {}).length,
+        flashDone: Object.keys(state.flash || {}).length,
+        formulaDone: Object.keys(state.formula || {}).length,
+        starred: Object.values(state.star || {}).filter(Boolean).length,
+        maxStreak: state.maxStreak || 0
+      },
+      state: state
+    };
+
+    const jsonStr = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const d = new Date();
+    const dateStr = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tmdt_tiendo_' + dateStr + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('📥 Đã tải file sao lưu tmdt_tiendo.json thành công!');
+  } catch (err) {
+    console.error(err);
+    showToast('⚠️ Không thể xuất file: ' + err.message);
+  }
+}
+
+function handleImportFile(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const content = e.target.result;
+      const imported = unpackSyncData(content);
+      if (!imported) {
+        throw new Error('Dữ liệu trong file không hợp lệ');
+      }
+      const count = mergeSyncState(imported);
+      closeSyncModal();
+      playCorrectSound();
+      try { triggerConfetti(); } catch (e) {}
+      showToast('🎉 Khôi phục thành công ' + count + ' mục tiến độ từ file!');
+    } catch (err) {
+      alert('Không thể khôi phục từ file: ' + err.message);
+    }
+  };
+  reader.readAsText(file, 'UTF-8');
+  event.target.value = '';
+}
+
+function applySyncCode() {
+  const inputEl = $('#syncImportText');
+  if (!inputEl) return;
+  let raw = inputEl.value.trim();
+  if (!raw) {
+    showToast('⚠️ Vui lòng dán mã đồng bộ vào ô.');
+    return;
+  }
+
+  if (raw.includes('#sync=')) {
+    raw = raw.split('#sync=')[1].split('&')[0];
+  }
+
+  const imported = unpackSyncData(raw);
+  if (!imported) {
+    alert('Mã đồng bộ không hợp lệ hoặc đã bị lỗi ký tự!');
+    return;
+  }
+
+  const count = mergeSyncState(imported);
+  inputEl.value = '';
+  closeSyncModal();
+  playCorrectSound();
+  try { triggerConfetti(); } catch (e) {}
+  showToast('🎉 Đã đồng bộ thành công ' + count + ' mục!');
+}
+
+function openSyncModal() {
+  updateSyncStatsSummary();
+  switchSyncTab(activeSyncTab || 'qr');
+  const modal = $('#syncModal');
+  if (modal) {
+    modal.classList.add('open');
+  }
+}
+
+function closeSyncModal() {
+  const modal = $('#syncModal');
+  if (modal) {
+    modal.classList.remove('open');
+  }
+}
+
+function handleSyncOverlayClick(e) {
+  if (e.target && e.target.id === 'syncModal') {
+    closeSyncModal();
+  }
+}
+
+function checkSyncUrlOnBoot() {
+  try {
+    const hash = window.location.hash || '';
+    if (!hash.startsWith('#sync=')) return;
+    const payloadStr = hash.slice(6);
+    if (!payloadStr) return;
+
+    const imported = unpackSyncData(payloadStr);
+    if (imported) {
+      const count = mergeSyncState(imported);
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      } else {
+        window.location.hash = '';
+      }
+
+      setTimeout(() => {
+        playCorrectSound();
+        try { triggerConfetti(); } catch (e) {}
+        showToast('🎉 Đã tự động đồng bộ ' + count + ' mục từ thiết bị khác!');
+      }, 400);
+    }
+  } catch (err) {
+    console.error('Boot sync check failed:', err);
+  }
+}
+
 // Initial boot
 rebuild();
+checkSyncUrlOnBoot();
 
 if (typeof window !== 'undefined') {
   window.setAppMode = setAppMode;
   window.answerFlashcard = answerFlashcard;
   window.retryFlashcard = retryFlashcard;
+  window.openSyncModal = openSyncModal;
+  window.closeSyncModal = closeSyncModal;
+  window.handleSyncOverlayClick = handleSyncOverlayClick;
+  window.switchSyncTab = switchSyncTab;
+  window.packSyncData = packSyncData;
+  window.unpackSyncData = unpackSyncData;
+  window.mergeSyncState = mergeSyncState;
+  window.checkSyncUrlOnBoot = checkSyncUrlOnBoot;
+  window.generateSyncQr = generateSyncQr;
+  window.refreshSyncQr = refreshSyncQr;
+  window.copySyncUrl = copySyncUrl;
+  window.copySyncCode = copySyncCode;
+  window.exportBackupFile = exportBackupFile;
+  window.handleImportFile = handleImportFile;
+  window.applySyncCode = applySyncCode;
 }
