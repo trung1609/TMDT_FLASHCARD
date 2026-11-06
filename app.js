@@ -769,7 +769,7 @@ function render() {
     $('#nextInline').onclick = () => move(1);
   }
 
-  // Flashcard Flip
+    // Flashcard Flip & Keyboard Control
   if ($('#flashcard')) {
     $('#flashcard').onclick = e => {
       if (e.target.closest('[data-zoom-img]')) return;
@@ -777,12 +777,20 @@ function render() {
       if (e.target.closest('#flashRetryBtn') || e.target.closest('.flash-retry-btn')) return;
       flipCard();
     };
+    $('#flashcard').onkeydown = e => {
+      if (e.key === 'Enter' || e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!e.repeat) flipCard();
+      }
+    };
   }
 
   // Flashcard Option Selection
   $$('[data-flash-choice]').forEach(btn => {
     btn.onclick = e => {
       e.stopPropagation();
+      btn.blur();
       const choice = btn.dataset.flashChoice;
       answerFlashcard(choice);
     };
@@ -793,13 +801,6 @@ function render() {
     $('#flashRetryBtn').onclick = e => {
       e.stopPropagation();
       retryFlashcard();
-    };
-    $('#flashcard').onkeydown = e => {
-      if (e.key === 'Enter' || e.code === 'Space') {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!e.repeat) flipCard();
-      }
     };
   }
 
@@ -879,14 +880,23 @@ function render() {
   });
 }
 
-// Flip Card Action
+// Flip Card Action with Debounce (prevents Space synthetic double-trigger)
+let lastFlipTime = 0;
 function flipCard() {
+  const now = Date.now();
+  if (now - lastFlipTime < 280) return;
+  lastFlipTime = now;
+
   const card = $('#flashcard');
   if (mode !== 'flash' || !card || !list.length) return;
   flipped = !flipped;
   card.classList.toggle('is-flipped', flipped);
   card.setAttribute('aria-pressed', String(flipped));
   playFlipSound();
+
+  if (document.activeElement && typeof document.activeElement.blur === 'function') {
+    document.activeElement.blur();
+  }
 }
 
 // Answer Flashcard Action (Select ABCD & Flip 3D)
@@ -1224,9 +1234,11 @@ document.addEventListener('keydown', e => {
     }
   }
 
-  // Flashcard Mode Controls
+    // Flashcard Mode Controls
   if (mode === 'flash') {
     const curQ = list[index];
+    const isSpaceKey = e.code === 'Space' || e.key === ' ' || e.keyCode === 32;
+
     if (!flipped) {
       // Front face: options can be selected with A, B, C, D or 1, 2, 3, 4
       if (['A', 'B', 'C', 'D'].includes(keyUpper) && curQ && curQ.options && curQ.options.length) {
@@ -1239,15 +1251,17 @@ document.addEventListener('keydown', e => {
         answerFlashcard('ABCD'[+e.key - 1]);
         return;
       }
-      if (e.code === 'Space') {
+      if (isSpaceKey) {
         e.preventDefault();
+        e.stopPropagation();
         flipCard();
         return;
       }
     } else {
       // Back face: Space flips back, 1/2 grades, R retries
-      if (e.code === 'Space') {
+      if (isSpaceKey) {
         e.preventDefault();
+        e.stopPropagation();
         flipCard();
         return;
       }

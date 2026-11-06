@@ -4112,12 +4112,29 @@ details.settings-box summary {
    FLASHCARD 3D - ABCD OPTIONS & ANSWER FLIP
    ========================================================================== */
 
+.flash-container:focus,
+.flash-container:focus-visible,
+#flashcard:focus,
+#flashcard:focus-visible {
+  outline: none !important;
+}
+
 .flash-inner {
   min-height: 420px;
 }
 
+.flash-face.flash-front,
+.flash-face.flash-back {
+  justify-content: flex-start !important;
+  box-sizing: border-box;
+  width: 100%;
+}
+
 .flash-face.flash-front {
-  justify-content: flex-start;
+  padding: 26px 24px;
+}
+
+.flash-face.flash-back {
   padding: 26px 24px;
 }
 
@@ -4287,8 +4304,9 @@ details.settings-box summary {
 }
 
 @media (max-width: 640px) {
-  .flash-face.flash-front {
-    padding: 20px 14px;
+  .flash-face.flash-front,
+  .flash-face.flash-back {
+    padding: 20px 14px !important;
   }
   .flash-prompt {
     font-size: 16px;
