@@ -113,10 +113,10 @@ const FORMULA_LIBRARY = [
     equation: 'CPC = Ad Cost ÷ Clicks',
     vars: [
       '<b>Ad Cost</b>: Tổng ngân sách / chi phí đã chi cho quảng cáo (VNĐ)',
-      '<b>Clicks</b>: Tổng số lượt nhấp chuột thu được'
+      '<b>Clicks</b>: Tổng số lượt nhấp chuột thu được vào trang đích'
     ],
-    tip: '💡 <b>Ý nghĩa:</b> Chi phí thực tế trả cho mỗi khách tiềm năng truy cập vào trang đích (Landing Page). Phụ thuộc vào mức độ cạnh tranh từ khóa và Điểm chất lượng.',
-    example: '<b>Bài tập Slide:</b> 20.000.000 đ ÷ 4.000 clicks = <b>5.000 đ/click</b>.'
+    tip: '💡 <b>Ý nghĩa & Đấu giá:</b> Chi phí thực tế trả cho mỗi khách tiềm năng truy cập vào trang đích (Landing Page). Phụ thuộc vào mức độ cạnh tranh từ khóa và Điểm chất lượng (Quality Score) của mẫu quảng cáo.',
+    example: '<b>Bài tập Slide:</b> 20.000.000 đ ÷ 4.000 clicks = <b>5.000 đ/click</b>.<br><b>Câu 124 Đề cương:</b> CPC = 5.000 đ, CVR = 2,5% → CPA = <b>200.000 đ</b>.'
   },
   {
     id: 'f_cpm',
@@ -138,10 +138,11 @@ const FORMULA_LIBRARY = [
     equation: 'CVR = (Orders ÷ Clicks) × 100%',
     vars: [
       '<b>Orders</b>: Số đơn hàng hoặc mục tiêu chuyển đổi hoàn tất',
-      '<b>Clicks</b>: Tổng số lượt truy cập từ quảng cáo'
+      '<b>Clicks</b>: Tổng số lượt truy cập từ quảng cáo vào website',
+      '<b>Chuẩn ngành TMĐT</b>: Thường đạt từ 1,5% – 3,0% tùy ngành hàng'
     ],
-    tip: '💡 <b>Ý nghĩa cốt lõi:</b> Thước đo năng lực thuyết phục của Trang đích (Landing Page: giá bán, ảnh sản phẩm, tốc độ tải, lòng tin, quy trình thanh toán). CVR không phụ thuộc nền tảng quảng cáo mà thuộc về website của doanh nghiệp.',
-    example: '<b>Bài tập Slide:</b> 100 đơn ÷ 4.000 clicks = <b>2,5%</b> (Mức chuẩn TMĐT).'
+    tip: '💡 <b>Ý nghĩa cốt lõi:</b> Thước đo năng lực thuyết phục của Trang đích (Landing Page: giá bán, ảnh sản phẩm, tốc độ tải, lòng tin, quy trình thanh toán). CVR thuộc về nội lực website của doanh nghiệp.',
+    example: '<b>Bài tập Slide:</b> 100 đơn ÷ 4.000 clicks = <b>2,5%</b> (Mức chuẩn TMĐT).<br><b>Hệ quả:</b> Tăng gấp đôi CVR giúp giảm một nửa chi phí CPA trên mỗi đơn.'
   },
   {
     id: 'f_cpa',
@@ -162,11 +163,12 @@ const FORMULA_LIBRARY = [
     title: 'AOV (Average Order Value) · Giá trị đơn trung bình',
     equation: 'AOV = Revenue ÷ Orders',
     vars: [
-      '<b>Revenue</b>: Tổng doanh thu tạo ra (VNĐ)',
-      '<b>Orders</b>: Tổng số đơn hàng'
+      '<b>Revenue</b>: Tổng doanh thu tạo ra từ chiến dịch (VNĐ)',
+      '<b>Orders</b>: Tổng số đơn hàng hoàn tất thanh toán',
+      '<b>Liên hệ với ROAS & CPA</b>: Revenue = Orders × AOV ⇒ ROAS = AOV ÷ CPA'
     ],
-    tip: '💡 <b>Ý nghĩa:</b> Tăng AOV (bằng combo, freeship từ ngưỡng, gợi ý chéo) là một trong 3 trụ cột mở rộng doanh thu mà không cần tốn thêm tiền quảng cáo.',
-    example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 100 đơn = <b>800.000 đ/đơn</b>.'
+    tip: '💡 <b>Ý nghĩa quản trị (Buổi 5 & 6):</b> Tăng AOV (bằng bán chéo Cross-sell, bán nâng cấp Upsell, gói Combo, miễn phí vận chuyển từ ngưỡng giá trị đơn) là đòn bẩy mở rộng doanh thu và nâng ROAS ngay lập tức mà không tốn thêm chi phí quảng cáo.',
+    example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 100 đơn = <b>800.000 đ/đơn</b>.<br><b>Kiểm chứng:</b> Với CPA = 200.000 đ (chiếm 25% AOV) → ROAS = 800k ÷ 200k = <b>4,0x</b>.'
   },
   {
     id: 'f_roas',
@@ -174,11 +176,12 @@ const FORMULA_LIBRARY = [
     title: 'ROAS (Return On Ad Spend) · Doanh thu trên chi phí QC',
     equation: 'ROAS = Revenue ÷ Ad Cost = AOV ÷ CPA',
     vars: [
-      '<b>Revenue</b>: Tổng doanh thu mang lại từ quảng cáo',
-      '<b>Ad Cost</b>: Tổng ngân sách quảng cáo đã chi'
+      '<b>Revenue</b>: Tổng doanh thu mang lại từ quảng cáo (VNĐ)',
+      '<b>Ad Cost</b>: Tổng ngân sách quảng cáo đã chi (VNĐ)',
+      '<b>Điều kiện có lãi</b>: ROAS thực tế > Ngưỡng ROAS hòa vốn (1 ÷ Gross Margin)'
     ],
-    tip: '⚠️ <b>LƯU Ý CỐT LÕI:</b> ROAS chỉ đo doanh thu, hoàn toàn KHÔNG ĐO LỢI NHUẬN. Doanh nghiệp có thể có ROAS = 4x nhưng vẫn lỗ nếu biên lợi nhuận gộp mỏng.',
-    example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 20.000.000 đ = <b>4,0x</b> (hay 400%).'
+    tip: '⚠️ <b>LƯU Ý CỐT LÕI (Slide Buổi 6):</b><br>• ROAS chỉ đo lường <b>Doanh thu / Chi phí QC</b>, hoàn toàn <b>KHÔNG ĐO LỢI NHUẬN</b> vì chưa trừ Giá vốn hàng bán (COGS) và chi phí vận hành.<br>• Doanh nghiệp đạt ROAS = 4x vẫn bị lỗ nếu biên lợi nhuận gộp < 25% (ROAS hòa vốn > 4x).',
+    example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 20.000.000 đ = <b>4,0x</b> (400%). Biên gộp 30% → Lãi gộp 24tr > Chi phí QC 20tr → <b>Lãi ròng +4 triệu</b>.'
   },
   {
     id: 'f_roas_be',
@@ -198,10 +201,11 @@ const FORMULA_LIBRARY = [
     title: 'CVR cần đạt để hòa vốn (Break-even CVR)',
     equation: 'CVR hòa vốn = CPC ÷ (AOV × Gross Margin)',
     vars: [
-      '<b>CPC</b>: Chi phí mỗi lượt nhấp',
-      '<b>AOV × Gross Margin</b>: Lợi nhuận gộp tạo ra trên 1 đơn hàng (CPA tối đa cho phép)'
+      '<b>CPC</b>: Chi phí trung bình cho mỗi lượt nhấp chuột',
+      '<b>AOV × Gross Margin</b>: Lợi nhuận gộp trên 1 đơn hàng (= CPA tối đa cho phép)',
+      '<b>Nguyên lý</b>: Hòa vốn khi CPA = CPC ÷ CVR = AOV × Gross Margin'
     ],
-    tip: '💡 <b>Ý nghĩa (Essay 21):</b> Nếu không thể giảm giá thầu CPC và giá bán cố định, website buộc phải nâng CVR lên mức này để không bị lỗ.',
+    tip: '💡 <b>Ý nghĩa quản trị (Essay 21):</b> Khi thị trường cạnh tranh khiến không thể giảm giá thầu CPC và giá bán AOV đã cố định, doanh nghiệp bắt buộc phải tối ưu Trang đích (Landing Page) để nâng CVR vượt ngưỡng hòa vốn này.',
     example: '<b>Essay 21:</b> CPC = 4.000 đ, AOV = 700.000 đ, Biên gộp = 25% → CPA tối đa = 700k × 25% = 175.000 đ → CVR cần đạt = 4.000 ÷ 175.000 ≈ <b>2,29%</b> để hòa vốn.'
   },
   {
@@ -239,22 +243,37 @@ const FORMULA_LIBRARY = [
     equation: 'CAC = Tổng chi phí Marketing & Sales ÷ Số khách hàng mới',
     vars: [
       '<b>Chi phí Marketing & Sales</b>: Toàn bộ ngân sách quảng cáo, nhân sự, công cụ trong kỳ',
-      '<b>Số khách hàng mới</b>: Lượng khách hàng lần đầu phát sinh đơn hàng'
+      '<b>Số khách hàng mới</b>: Lượng khách hàng lần đầu phát sinh đơn hàng',
+      '<b>Phân biệt với CPA</b>: CPA tính trên mỗi đơn hàng; CAC tính trên mỗi khách hàng mới'
     ],
-    tip: '⭐ <b>Quy tắc vàng tỷ số LTV / CAC:</b><br>• <b>LTV / CAC ≥ 3</b>: Ngưỡng chuẩn vàng của một mô hình TMĐT bền vững.<br>• <b>LTV / CAC < 1</b>: Đang lỗ trên từng khách hàng thu hút (chảy máu tiền tệ).<br>• <b>CAC tối đa cho phép</b> = LTV ÷ 3.',
-    example: '• Từ Essay 20: LTV = 810.000 đ → CAC tối đa = 810.000 ÷ 3 = <b>270.000 đ</b>.<br>• Từ Essay 43: LTV = 400.000 đ → CAC tối đa = 400.000 ÷ 3 ≈ <b>133.000 đ</b>.'
+    tip: '⭐ <b>Ý nghĩa quản trị (Buổi 5 & Buổi 13):</b> Nếu chỉ nhìn CAC đơn lẻ sẽ không biết đắt hay rẻ; bắt buộc phải đặt CAC cạnh LTV để đánh giá hiệu quả thu hút khách mới và khả năng sinh lời dài hạn.',
+    example: '• Chi 30.000.000 đ thu hút 200 khách mới → CAC = <b>150.000 đ/khách</b>.<br>• Nếu LTV = 450.000 đ → Mỗi khách mới mang lại thặng dư 300.000 đ trong vòng đời.'
+  },
+  {
+    id: 'f_ltv_cac_ratio',
+    category: 'ltv',
+    title: 'Tỷ số chuẩn vàng LTV / CAC & Ngưỡng CAC tối đa (Buổi 5, 13)',
+    equation: 'Tỷ số chuẩn vàng: LTV ÷ CAC ≥ 3  ⇒  CAC tối đa = LTV ÷ 3',
+    vars: [
+      '<b>LTV ÷ CAC ≥ 3</b>: Chuẩn vàng tài chính của mô hình TMĐT tăng trưởng bền vững',
+      '<b>LTV ÷ CAC < 1</b>: Doanh nghiệp đang lỗ trực tiếp trên từng khách hàng mới thu hút',
+      '<b>CAC tối đa cho phép</b> = LTV ÷ 3 (1/3 bù Marketing, 1/3 bù Vận hành, 1/3 Lãi ròng)'
+    ],
+    tip: '⭐ <b>Nguyên tắc phân bổ (Essay 20 & Essay 43):</b> Khi LTV / CAC < 3, doanh nghiệp cần đồng thời nâng LTV (tăng tần suất mua lại f, tăng AOV bằng chương trình khách hàng thân thiết CRM) và hạ CAC (tối ưu CVR, tăng tỷ trọng traffic tự nhiên SEO).',
+    example: '• <b>Essay 20:</b> LTV = 810.000 đ → CAC tối đa = 810.000 ÷ 3 = <b>270.000 đ</b>.<br>• <b>Essay 43:</b> LTV = 400.000 đ → CAC tối đa = 400.000 ÷ 3 ≈ <b>133.000 đ</b>.'
   },
   {
     id: 'f_max_cpc',
     category: 'ltv',
     title: 'CPC tối đa cho phép theo LTV & CAC (Essay 43)',
-    equation: 'Max CPC = CAC tối đa × CVR (khách mới)',
+    equation: 'Max CPC = CAC tối đa × CVR (khách mới) = (LTV ÷ 3) × CVR',
     vars: [
       '<b>CAC tối đa</b>: Ngưỡng chi tối đa để có 1 khách mới (= LTV ÷ 3)',
-      '<b>CVR</b>: Tỷ lệ chuyển đổi từ lượt nhấp sang khách hàng mới'
+      '<b>CVR (khách mới)</b>: Tỷ lệ chuyển đổi từ lượt nhấp sang khách hàng mới',
+      '<b>Cơ sở công thức</b>: Vì CAC = CPC ÷ CVR nên suy ra Max CPC = CAC tối đa × CVR'
     ],
-    tip: '💡 <b>Ứng dụng quản trị:</b> Giúp thiết lập giá thầu trần trên Google/Facebook Ads để không bao giờ chạy quảng cáo bị lỗ về lâu dài.',
-    example: '<b>Essay 43:</b> CAC tối đa = 133.000 đ, CVR = 2,7% → Max CPC = 133.000 × 0,027 ≈ <b>3.600 đ/click</b>.'
+    tip: '💡 <b>Ứng dụng quản trị (Essay 43):</b> Giúp nhà quản trị thiết lập giá thầu trần (Max Bid) trên Google Ads / Facebook Ads dựa trên giá trị vòng đời khách hàng để không bao giờ chạy quảng cáo vượt ngưỡng an toàn tài chính.',
+    example: '• <b>Essay 43:</b> CAC tối đa = 133.000 đ, CVR = 2,7% → Max CPC = 133.000 × 0,027 ≈ <b>3.600 đ/click</b>.<br>• <b>Essay 20:</b> CAC tối đa = 270.000 đ, CVR = 2,0% → Max CPC = <b>5.400 đ/click</b>.'
   },
 
   // FUNNEL
@@ -279,11 +298,14 @@ const FORMULA_LIBRARY = [
     title: 'Tỷ lệ bỏ giỏ hàng (Cart Abandonment Rate)',
     equation: 'Cart Abandonment Rate = [1 − (Lượt thanh toán ÷ Lượt thêm giỏ)] × 100%',
     vars: [
-      '<b>Lượt thêm giỏ</b>: Tổng số lượt khách hàng đưa sản phẩm vào giỏ hàng',
-      '<b>Lượt thanh toán</b>: Số lượt khách tiến hành thanh toán / đặt đơn thành công'
+      '1. <b>Lượt thêm giỏ (Add to Cart)</b>: Tổng số lượt khách đưa sản phẩm vào giỏ hàng',
+      '2. <b>Lượt thanh toán (Completed)</b>: Số lượt khách tiến hành thanh toán / đặt đơn',
+      '3. <b>Tỷ lệ hoàn tất giỏ</b> = [100% − Tỷ lệ bỏ giỏ] = (Lượt thanh toán ÷ Lượt thêm giỏ) × 100%',
+      '4. <b>Số giỏ hàng bị bỏ lỡ</b> = Lượt thêm giỏ − Lượt hoàn tất thanh toán',
+      '<b>Doanh thu bị bỏ lỡ</b> = Số giỏ hàng bị bỏ lỡ × Giá trị đơn trung bình (AOV)'
     ],
     tip: '💡 <b>6 nguyên nhân bỏ giỏ hàng hàng đầu (Buổi 9 & 15):</b> (1) Phí vận chuyển bất ngờ phát sinh ở bước cuối, (2) Bắt buộc tạo tài khoản rườm rà, (3) Quy trình thanh toán quá nhiều bước, (4) Thiếu phương thức thanh toán mong muốn, (5) Lo ngại an toàn bảo mật, (6) Chính sách đổi trả không rõ ràng.',
-    example: 'Trung bình ngành TMĐT thế giới bỏ giỏ hàng từ 65% – 75%. Giảm được 5% bỏ giỏ hàng giúp tăng 20% lợi nhuận.'
+    example: '<b>Trung bình ngành TMĐT:</b> Bỏ giỏ hàng từ 65% – 75%. Trong Essay 18: 1.100 thêm giỏ → 280 hoàn tất đơn (bỏ giỏ 74,5%). Giảm 5% bỏ giỏ giúp tăng ~20% lợi nhuận.'
   },
 
   // OPS & PAYMENT
@@ -306,11 +328,12 @@ const FORMULA_LIBRARY = [
     title: 'Hệ chỉ số Logistics & Điểm hòa vốn vận hành (Buổi 10 & Essay 39)',
     equation: 'Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%',
     vars: [
-      '<b>Ngưỡng an toàn</b>: Chi phí Logistics mỗi đơn ≤ Lợi nhuận gộp mỗi đơn',
-      '<b>Fulfillment Cycle Time</b>: Thời gian từ lúc đặt hàng đến khi khách nhận (chuẩn TMĐT 2–3 ngày, 5 ngày là điểm nghẽn)'
+      '<b>Ngưỡng an toàn tài chính</b>: Chi phí Logistics mỗi đơn ≤ Lợi nhuận gộp mỗi đơn',
+      '<b>Thiệt hại đơn hoàn 2 chiều</b>: Phí giao đi + Phí hoàn về + Chi phí đóng gói & kiểm đếm kho',
+      '<b>Fulfillment Cycle Time</b>: Thời gian xử lý & giao đơn (chuẩn TMĐT 2–3 ngày, ≥ 5 ngày là điểm nghẽn)'
     ],
-    tip: '💡 <b>Chẩn đoán:</b> Nếu tỷ lệ hoàn hàng cao (ví dụ 18% ở thời trang), chi phí logistics hai chiều (giao + hoàn) sẽ triệt tiêu toàn bộ lợi nhuận gộp của các đơn hàng thành công.',
-    example: 'Nếu lợi nhuận gộp mỗi đơn là 50.000 đ, chi phí giao 25.000 đ, phí hoàn 15.000 đ. Cứ 1 đơn hoàn làm mất 40.000 đ, cần 1 đơn thành công khác gánh còng lưng!'
+    tip: '💡 <b>Chẩn đoán vận hành (Buổi 10 & Essay 39):</b> Nếu tỷ lệ hoàn hàng cao (ví dụ 18% ở ngành thời trang COD), chi phí logistics hai chiều (giao đi + thu hồi hoàn về) sẽ bào mòn và triệt tiêu toàn bộ lợi nhuận gộp của các đơn hàng thành công.',
+    example: '<b>Bài toán thực tế:</b> Lãi gộp mỗi đơn = 50.000 đ, phí giao = 25.000 đ, phí hoàn = 15.000 đ.<br>→ Cứ 1 đơn hoàn làm lỗ <b>40.000 đ</b>, cần 4 đơn thành công mới bù lại được!'
   },
 
   // SECURITY
@@ -326,6 +349,19 @@ const FORMULA_LIBRARY = [
     ],
     tip: '⭐ <b>CÂU HỎI TRỌNG TÂM ĐỀ CƯƠNG:</b> Doanh nghiệp có thể tác động vào thành phần nào?<br>→ Doanh nghiệp <b>KHÔNG THỂ</b> triệt tiêu mối đe dọa (không thể loại bỏ tin tặc trên Internet). Doanh nghiệp chỉ có thể <b>GIẢM LỖ HỔNG (V)</b> bằng các biện pháp kỹ thuật phòng ngừa (vá lỗi, HTTPS, phân quyền) và <b>GIẢM TÁC ĐỘNG (I)</b> bằng kế hoạch ứng phó sự cố, sao lưu dự phòng độc lập và quy trình pháp lý.',
     example: '<b>Công thức: R = T × V × I.</b> Khi một trong hai yếu tố V hoặc I tiến về 0, rủi ro tổng thể sẽ được khống chế an toàn.'
+  },
+  {
+    id: 'f_security_control',
+    category: 'security',
+    title: 'Phương trình Giảm thiểu Rủi ro & Quy tắc Sao lưu 3-2-1 (Buổi 7 & Essay 58)',
+    equation: 'Rủi ro còn lại = T × (V − ΔV) × (I − ΔI)  ·  Chuẩn Backup: 3 Bản – 2 Phương tiện – 1 Offsite',
+    vars: [
+      '<b>Giảm Lỗ hổng (V − ΔV)</b>: Tường lửa WAF, mã hóa TLS/HTTPS, xác thực đa yếu tố MFA, phân quyền tối thiểu (Least Privilege)',
+      '<b>Giảm Tác động (I − ΔI)</b>: Kế hoạch ứng phó sự cố (Incident Response), cô lập phân vùng mạng, bảo hiểm an ninh mạng',
+      '<b>Quy tắc Sao lưu 3-2-1</b>: 3 bản dữ liệu, lưu trên 2 loại thiết bị khác nhau, ít nhất 1 bản tách biệt ngoại tuyến (Offsite/Cloud)'
+    ],
+    tip: '⭐ <b>ỨNG PHÓ TẤN CÔNG RANSOMWARE / DDoS (Essay 58):</b><br>Khi bị mã hóa tống tiền (Ransomware) hoặc tấn công từ chối dịch vụ (DDoS), việc có bản sao lưu độc lập theo chuẩn <b>3-2-1</b> và hệ thống CDN/WAF giúp doanh nghiệp khôi phục vận hành nhanh chóng, đưa mức độ thiệt hại <b>(I)</b> về mức tối thiểu mà không bị tê liệt kinh doanh.',
+    example: '<b>Nguyên tắc phòng thủ chiều sâu (Defense in Depth):</b> Kết hợp kiểm soát kỹ thuật (hạ V) + đào tạo nhận thức chống Phishing + sao lưu 3-2-1 (hạ I).'
   }
 ];
 
@@ -1291,8 +1327,11 @@ function toggleFormulaQuizShuffle() {
 }
 
 function renderFormulas() {
+  const slideFormulaIds = ['f_ctr', 'f_cpc', 'f_cpm', 'f_cvr', 'f_cpa', 'f_aov', 'f_roas', 'f_roas_be'];
   const filteredList = FORMULA_LIBRARY.filter(f => {
-    const matchCat = activeFormulaCategory === 'all' || f.category === activeFormulaCategory;
+    const matchCat = activeFormulaCategory === 'all' ||
+      f.category === activeFormulaCategory ||
+      (activeFormulaCategory === 'slide' && slideFormulaIds.includes(f.id));
     const term = formulaSearchTerm.toLowerCase();
     const matchSearch = !term || f.title.toLowerCase().includes(term) || f.equation.toLowerCase().includes(term) || f.tip.toLowerCase().includes(term);
     return matchCat && matchSearch;

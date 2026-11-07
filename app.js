@@ -2359,11 +2359,12 @@ function checkSyncUrlOnBoot() {
   }
 }
 
-// Sync dynamic header height for sticky sidebar across all resolutions (4K -> HD)
+// Sync dynamic header height for sticky sidebar across all resolutions and browser zoom levels (4K -> HD)
 function syncHeaderHeight() {
   const hd = document.querySelector('header');
   if (hd) {
-    document.documentElement.style.setProperty('--header-h', hd.offsetHeight + 'px');
+    const h = hd.getBoundingClientRect().height || hd.offsetHeight || 62;
+    document.documentElement.style.setProperty('--header-h', h.toFixed(2) + 'px');
   }
 }
 window.addEventListener('resize', syncHeaderHeight);

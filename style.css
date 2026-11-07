@@ -4949,8 +4949,9 @@ details.settings-box summary {
 /* ==================== FULL-SPECTRUM FLUID RESPONSIVE (4K -> 2K -> FHD -> HD -> MOBILE) ==================== */
 
 /* 1. Core Grid, Sticky Sidebar & Overflow Protection
-   IMPORTANT: Use overflow-x: clip on body (NOT overflow-x: hidden on html/body),
+   IMPORTANT: Use overflow-x: clip (NOT overflow-x: hidden on html/body),
    because overflow-x: hidden forces overflow-y: auto and breaks position: sticky! */
+html,
 body {
   max-width: 100%;
   overflow-x: clip;
@@ -5095,7 +5096,7 @@ header {
 }
 
 /* 4. Quiz, Flashcard 3D & Formula Modal Answer Grids:
-   Always 2 columns x 2 rows on Desktop/Laptop/Tablet (> 640px), 1 column on Mobile */
+   Always 2 columns x 2 equal-height rows on Desktop/Laptop/Tablet (> 640px), 1 column on Mobile */
 .options-grid,
 .flash-options-grid,
 .f3d-options-grid,
@@ -5103,7 +5104,18 @@ header {
 .options.mc-grid-2x2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   gap: 12px;
+}
+
+.option-card,
+.flash-opt-card,
+.f3d-opt-btn,
+.stage-opt-card {
+  align-items: center;
+  min-height: 76px;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .flash-prompt,
@@ -5186,11 +5198,21 @@ header {
   gap: 12px;
 }
 
+.slide-showcase-card .solution-math {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+}
+
 /* 10 Ad Simulator Solutions -> 5 cols (2 rows of 5) on desktop, 2 cols on laptop/tablet */
 .calc-card .solutions-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
+}
+
+.solution-item-card {
+  justify-content: space-between;
 }
 
 /* Formula Library Cards -> 2 balanced columns; odd last card spans full width */
@@ -5205,8 +5227,19 @@ header {
   grid-column: 1 / -1;
 }
 
+.formula-equation-box {
+  min-height: 58px;
+}
+
 .formula-item-card > div:has(.formula-vars-list) {
   flex: 1 1 auto;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .formula-card-top {
@@ -5440,7 +5473,13 @@ header {
   }
 }
 
-/* 9. Standard Laptop & HD+ Screens (max-width: 1366px) */
+/* 9. Standard Laptop & FHD/HD+ Screens (max-width: 1599px) */
+@media (max-width: 1599px) {
+  .calc-card .solutions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 1366px) {
   :root {
     --sidebar-w: 290px;
@@ -5467,10 +5506,6 @@ header {
 @media (max-width: 1279px) {
   .slide-params-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .calc-card .solutions-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -5676,6 +5711,15 @@ header {
   .stage-options-grid,
   .options.mc-grid-2x2 {
     grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+
+  .option-card,
+  .flash-opt-card,
+  .f3d-opt-btn,
+  .stage-opt-card {
+    min-height: 56px;
+    height: auto;
   }
 
   .slide-params-grid {
