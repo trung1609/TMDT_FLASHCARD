@@ -4948,11 +4948,12 @@ details.settings-box summary {
 
 /* ==================== FULL-SPECTRUM FLUID RESPONSIVE (4K -> 2K -> FHD -> HD -> MOBILE) ==================== */
 
-/* 1. Core Grid, Viewport & Overflow Protection */
-html,
+/* 1. Core Grid, Sticky Sidebar & Overflow Protection
+   IMPORTANT: Use overflow-x: clip on body (NOT overflow-x: hidden on html/body),
+   because overflow-x: hidden forces overflow-y: auto and breaks position: sticky! */
 body {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .layout {
@@ -4963,9 +4964,36 @@ body {
   grid-template-columns: 72px minmax(0, 1fr) !important;
 }
 
-aside.sidebar {
-  height: calc(100vh - 62px);
-  height: calc(100dvh - 62px);
+@media (min-width: 901px) {
+  .layout {
+    background: linear-gradient(
+      to right,
+      var(--surface) 0,
+      var(--surface) calc(var(--sidebar-w) - 1px),
+      var(--border) calc(var(--sidebar-w) - 1px),
+      var(--border) var(--sidebar-w),
+      transparent var(--sidebar-w)
+    );
+  }
+
+  .layout.sidebar-collapsed {
+    background: linear-gradient(
+      to right,
+      var(--surface) 0,
+      var(--surface) 71px,
+      var(--border) 71px,
+      var(--border) 72px,
+      transparent 72px
+    );
+  }
+
+  aside.sidebar {
+    position: sticky;
+    top: var(--header-h, 62px);
+    height: calc(100vh - var(--header-h, 62px));
+    height: calc(100dvh - var(--header-h, 62px));
+    align-self: start;
+  }
 }
 
 .nav-meta {
@@ -5066,12 +5094,16 @@ header {
   gap: 10px;
 }
 
-/* 4. Quiz, Flashcard 3D & Formula Hub Intrinsic Grids */
+/* 4. Quiz, Flashcard 3D & Formula Modal Answer Grids:
+   Always 2 columns x 2 rows on Desktop/Laptop/Tablet (> 640px), 1 column on Mobile */
 .options-grid,
 .flash-options-grid,
 .f3d-options-grid,
+.stage-options-grid,
 .options.mc-grid-2x2 {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .flash-prompt,
@@ -5079,6 +5111,7 @@ header {
   max-width: 100%;
 }
 
+/* 5. Formula Hub & Calculator Balanced Grids (No Empty Columns) */
 .formula-practice-badge,
 .formula-hero-badge,
 .formula-flash-badge,
@@ -5096,8 +5129,12 @@ header {
 }
 
 .formula-practice-info {
-  flex: 1 1 380px;
+  flex: 1 1 360px;
   min-width: 0;
+}
+
+.formula-practice-desc {
+  max-width: 100%;
 }
 
 .formula-practice-cta {
@@ -5126,6 +5163,50 @@ header {
 .solution-res-badge {
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+/* 6 Slide Params -> 6 cols on wide desktop, 3 cols on laptop/tablet, 2 cols on mobile */
+.slide-params-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* 6 Calculator Inputs -> 3 cols (2 rows of 3) on desktop/tablet, 2 cols on mobile */
+.calc-inputs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+/* 8 Slide Exercise Solutions -> 4 cols (2 rows of 4) on desktop, 2 cols on laptop/tablet */
+.slide-showcase-card .solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* 10 Ad Simulator Solutions -> 5 cols (2 rows of 5) on desktop, 2 cols on laptop/tablet */
+.calc-card .solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* Formula Library Cards -> 2 balanced columns; odd last card spans full width */
+.formula-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.formula-cards-grid > .formula-item-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.formula-item-card > div:has(.formula-vars-list) {
+  flex: 1 1 auto;
 }
 
 .formula-card-top {
@@ -5161,7 +5242,7 @@ header {
   flex-shrink: 0;
 }
 
-/* 5. All Modals: Dynamic Viewport Height (dvh) & 3D Face Height Isolation */
+/* 6. All Modals: Dynamic Viewport Height (dvh) & 3D Face Height Isolation */
 .formula-modal-overlay,
 .modal-overlay,
 .lightbox-overlay {
@@ -5246,7 +5327,7 @@ header {
   gap: 8px;
 }
 
-/* 6. Ultra-Wide 4K / UHD Monitors (2200px -> 3840px+) */
+/* 7. Ultra-Wide 4K / UHD Monitors (2200px -> 3840px+) */
 @media (min-width: 2200px) {
   :root {
     --sidebar-w: 400px;
@@ -5307,14 +5388,18 @@ header {
     font-size: 16px;
   }
 
+  .options-grid,
+  .flash-options-grid {
+    gap: 16px;
+  }
+
   .formula-cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: 24px;
   }
 
-  .solutions-grid {
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 20px;
+  .slide-showcase-card .solutions-grid,
+  .calc-card .solutions-grid {
+    gap: 16px;
   }
 
   .formula-modal-dialog {
@@ -5322,7 +5407,7 @@ header {
   }
 }
 
-/* 7. 2K / QHD / Large Desktop Monitors (1600px -> 2199px) */
+/* 8. 2K / QHD / Large Desktop Monitors (1600px -> 2199px) */
 @media (min-width: 1600px) and (max-width: 2199px) {
   :root {
     --sidebar-w: 360px;
@@ -5341,8 +5426,12 @@ header {
     padding: 32px 36px;
   }
 
+  .options-grid,
+  .flash-options-grid {
+    gap: 14px;
+  }
+
   .formula-cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 20px;
   }
 
@@ -5351,7 +5440,7 @@ header {
   }
 }
 
-/* 8. Standard Laptop & HD+ Screens (max-width: 1366px) */
+/* 9. Standard Laptop & HD+ Screens (max-width: 1366px) */
 @media (max-width: 1366px) {
   :root {
     --sidebar-w: 290px;
@@ -5374,10 +5463,20 @@ header {
   }
 }
 
-/* 9. HD / Compact Laptop Screens (max-width: 1200px) */
+/* 10. HD / Compact Laptop Screens (max-width: 1279px) */
+@media (max-width: 1279px) {
+  .slide-params-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .calc-card .solutions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 1200px) {
   :root {
-    --sidebar-w: 265px;
+    --sidebar-w: 270px;
   }
 
   header {
@@ -5409,36 +5508,19 @@ header {
     font-size: 12.5px;
   }
 
-  .formula-practice-card {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 20px;
-    gap: 16px;
-  }
-
-  .formula-practice-info {
-    flex: 1 1 auto;
-    width: 100%;
-  }
-
-  .formula-practice-cta {
-    width: 100%;
-  }
-
-  .btn-launch-flashcard {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .formula-cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  .slide-showcase-card .solutions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* 10. Narrow HD / Split-Screen Windows (max-width: 1024px) */
+/* 11. Narrow HD / Split-Screen Windows (max-width: 1024px) */
 @media (max-width: 1024px) {
   :root {
-    --sidebar-w: 245px;
+    --sidebar-w: 255px;
+  }
+
+  aside.sidebar {
+    padding: 16px 12px 36px;
   }
 
   .brand-text strong {
@@ -5477,9 +5559,30 @@ header {
   .formula-hero-title {
     font-size: 19px;
   }
+
+  .formula-practice-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .formula-practice-info {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .formula-practice-cta {
+    width: 100%;
+  }
+
+  .btn-launch-flashcard {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
-/* 11. Tablet & Mobile Drawer Breakpoint (max-width: 900px) */
+/* 12. Tablet & Mobile Drawer Breakpoint (max-width: 900px) */
 @media (max-width: 900px) {
   aside.sidebar {
     width: min(310px, 86vw) !important;
@@ -5500,14 +5603,21 @@ header {
     padding: 10px 12px;
   }
 
+  /* Keep 2x2 answer options on tablet landscape/portrait (641px-900px) */
   .options-grid,
-  .flash-options-grid {
-    grid-template-columns: 1fr;
+  .flash-options-grid,
+  .f3d-options-grid,
+  .stage-options-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* 12. Tablet Portrait & Large Phones (max-width: 768px) */
+/* 13. Tablet Portrait & Large Phones (max-width: 768px) */
 @media (max-width: 768px) {
+  .formula-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
   .formula-modal-overlay,
   .modal-overlay {
     padding: 10px;
@@ -5558,7 +5668,33 @@ header {
   }
 }
 
-/* 13. Mobile Portrait (max-width: 560px) */
+/* 14. Mobile Phones (max-width: 640px) */
+@media (max-width: 640px) {
+  .options-grid,
+  .flash-options-grid,
+  .f3d-options-grid,
+  .stage-options-grid,
+  .options.mc-grid-2x2 {
+    grid-template-columns: 1fr;
+  }
+
+  .slide-params-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .calc-inputs-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .slide-showcase-card .solutions-grid,
+  .calc-card .solutions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 15. Mobile Portrait (max-width: 560px) */
 @media (max-width: 560px) {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -5571,16 +5707,6 @@ header {
 
   .stat-val {
     font-size: 18px;
-  }
-
-  .slide-params-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  .calc-inputs-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
   }
 
   .formula-modal-overlay,
@@ -5752,7 +5878,7 @@ header {
   }
 }
 
-/* 14. Small Phones (max-width: 390px) */
+/* 16. Small Phones (max-width: 390px) */
 @media (max-width: 390px) {
   .calc-inputs-grid {
     grid-template-columns: 1fr;
@@ -5773,7 +5899,7 @@ header {
   }
 }
 
-/* 15. Short-Height Screens (768p Laptops & Landscape Phones: max-height: 740px) */
+/* 17. Short-Height Screens (768p Laptops & Landscape Phones: max-height: 740px) */
 @media (max-height: 740px) {
   .formula-modal-overlay,
   .modal-overlay {
