@@ -4945,3 +4945,365 @@ details.settings-box summary {
     height: 48px;
   }
 }
+
+
+/* ==================== FULL-SPECTRUM FLUID RESPONSIVE (4K -> 2K -> FHD -> HD -> MOBILE) ==================== */
+
+/* 1. Core Grid & Overflow Protection (Prevent Horizontal Scroll & Column Blowout) */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.layout {
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+}
+
+.layout.sidebar-collapsed {
+  grid-template-columns: 68px minmax(0, 1fr);
+}
+
+main.main {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* 2. Header Anti-Wrap & Fluid Pill Protection (Fixes Screenshot 1) */
+header {
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand-wrap {
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-text strong,
+.brand-text .sub {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-actions {
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.streak-pill,
+.sync-header-btn,
+.formula-header-btn,
+.badge-pill,
+.icon-btn {
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
+/* 3. Formula Practice Card & Badge Anti-Deform Protection (Fixes Screenshot 2) */
+.formula-practice-badge,
+.formula-hero-badge,
+.intro-badge {
+  border-radius: 10px;
+  max-width: 100%;
+  width: fit-content;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.formula-practice-card {
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.formula-practice-info {
+  flex: 1 1 380px;
+  min-width: 0;
+}
+
+.formula-practice-cta {
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+.btn-launch-flashcard {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-launch-text {
+  min-width: 0;
+}
+
+.btn-launch-text strong,
+.btn-launch-text small {
+  white-space: normal;
+  line-height: 1.3;
+}
+
+.formula-practice-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fp-stat-tag {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.formula-cat-tab,
+.mode-tab {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Intrinsic 2x2 Option Grid that auto-collapses when container is narrow */
+.options.mc-grid-2x2 {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* 4. Ultra-Wide 4K / UHD Monitors (2200px -> 3840px+) */
+@media (min-width: 2200px) {
+  :root {
+    --sidebar-w: 400px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  header {
+    padding: 16px 40px;
+  }
+
+  .logo-badge {
+    width: 46px;
+    height: 46px;
+  }
+
+  .brand-text strong {
+    font-size: 18px;
+  }
+
+  .brand-text .sub {
+    font-size: 13px;
+  }
+
+  .streak-pill,
+  .sync-header-btn,
+  .formula-header-btn,
+  .badge-pill {
+    padding: 9px 18px;
+    font-size: 14px;
+  }
+
+  .icon-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  main.main {
+    max-width: 1680px;
+    padding: 44px 64px 100px;
+  }
+
+  .quiz-card {
+    padding: 40px 48px;
+    border-radius: 26px;
+  }
+
+  .question-text {
+    font-size: 21px;
+  }
+
+  .option-btn {
+    padding: 18px 22px;
+    font-size: 16px;
+  }
+
+  .formula-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+  }
+
+  .solutions-grid {
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 22px;
+  }
+
+  .flashcard-stage,
+  .formula-flash-stage {
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* 5. 2K / QHD / Large Desktop Monitors (1600px -> 2199px) */
+@media (min-width: 1600px) and (max-width: 2199px) {
+  :root {
+    --sidebar-w: 360px;
+  }
+
+  header {
+    padding: 14px 32px;
+  }
+
+  main.main {
+    max-width: 1360px;
+    padding: 36px 48px 90px;
+  }
+
+  .quiz-card {
+    padding: 32px 36px;
+  }
+
+  .formula-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  .flashcard-stage,
+  .formula-flash-stage {
+    max-width: 980px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* 6. Standard Laptop & HD+ Screens (max-width: 1366px) */
+@media (max-width: 1366px) {
+  :root {
+    --sidebar-w: 290px;
+  }
+
+  header {
+    padding: 11px 20px;
+  }
+
+  .badge-pill {
+    display: none;
+  }
+
+  main.main {
+    padding: 24px 24px 72px;
+  }
+
+  .quiz-card {
+    padding: 24px 24px;
+  }
+}
+
+/* 7. HD / Compact Laptop Screens (max-width: 1200px) */
+@media (max-width: 1200px) {
+  :root {
+    --sidebar-w: 265px;
+  }
+
+  header {
+    padding: 10px 16px;
+    gap: 8px;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .streak-pill,
+  .sync-header-btn,
+  .formula-header-btn {
+    padding: 6px 12px;
+    font-size: 12.5px;
+  }
+
+  main.main {
+    padding: 20px 18px 68px;
+  }
+
+  .quiz-card {
+    padding: 20px 20px;
+  }
+
+  .formula-practice-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .formula-practice-info {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .formula-practice-cta {
+    width: 100%;
+  }
+
+  .btn-launch-flashcard {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .formula-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+/* 8. Narrow HD / Split-Screen Windows (max-width: 1024px) */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-w: 245px;
+  }
+
+  .brand-text strong {
+    font-size: 14.5px;
+  }
+
+  .brand-text .sub {
+    font-size: 11px;
+  }
+
+  .streak-pill,
+  .sync-header-btn,
+  .formula-header-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  main.main {
+    padding: 16px 14px 64px;
+  }
+
+  .quiz-card {
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+
+  .formula-hero {
+    padding: 20px 18px;
+  }
+
+  .formula-hero-title {
+    font-size: 20px;
+  }
+
+  .formula-flash-topbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
