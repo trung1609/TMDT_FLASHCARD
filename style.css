@@ -4946,10 +4946,9 @@ details.settings-box summary {
   }
 }
 
-
 /* ==================== FULL-SPECTRUM FLUID RESPONSIVE (4K -> 2K -> FHD -> HD -> MOBILE) ==================== */
 
-/* 1. Core Grid & Overflow Protection (Prevent Horizontal Scroll & Column Blowout) */
+/* 1. Core Grid, Viewport & Overflow Protection */
 html,
 body {
   max-width: 100%;
@@ -4961,7 +4960,20 @@ body {
 }
 
 .layout.sidebar-collapsed {
-  grid-template-columns: 68px minmax(0, 1fr);
+  grid-template-columns: 72px minmax(0, 1fr) !important;
+}
+
+aside.sidebar {
+  height: calc(100vh - 62px);
+  height: calc(100dvh - 62px);
+}
+
+.nav-meta {
+  flex-wrap: wrap;
+}
+
+.nav-meta > span:last-child {
+  white-space: nowrap;
 }
 
 main.main {
@@ -4970,7 +4982,7 @@ main.main {
   box-sizing: border-box;
 }
 
-/* 2. Header Anti-Wrap & Fluid Pill Protection (Fixes Screenshot 1) */
+/* 2. Header Anti-Wrap & Fluid Pill Protection */
 header {
   gap: 12px;
   min-width: 0;
@@ -5007,9 +5019,69 @@ header {
   flex-shrink: 0;
 }
 
-/* 3. Formula Practice Card & Badge Anti-Deform Protection (Fixes Screenshot 2) */
+/* 3. Mode Tabs, Toolbar, Pills & Action Buttons Protection */
+.tabs-segmented {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  box-sizing: border-box;
+}
+
+.tabs-segmented::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-btn {
+  flex: 1 1 auto;
+  justify-content: center;
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
+.toolbar-wrap .btn,
+.toolbar-wrap .filter-select,
+.card-top .session-pill,
+.card-top .level-pill,
+.card-top #star,
+.option-status-tag,
+.f3d-opt-status-tag,
+.crop-action-btn,
+.source-link,
+.flash-answer-badge,
+.flash-retry-btn,
+.grade-btn-group .btn,
+.card-nav-row .btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.card-top,
+.essay-meta-row,
+.card-nav-row,
+.flash-actions-bar,
+.answer-crop-header {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* 4. Quiz, Flashcard 3D & Formula Hub Intrinsic Grids */
+.options-grid,
+.flash-options-grid,
+.f3d-options-grid,
+.options.mc-grid-2x2 {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.flash-prompt,
+.flash-options-grid {
+  max-width: 100%;
+}
+
 .formula-practice-badge,
 .formula-hero-badge,
+.formula-flash-badge,
 .intro-badge {
   border-radius: 10px;
   max-width: 100%;
@@ -5038,39 +5110,143 @@ header {
   box-sizing: border-box;
 }
 
-.btn-launch-text {
-  min-width: 0;
-}
-
-.btn-launch-text strong,
-.btn-launch-text small {
-  white-space: normal;
-  line-height: 1.3;
-}
-
-.formula-practice-stats {
+.formula-practice-stats,
+.formula-practice-stats-preview {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.fp-stat-tag {
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
+.fp-stat-tag,
+.formula-chip,
 .formula-cat-tab,
-.mode-tab {
+.mode-tab,
+.formula-category-tag,
+.solution-code,
+.solution-res-badge {
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-/* Intrinsic 2x2 Option Grid that auto-collapses when container is narrow */
-.options.mc-grid-2x2 {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+.formula-card-top {
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-/* 4. Ultra-Wide 4K / UHD Monitors (2200px -> 3840px+) */
+.formula-card-title {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.solution-top-row {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.formula-equation-box,
+.f3d-eq-math,
+.solution-math {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.calc-header > div {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.calc-header .btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 5. All Modals: Dynamic Viewport Height (dvh) & 3D Face Height Isolation */
+.formula-modal-overlay,
+.modal-overlay,
+.lightbox-overlay {
+  height: 100vh;
+  height: 100dvh;
+  box-sizing: border-box;
+}
+
+.formula-modal-dialog,
+.sync-modal-dialog,
+.modal-content {
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#formulaModalContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Prevent Inactive 3D Face from Stretching Active Face */
+.f3d-card-wrap,
+.f3d-card,
+.flash-inner {
+  min-height: 0;
+}
+
+.f3d-card:not(.is-flipped) .f3d-back,
+.f3d-card.is-flipped .f3d-front,
+.flash-container:not(.is-flipped) .flash-back,
+.flash-container.is-flipped .flash-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.f3d-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.f3d-header-left,
+.f3d-header-stats,
+.f3d-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.f3d-brand-badge,
+.f3d-counter-pill,
+.f3d-stat-pill,
+.f3d-btn-icon,
+.f3d-close-btn,
+.f3d-cat-pill,
+.f3d-flip-hint-pill,
+.f3d-footer-nav .btn {
+  white-space: nowrap !important;
+  flex-shrink: 0;
+}
+
+.f3d-top-meta {
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+/* 6. Ultra-Wide 4K / UHD Monitors (2200px -> 3840px+) */
 @media (min-width: 2200px) {
   :root {
     --sidebar-w: 400px;
@@ -5120,11 +5296,13 @@ header {
     border-radius: 26px;
   }
 
-  .question-text {
+  .question-prompt,
+  .flash-prompt {
     font-size: 21px;
   }
 
-  .option-btn {
+  .option-card,
+  .flash-opt-card {
     padding: 18px 22px;
     font-size: 16px;
   }
@@ -5135,19 +5313,16 @@ header {
   }
 
   .solutions-grid {
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
   }
 
-  .flashcard-stage,
-  .formula-flash-stage {
-    max-width: 1140px;
-    margin-left: auto;
-    margin-right: auto;
+  .formula-modal-dialog {
+    max-width: 980px;
   }
 }
 
-/* 5. 2K / QHD / Large Desktop Monitors (1600px -> 2199px) */
+/* 7. 2K / QHD / Large Desktop Monitors (1600px -> 2199px) */
 @media (min-width: 1600px) and (max-width: 2199px) {
   :root {
     --sidebar-w: 360px;
@@ -5171,15 +5346,12 @@ header {
     gap: 20px;
   }
 
-  .flashcard-stage,
-  .formula-flash-stage {
-    max-width: 980px;
-    margin-left: auto;
-    margin-right: auto;
+  .formula-modal-dialog {
+    max-width: 880px;
   }
 }
 
-/* 6. Standard Laptop & HD+ Screens (max-width: 1366px) */
+/* 8. Standard Laptop & HD+ Screens (max-width: 1366px) */
 @media (max-width: 1366px) {
   :root {
     --sidebar-w: 290px;
@@ -5189,7 +5361,7 @@ header {
     padding: 11px 20px;
   }
 
-  .badge-pill {
+  header .badge-pill {
     display: none;
   }
 
@@ -5202,7 +5374,7 @@ header {
   }
 }
 
-/* 7. HD / Compact Laptop Screens (max-width: 1200px) */
+/* 9. HD / Compact Laptop Screens (max-width: 1200px) */
 @media (max-width: 1200px) {
   :root {
     --sidebar-w: 265px;
@@ -5232,6 +5404,11 @@ header {
     padding: 20px 20px;
   }
 
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: 12.5px;
+  }
+
   .formula-practice-card {
     flex-direction: column;
     align-items: stretch;
@@ -5258,7 +5435,7 @@ header {
   }
 }
 
-/* 8. Narrow HD / Split-Screen Windows (max-width: 1024px) */
+/* 10. Narrow HD / Split-Screen Windows (max-width: 1024px) */
 @media (max-width: 1024px) {
   :root {
     --sidebar-w: 245px;
@@ -5293,127 +5470,52 @@ header {
     border-radius: 18px;
   }
 
-  .formula-hero {
-    padding: 20px 18px;
+  .formula-hero-card {
+    padding: 18px 16px;
   }
 
   .formula-hero-title {
-    font-size: 20px;
-  }
-
-  .formula-flash-topbar {
-    flex-wrap: wrap;
-    gap: 10px;
+    font-size: 19px;
   }
 }
 
+/* 11. Tablet & Mobile Drawer Breakpoint (max-width: 900px) */
+@media (max-width: 900px) {
+  aside.sidebar {
+    width: min(310px, 86vw) !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    padding-bottom: max(40px, env(safe-area-inset-bottom)) !important;
+  }
 
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    overflow: visible;
+  }
 
-/* ==================== FORMULA 3D MODAL & FLASHCARD 3D RESPONSIVE OPTIMIZATION ==================== */
+  .stat-card {
+    min-width: 0;
+    padding: 10px 12px;
+  }
 
-/* 1. Fix Modal Flex Chain & Dynamic Viewport Height (dvh) on Mobile & Desktop */
-.formula-modal-overlay,
-.modal-overlay {
-  height: 100vh;
-  height: 100dvh;
-  box-sizing: border-box;
+  .options-grid,
+  .flash-options-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.formula-modal-dialog {
-  max-height: calc(100vh - 32px);
-  max-height: calc(100dvh - 32px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-#formulaModalContent {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
-/* 2. Prevent Inactive 3D Face from Stretching Active Face (Eliminates Blank Space Below Option D) */
-.f3d-card-wrap,
-.f3d-card {
-  min-height: 0;
-}
-
-.f3d-card:not(.is-flipped) .f3d-back,
-.f3d-card.is-flipped .f3d-front {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.flash-inner {
-  min-height: 0;
-}
-
-.flash-container:not(.is-flipped) .flash-back,
-.flash-container.is-flipped .flash-front {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-/* 3. Prevent Header Pills & Score Badges from Wrapping into Circles */
-.f3d-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: nowrap;
-}
-
-.f3d-header-left,
-.f3d-header-stats,
-.f3d-header-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  flex-shrink: 0;
-  gap: 8px;
-}
-
-.f3d-brand-badge,
-.f3d-counter-pill,
-.f3d-stat-pill,
-.f3d-btn-icon,
-.f3d-close-btn,
-.f3d-cat-pill,
-.f3d-flip-hint-pill,
-.f3d-footer-nav .btn {
-  white-space: nowrap !important;
-  flex-shrink: 0;
-}
-
-.f3d-top-meta {
-  flex-wrap: nowrap;
-  gap: 8px;
-}
-
-/* 4. Tablet & Narrow Window Modal Tuning (max-width: 768px) */
+/* 12. Tablet Portrait & Large Phones (max-width: 768px) */
 @media (max-width: 768px) {
-  .formula-modal-overlay {
+  .formula-modal-overlay,
+  .modal-overlay {
     padding: 10px;
   }
 
-  .formula-modal-dialog {
+  .formula-modal-dialog,
+  .sync-modal-dialog,
+  .modal-content {
     max-height: calc(100vh - 20px);
     max-height: calc(100dvh - 20px);
     border-radius: 18px;
@@ -5456,19 +5558,45 @@ header {
   }
 }
 
-/* 5. Mobile Portrait Modal Tuning (max-width: 560px) */
+/* 13. Mobile Portrait (max-width: 560px) */
 @media (max-width: 560px) {
-  .formula-modal-overlay {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 9px 11px;
+  }
+
+  .stat-val {
+    font-size: 18px;
+  }
+
+  .slide-params-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .calc-inputs-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .formula-modal-overlay,
+  .modal-overlay {
     padding: 8px;
   }
 
-  .formula-modal-dialog {
+  .formula-modal-dialog,
+  .sync-modal-dialog,
+  .modal-content {
+    width: 100%;
     max-height: calc(100vh - 16px);
     max-height: calc(100dvh - 16px);
     border-radius: 16px;
   }
 
-  /* Hide decorative brand badge on narrow mobile so counter + stats + buttons fit on 1 clean line */
   .f3d-brand-badge {
     display: none;
   }
@@ -5565,6 +5693,128 @@ header {
   .f3d-footer-nav .btn {
     padding: 7px 12px;
     font-size: 12px;
+  }
+
+  /* Sync Modal Mobile Refinements */
+  .sync-summary-banner {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    padding: 8px 8px;
+    text-align: center;
+  }
+
+  .sync-summary-item {
+    min-width: 0;
+  }
+
+  .ss-lbl {
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .ss-val {
+    font-size: 11.5px;
+    white-space: nowrap;
+  }
+
+  .sync-tabs-row {
+    display: flex;
+    padding: 8px 10px;
+    gap: 5px;
+  }
+
+  .sync-tab-btn {
+    flex: 1 1 0;
+    justify-content: center;
+    padding: 7px 6px;
+    font-size: 11.5px;
+  }
+
+  /* Lightbox Toolbar on Mobile */
+  .lightbox-toolbar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .lightbox-caption {
+    font-size: 12.5px;
+  }
+
+  .lightbox-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+}
+
+/* 14. Small Phones (max-width: 390px) */
+@media (max-width: 390px) {
+  .calc-inputs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tab-btn {
+    font-size: 11px;
+    padding: 6px 3px;
+  }
+
+  .f3d-counter-pill {
+    font-size: 12px;
+  }
+
+  .f3d-stat-pill {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+/* 15. Short-Height Screens (768p Laptops & Landscape Phones: max-height: 740px) */
+@media (max-height: 740px) {
+  .formula-modal-overlay,
+  .modal-overlay {
+    padding: 8px;
+  }
+
+  .formula-modal-dialog,
+  .sync-modal-dialog,
+  .modal-content {
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+
+  .f3d-modal-header {
+    padding: 8px 16px;
+  }
+
+  .f3d-dots-bar {
+    padding: 5px 16px;
+  }
+
+  .f3d-stage {
+    padding: 10px 16px;
+  }
+
+  .f3d-face {
+    padding: 14px 18px;
+  }
+
+  .f3d-prompt {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .f3d-opt-btn {
+    padding: 9px 13px;
+  }
+
+  .f3d-modal-footer {
+    padding: 8px 16px;
+    gap: 4px;
   }
 }
 
