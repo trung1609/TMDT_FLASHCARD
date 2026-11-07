@@ -1048,7 +1048,7 @@ function renderFormulaModalContent() {
       '<div class="f3d-fb-body">' + q.explanation + '</div>' +
       '<div class="f3d-fb-action">' +
         '<button class="btn btn-sm" onclick="flipFormulaCard()" style="font-size:12px;padding:6px 12px;background:rgba(99,102,241,0.12);color:#6366f1;border:1px solid rgba(99,102,241,0.3);border-radius:8px;font-weight:700;cursor:pointer;">' +
-          '🔄 Lật xem công thức 3D & biến số chi tiết (Space) ➔' +
+          '🔄 Lật xem công thức 3D & biến số<span class="hide-mobile"> chi tiết (Space)</span> ➔' +
         '</button>' +
       '</div>' +
     '</div>';
@@ -1116,7 +1116,7 @@ function renderFormulaModalContent() {
             '<div class="f3d-top-meta">' +
               '<span class="f3d-cat-pill">' + q.categoryLabel + '</span>' +
               '<button class="f3d-flip-hint-pill" onclick="flipFormulaCard()" title="Bấm phím Space để lật thẻ">' +
-                '<span>🔄 Lật xem công thức (Space)</span>' +
+                '<span>🔄 Lật xem công thức<span class="hide-mobile"> (Space)</span></span>' +
               '</button>' +
             '</div>' +
             '<div class="f3d-prompt">' + q.prompt + '</div>' +
@@ -1143,7 +1143,7 @@ function renderFormulaModalContent() {
             exampleHtml +
             '<div class="f3d-back-action-row">' +
               '<button class="btn primary" onclick="flipFormulaCard()" style="font-size:13px;padding:8px 18px;">' +
-                '↩ Quay lại câu hỏi trắc nghiệm (Space)' +
+                '↩ Quay lại câu hỏi trắc nghiệm<span class="hide-mobile"> (Space)</span>' +
               '</button>' +
             '</div>' +
           '</div>' +
