@@ -95,6 +95,7 @@ function updateAdSimulator() {
 const FORMULA_LIBRARY = [
   // ADS
   {
+    id: 'f_ctr',
     category: 'ads',
     title: 'CTR (Click-Through Rate) · Tỷ lệ nhấp chuột',
     equation: 'CTR = (Clicks ÷ Impressions) × 100%',
@@ -106,6 +107,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Bài tập Slide:</b> 4.000 clicks ÷ 200.000 impressions = <b>2,0%</b> (Chuẩn tốt).'
   },
   {
+    id: 'f_cpc',
     category: 'ads',
     title: 'CPC (Cost Per Click) · Chi phí mỗi lượt nhấp',
     equation: 'CPC = Ad Cost ÷ Clicks',
@@ -117,6 +119,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Bài tập Slide:</b> 20.000.000 đ ÷ 4.000 clicks = <b>5.000 đ/click</b>.'
   },
   {
+    id: 'f_cpm',
     category: 'ads',
     title: 'CPM (Cost Per Mille) · Chi phí 1.000 lượt hiển thị',
     equation: 'CPM = (Ad Cost ÷ Impressions) × 1.000',
@@ -129,6 +132,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Bài tập Slide:</b> (20.000.000 đ ÷ 200.000) × 1.000 = <b>100.000 đ</b>.<br><b>Câu trắc nghiệm 123:</b> Chi 6tr, 2 triệu hiển thị → CPM = (6tr ÷ 2tr) × 1.000 = <b>3.000 đ</b>.'
   },
   {
+    id: 'f_cvr',
     category: 'ads',
     title: 'CVR (Conversion Rate) · Tỷ lệ chuyển đổi',
     equation: 'CVR = (Orders ÷ Clicks) × 100%',
@@ -140,6 +144,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Bài tập Slide:</b> 100 đơn ÷ 4.000 clicks = <b>2,5%</b> (Mức chuẩn TMĐT).'
   },
   {
+    id: 'f_cpa',
     category: 'ads',
     title: 'CPA (Cost Per Acquisition) · Chi phí mỗi đơn hàng',
     equation: 'CPA = Ad Cost ÷ Orders = CPC ÷ CVR',
@@ -152,6 +157,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Bài tập Slide:</b> 20.000.000 đ ÷ 100 = <b>200.000 đ/đơn</b> (hoặc 5.000 đ ÷ 0,025 = 200.000 đ).<br><b>Câu 124:</b> CPC 5.000 đ, CVR 2,5% → CPA = 5.000 ÷ 0,025 = <b>200.000 đ</b>.'
   },
   {
+    id: 'f_aov',
     category: 'ads',
     title: 'AOV (Average Order Value) · Giá trị đơn trung bình',
     equation: 'AOV = Revenue ÷ Orders',
@@ -163,6 +169,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 100 đơn = <b>800.000 đ/đơn</b>.'
   },
   {
+    id: 'f_roas',
     category: 'ads',
     title: 'ROAS (Return On Ad Spend) · Doanh thu trên chi phí QC',
     equation: 'ROAS = Revenue ÷ Ad Cost = AOV ÷ CPA',
@@ -174,6 +181,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 20.000.000 đ = <b>4,0x</b> (hay 400%).'
   },
   {
+    id: 'f_roas_be',
     category: 'ads',
     title: 'Ngưỡng ROAS hòa vốn (Break-even ROAS)',
     equation: 'ROAS hòa vốn = 1 ÷ Biên lợi nhuận gộp (Gross Margin)',
@@ -185,6 +193,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Bài tập Slide:</b> Biên gộp 30% → Ngưỡng hòa vốn = 1 ÷ 0,3 ≈ <b>3,33x</b>. Vì ROAS thực tế (4x) > 3,33x nên chiến dịch có lãi (+4 triệu).'
   },
   {
+    id: 'f_cvr_be',
     category: 'ads',
     title: 'CVR cần đạt để hòa vốn (Break-even CVR)',
     equation: 'CVR hòa vốn = CPC ÷ (AOV × Gross Margin)',
@@ -196,6 +205,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Essay 21:</b> CPC = 4.000 đ, AOV = 700.000 đ, Biên gộp = 25% → CPA tối đa = 700k × 25% = 175.000 đ → CVR cần đạt = 4.000 ÷ 175.000 ≈ <b>2,29%</b> để hòa vốn.'
   },
   {
+    id: 'f_adrank',
     category: 'ads',
     title: 'Ad Rank · Cơ chế Xếp hạng Đấu giá quảng cáo (Essay 22)',
     equation: 'Thứ hạng quảng cáo = Giá thầu (Bid) × Điểm chất lượng (Quality Score)',
@@ -209,6 +219,7 @@ const FORMULA_LIBRARY = [
 
   // LTV & CAC
   {
+    id: 'f_ltv',
     category: 'ltv',
     title: 'LTV (Customer Lifetime Value) · Giá trị vòng đời khách hàng',
     equation: 'LTV (Lợi nhuận gộp) = AOV × f × t × Gross Margin',
@@ -222,6 +233,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Essay 20:</b> AOV = 450.000 đ, f = 3 đơn/năm, t = 2 năm, Biên gộp 30%<br>→ LTV = 450.000 × 3 × 2 × 30% = <b>810.000 đ</b>.<br><b>Essay 43:</b> AOV = 250.000 đ, f = 2,5 đơn/năm, t = 2 năm, Biên gộp 32%<br>→ LTV = 250.000 × 2,5 × 2 × 32% = <b>400.000 đ</b>.'
   },
   {
+    id: 'f_cac',
     category: 'ltv',
     title: 'CAC (Customer Acquisition Cost) · Chi phí thu hút khách hàng',
     equation: 'CAC = Tổng chi phí Marketing & Sales ÷ Số khách hàng mới',
@@ -233,6 +245,7 @@ const FORMULA_LIBRARY = [
     example: '• Từ Essay 20: LTV = 810.000 đ → CAC tối đa = 810.000 ÷ 3 = <b>270.000 đ</b>.<br>• Từ Essay 43: LTV = 400.000 đ → CAC tối đa = 400.000 ÷ 3 ≈ <b>133.000 đ</b>.'
   },
   {
+    id: 'f_max_cpc',
     category: 'ltv',
     title: 'CPC tối đa cho phép theo LTV & CAC (Essay 43)',
     equation: 'Max CPC = CAC tối đa × CVR (khách mới)',
@@ -246,6 +259,7 @@ const FORMULA_LIBRARY = [
 
   // FUNNEL
   {
+    id: 'f_full_cvr',
     category: 'funnel',
     title: 'Phễu chuyển đổi TMĐT 4 bước chuẩn (Buổi 5 & Buổi 13)',
     equation: 'Phiên (Sessions) → Xem SP → Thêm giỏ (Cart) → Thanh toán (Checkout) → Hoàn tất (Success)',
@@ -260,11 +274,13 @@ const FORMULA_LIBRARY = [
     example: '<b>Essay 18:</b> 10.000 phiên → 4.200 xem SP (42%) → 1.100 thêm giỏ (26%) → 620 thanh toán (56%) → 280 hoàn tất (45%). CVR toàn phễu = 2,8%.'
   },
   {
+    id: 'f_cart_abandon',
     category: 'funnel',
     title: 'Tỷ lệ bỏ giỏ hàng (Cart Abandonment Rate)',
     equation: 'Cart Abandonment Rate = [1 − (Lượt thanh toán ÷ Lượt thêm giỏ)] × 100%',
     vars: [
-      'Đo lường tỷ lệ người dùng đã đưa sản phẩm vào giỏ nhưng không tiến hành mua hàng'
+      '<b>Lượt thêm giỏ</b>: Tổng số lượt khách hàng đưa sản phẩm vào giỏ hàng',
+      '<b>Lượt thanh toán</b>: Số lượt khách tiến hành thanh toán / đặt đơn thành công'
     ],
     tip: '💡 <b>6 nguyên nhân bỏ giỏ hàng hàng đầu (Buổi 9 & 15):</b> (1) Phí vận chuyển bất ngờ phát sinh ở bước cuối, (2) Bắt buộc tạo tài khoản rườm rà, (3) Quy trình thanh toán quá nhiều bước, (4) Thiếu phương thức thanh toán mong muốn, (5) Lo ngại an toàn bảo mật, (6) Chính sách đổi trả không rõ ràng.',
     example: 'Trung bình ngành TMĐT thế giới bỏ giỏ hàng từ 65% – 75%. Giảm được 5% bỏ giỏ hàng giúp tăng 20% lợi nhuận.'
@@ -272,6 +288,7 @@ const FORMULA_LIBRARY = [
 
   // OPS & PAYMENT
   {
+    id: 'f_payment_fee',
     category: 'ops',
     title: 'Chi phí Cổng thanh toán & Tỷ trọng trên Lợi nhuận (Essay 15)',
     equation: 'Phí = Phí cố định + (% phí × Giá trị đơn); Tỷ trọng = Phí ÷ Lợi nhuận gộp',
@@ -284,6 +301,7 @@ const FORMULA_LIBRARY = [
     example: '<b>Đơn 150.000 đ (biên gộp 25% = 37.500 đ):</b><br>Phí = 2.000 + (1,5% × 150.000) = 4.250 đ → Tỷ trọng phí = 4.250 ÷ 37.500 ≈ <b>11,3%</b>!'
   },
   {
+    id: 'f_logistics',
     category: 'ops',
     title: 'Hệ chỉ số Logistics & Điểm hòa vốn vận hành (Buổi 10 & Essay 39)',
     equation: 'Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%',
@@ -297,6 +315,7 @@ const FORMULA_LIBRARY = [
 
   // SECURITY
   {
+    id: 'f_security_risk',
     category: 'security',
     title: 'Công thức Rủi ro An ninh thông tin (Buổi 7, Câu 145 & Essay 58)',
     equation: 'Rủi ro (Risk) = Mối đe dọa (Threat) × Lỗ hổng (Vulnerability) × Tác động (Impact)',
@@ -311,6 +330,7 @@ const FORMULA_LIBRARY = [
 ];
 
 // Full Flashcard Question Bank for Formula Practice (ABCD Multiple Choice)
+// Each card embeds its own exact equation, vars, tip, and example so 3D flip is 100% accurate.
 const FORMULA_FLASHCARDS = [
   {
     id: 'f_ctr',
@@ -324,7 +344,14 @@ const FORMULA_FLASHCARDS = [
       'CTR = (Clicks ÷ Orders) × 100%'
     ],
     answer: 'A',
-    explanation: '<b>CTR = (Clicks ÷ Impressions) × 100%</b>.<br>Đo lường tỷ lệ người nhìn thấy quảng cáo bấm vào xem. Chuẩn ngành TMĐT từ 1,0% – 2,5%. CTR cao giúp tăng Điểm chất lượng (Quality Score).'
+    explanation: '<b>CTR = (Clicks ÷ Impressions) × 100%</b>.<br>Đo lường tỷ lệ người nhìn thấy quảng cáo bấm vào xem. Chuẩn ngành TMĐT từ 1,0% – 2,5%. CTR cao giúp tăng Điểm chất lượng (Quality Score).',
+    equation: 'CTR = (Clicks ÷ Impressions) × 100%',
+    vars: [
+      '<b>Clicks</b>: Tổng số lần người dùng bấm (nhấp chuột) vào quảng cáo',
+      '<b>Impressions</b>: Tổng số lần quảng cáo được hiển thị trên màn hình'
+    ],
+    tip: '💡 <b>Ý nghĩa & Mẹo thi:</b> Đo lường mức độ hấp dẫn của mẫu quảng cáo (tiêu đề, hình ảnh, lời kêu gọi hành động CTA) và mức độ nhắm đúng tệp khách hàng. Chuẩn ngành TMĐT thường từ 1,0% – 2,5%. CTR cao giúp tăng Điểm chất lượng (Quality Score) trong cơ chế đấu giá.',
+    example: '<b>Bài tập Slide:</b> 4.000 clicks ÷ 200.000 impressions × 100% = <b>2,0%</b> (Chuẩn tốt).'
   },
   {
     id: 'f_cpc',
@@ -338,7 +365,14 @@ const FORMULA_FLASHCARDS = [
       'CPC = Ad Cost ÷ Orders'
     ],
     answer: 'B',
-    explanation: '<b>CPC = Ad Cost ÷ Clicks</b>.<br>Chi phí thực tế nhà quảng cáo phải trả cho mỗi lượt người dùng nhấp chuột vào quảng cáo dẫn về trang đích (Landing Page).'
+    explanation: '<b>CPC = Ad Cost ÷ Clicks</b>.<br>Chi phí thực tế nhà quảng cáo phải trả cho mỗi lượt người dùng nhấp chuột vào quảng cáo dẫn về trang đích (Landing Page).',
+    equation: 'CPC = Ad Cost ÷ Clicks',
+    vars: [
+      '<b>Ad Cost</b>: Tổng ngân sách / chi phí đã chi cho quảng cáo (VNĐ)',
+      '<b>Clicks</b>: Tổng số lượt nhấp chuột thu được'
+    ],
+    tip: '💡 <b>Ý nghĩa & Mẹo thi:</b> Chi phí thực tế trả cho mỗi khách tiềm năng truy cập vào trang đích (Landing Page). Phụ thuộc vào mức độ cạnh tranh từ khóa và Điểm chất lượng (Quality Score).',
+    example: '<b>Bài tập Slide:</b> 20.000.000 đ ÷ 4.000 clicks = <b>5.000 đ/click</b>.'
   },
   {
     id: 'f_cpm',
@@ -352,7 +386,15 @@ const FORMULA_FLASHCARDS = [
       'CPM = Ad Cost ÷ 1.000'
     ],
     answer: 'C',
-    explanation: '<b>CPM = (Ad Cost ÷ Impressions) × 1.000</b>.<br>Thước đo chuẩn quốc tế cho chiến dịch giai đoạn Nhận thức / Thương hiệu (Brand Awareness) để tiếp cận độ phủ rộng.'
+    explanation: '<b>CPM = (Ad Cost ÷ Impressions) × 1.000</b>.<br>Thước đo chuẩn quốc tế cho chiến dịch giai đoạn Nhận thức / Thương hiệu (Brand Awareness) để tiếp cận độ phủ rộng.',
+    equation: 'CPM = (Ad Cost ÷ Impressions) × 1.000',
+    vars: [
+      '<b>Ad Cost</b>: Tổng chi phí quảng cáo đã chi (VNĐ)',
+      '<b>Impressions</b>: Tổng số lượt quảng cáo được hiển thị',
+      '<b>1.000</b>: Đơn vị tính trên mỗi 1.000 lượt hiển thị (Mille = 1.000)'
+    ],
+    tip: '💡 <b>Ý nghĩa & Mẹo thi:</b> Thước đo chuẩn quốc tế cho chiến dịch giai đoạn Nhận thức / Thương hiệu (Brand Awareness) nhằm tối ưu độ phủ (Reach).',
+    example: '<b>Bài tập Slide:</b> (20.000.000 đ ÷ 200.000) × 1.000 = <b>100.000 đ</b>.<br><b>Câu trắc nghiệm 123:</b> Chi 6tr, 2 triệu hiển thị → CPM = (6tr ÷ 2tr) × 1.000 = <b>3.000 đ</b>.'
   },
   {
     id: 'f_cvr',
@@ -366,7 +408,14 @@ const FORMULA_FLASHCARDS = [
       'CVR = (Orders ÷ Clicks) × 100%'
     ],
     answer: 'D',
-    explanation: '<b>CVR = (Orders ÷ Clicks) × 100%</b>.<br>Thước đo năng lực thuyết phục của Trang đích (Landing Page). CVR cao giúp hạ CPA mà không cần giảm giá thầu.'
+    explanation: '<b>CVR = (Orders ÷ Clicks) × 100%</b>.<br>Thước đo năng lực thuyết phục của Trang đích (Landing Page). CVR cao giúp hạ CPA mà không cần giảm giá thầu.',
+    equation: 'CVR = (Orders ÷ Clicks) × 100%',
+    vars: [
+      '<b>Orders</b>: Số đơn hàng hoặc mục tiêu chuyển đổi hoàn tất',
+      '<b>Clicks</b>: Tổng số lượt truy cập vào trang đích từ quảng cáo'
+    ],
+    tip: '💡 <b>Ý nghĩa cốt lõi:</b> Thước đo năng lực thuyết phục của Trang đích (Landing Page: giá bán, ảnh sản phẩm, tốc độ tải, đánh giá khách hàng, quy trình thanh toán). CVR thuộc về nội lực website của doanh nghiệp.',
+    example: '<b>Bài tập Slide:</b> (100 đơn ÷ 4.000 clicks) × 100% = <b>2,5%</b> (Mức chuẩn tốt của ngành TMĐT).'
   },
   {
     id: 'f_cpa',
@@ -380,7 +429,15 @@ const FORMULA_FLASHCARDS = [
       'CPA = Revenue ÷ Orders = AOV ÷ CVR'
     ],
     answer: 'B',
-    explanation: '<b>CPA = Ad Cost ÷ Orders = CPC ÷ CVR</b>.<br>⭐ <i>Trọng tâm đề thi:</i> Tăng CVR sẽ kéo CPA giảm xuống mà lưu lượng đơn hàng vẫn giữ nguyên hoặc tăng lên.'
+    explanation: '<b>CPA = Ad Cost ÷ Orders = CPC ÷ CVR</b>.<br>⭐ <i>Trọng tâm đề thi:</i> Tăng CVR sẽ kéo CPA giảm xuống mà lưu lượng đơn hàng vẫn giữ nguyên hoặc tăng lên.',
+    equation: 'CPA = Ad Cost ÷ Orders = CPC ÷ CVR',
+    vars: [
+      '<b>Ad Cost</b>: Tổng chi phí quảng cáo đã chi (VNĐ)',
+      '<b>Orders</b>: Tổng số đơn hàng thành công',
+      '<b>Mối quan hệ vàng</b>: CPA = CPC ÷ CVR'
+    ],
+    tip: '⭐ <b>CÂU HỎI TRỌNG TÂM ĐỀ THI (Câu 127):</b> Vì sao con đường tăng CVR bền vững hơn giảm CPC?<br>→ Vì tăng CVR hạ CPA mà giữ nguyên hoặc tăng lưu lượng đơn hàng; còn giảm giá thầu (hạ CPC) sẽ làm giảm hiển thị và sụt giảm số đơn. Dư địa tối ưu trang đích luôn lớn hơn đấu thầu giá!',
+    example: '<b>Bài tập Slide:</b> 20.000.000 đ ÷ 100 đơn = <b>200.000 đ/đơn</b> (hoặc 5.000 đ ÷ 2,5% = <b>200.000 đ/đơn</b>).<br><b>Câu 124:</b> CPC 5.000 đ, CVR 2,5% → CPA = 5.000 ÷ 0,025 = <b>200.000 đ</b>.'
   },
   {
     id: 'f_aov',
@@ -394,7 +451,14 @@ const FORMULA_FLASHCARDS = [
       'AOV = (Revenue − Ad Cost) ÷ Orders'
     ],
     answer: 'A',
-    explanation: '<b>AOV = Revenue ÷ Orders</b>.<br>Tăng AOV bằng bán kèm (cross-sell), combo, chính sách freeship theo ngưỡng là cách tăng trưởng doanh thu không tốn tiền quảng cáo.'
+    explanation: '<b>AOV = Revenue ÷ Orders</b>.<br>Tăng AOV bằng bán kèm (cross-sell), combo, chính sách freeship theo ngưỡng là cách tăng trưởng doanh thu không tốn tiền quảng cáo.',
+    equation: 'AOV = Revenue ÷ Orders',
+    vars: [
+      '<b>Revenue</b>: Tổng doanh thu tạo ra từ các đơn hàng (VNĐ)',
+      '<b>Orders</b>: Tổng số đơn hàng thành công'
+    ],
+    tip: '💡 <b>Ý nghĩa & Chiến lược:</b> Tăng AOV (bằng combo, freeship từ ngưỡng giá trị đơn, gợi ý bán chéo cross-sell / up-sell) là một trong 3 trụ cột mở rộng doanh thu mà không cần tốn thêm tiền quảng cáo.',
+    example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 100 đơn = <b>800.000 đ/đơn</b>.'
   },
   {
     id: 'f_roas',
@@ -408,7 +472,15 @@ const FORMULA_FLASHCARDS = [
       'ROAS = (Revenue − Ad Cost) ÷ Revenue'
     ],
     answer: 'C',
-    explanation: '<b>ROAS = Revenue ÷ Ad Cost = AOV ÷ CPA</b>.<br>⚠️ <i>Lưu ý:</i> ROAS chỉ đo doanh thu trên chi phí quảng cáo, không đo lợi nhuận vì chưa trừ giá vốn hàng bán.'
+    explanation: '<b>ROAS = Revenue ÷ Ad Cost = AOV ÷ CPA</b>.<br>⚠️ <i>Lưu ý:</i> ROAS chỉ đo doanh thu trên chi phí quảng cáo, không đo lợi nhuận vì chưa trừ giá vốn hàng bán.',
+    equation: 'ROAS = Revenue ÷ Ad Cost = AOV ÷ CPA',
+    vars: [
+      '<b>Revenue</b>: Tổng doanh thu mang lại từ quảng cáo',
+      '<b>Ad Cost</b>: Tổng ngân sách quảng cáo đã chi',
+      '<b>AOV ÷ CPA</b>: Giá trị đơn trung bình chia cho chi phí mỗi đơn hàng'
+    ],
+    tip: '⚠️ <b>LƯU Ý CỐT LÕI:</b> ROAS chỉ đo doanh thu, hoàn toàn KHÔNG ĐO LỢI NHUẬN (vì chưa trừ giá vốn COGS và chi phí vận hành). Doanh nghiệp có thể đạt ROAS = 4x nhưng vẫn lỗ nếu biên lợi nhuận gộp mỏng (< 25%).',
+    example: '<b>Bài tập Slide:</b> 80.000.000 đ ÷ 20.000.000 đ = <b>4,0x</b> (hay 800.000 đ ÷ 200.000 đ = <b>4,0x</b> / 400%).'
   },
   {
     id: 'f_roas_be',
@@ -422,7 +494,14 @@ const FORMULA_FLASHCARDS = [
       'ROAS hòa vốn = 1 ÷ (1 − Biên lợi nhuận gộp)'
     ],
     answer: 'B',
-    explanation: '<b>ROAS hòa vốn = 1 ÷ Gross Margin</b>.<br>Ví dụ: Biên gộp 40% (0,4) → ROAS hòa vốn = 2,5x. Biên gộp 30% (0,3) → ROAS hòa vốn = 3,33x.'
+    explanation: '<b>ROAS hòa vốn = 1 ÷ Gross Margin</b>.<br>Ví dụ: Biên gộp 40% (0,4) → ROAS hòa vốn = 2,5x. Biên gộp 30% (0,3) → ROAS hòa vốn = 3,33x.',
+    equation: 'ROAS hòa vốn = 1 ÷ Biên lợi nhuận gộp (Gross Margin)',
+    vars: [
+      '<b>Gross Margin (Biên lợi nhuận gộp)</b>: Tỷ lệ lợi nhuận gộp của sản phẩm (ví dụ 30% = 0,3)',
+      '<b>Điều kiện có lãi</b>: ROAS thực tế > ROAS hòa vốn'
+    ],
+    tip: '⭐ <b>CÂU HỎI ĐỀ CƯƠNG (Câu 125, Essay 21, Essay 44):</b><br>• Gross Margin = 40% (0,4) → ROAS hòa vốn = 1 ÷ 0,4 = <b>2,5x</b><br>• Gross Margin = 30% (0,3) → ROAS hòa vốn = 1 ÷ 0,3 ≈ <b>3,33x</b><br>• Gross Margin = 25% (0,25) → ROAS hòa vốn = 1 ÷ 0,25 = <b>4,0x</b><br>• Gross Margin = 28% (0,28) → ROAS hòa vốn = 1 ÷ 0,28 ≈ <b>3,57x</b>',
+    example: '<b>Bài tập Slide:</b> Biên gộp 30% → Ngưỡng hòa vốn = 1 ÷ 0,3 ≈ <b>3,33x</b>. Vì ROAS thực tế (4,0x) > 3,33x nên chiến dịch có lãi (+4 triệu).'
   },
   {
     id: 'f_cvr_be',
@@ -436,7 +515,14 @@ const FORMULA_FLASHCARDS = [
       'CVR hòa vốn = CPC ÷ (AOV × Gross Margin)'
     ],
     answer: 'D',
-    explanation: '<b>CVR hòa vốn = CPC ÷ (AOV × Gross Margin)</b>.<br>Trong đó (AOV × Gross Margin) chính là lợi nhuận gộp mỗi đơn (CPA tối đa cho phép).'
+    explanation: '<b>CVR hòa vốn = CPC ÷ (AOV × Gross Margin)</b>.<br>Trong đó (AOV × Gross Margin) chính là lợi nhuận gộp mỗi đơn (CPA tối đa cho phép).',
+    equation: 'CVR hòa vốn = CPC ÷ (AOV × Gross Margin)',
+    vars: [
+      '<b>CPC</b>: Chi phí trung bình cho mỗi lượt nhấp chuột',
+      '<b>AOV × Gross Margin</b>: Lợi nhuận gộp tạo ra trên 1 đơn hàng (CPA tối đa cho phép để hòa vốn)'
+    ],
+    tip: '💡 <b>Ý nghĩa (Essay 21):</b> Để hòa vốn thì <code>CPA = Lợi nhuận gộp 1 đơn = AOV × Gross Margin</code>. Vì <code>CPA = CPC ÷ CVR</code> nên suy ra <code>CVR hòa vốn = CPC ÷ (AOV × Gross Margin)</code>.',
+    example: '<b>Essay 21:</b> CPC = 4.000 đ, AOV = 700.000 đ, Biên gộp = 25% → CPA tối đa = 700k × 25% = 175.000 đ → CVR cần đạt = 4.000 ÷ 175.000 ≈ <b>2,29%</b> để hòa vốn.'
   },
   {
     id: 'f_adrank',
@@ -450,7 +536,14 @@ const FORMULA_FLASHCARDS = [
       'Thứ hạng QC = Giá thầu (Bid) ÷ Điểm chất lượng (Quality Score)'
     ],
     answer: 'A',
-    explanation: '<b>Ad Rank = Bid × Quality Score</b>.<br>Trang đích tốt giúp tăng Quality Score, từ đó vượt qua đối thủ trả giá thầu cao hơn và trả CPC thực tế thấp hơn.'
+    explanation: '<b>Ad Rank = Bid × Quality Score</b>.<br>Trang đích tốt giúp tăng Quality Score, từ đó vượt qua đối thủ trả giá thầu cao hơn và trả CPC thực tế thấp hơn.',
+    equation: 'Thứ hạng quảng cáo (Ad Rank) = Giá thầu (Bid) × Điểm chất lượng (Quality Score)',
+    vars: [
+      '<b>Giá thầu (Bid)</b>: Mức giá tối đa nhà quảng cáo sẵn sàng trả cho 1 click',
+      '<b>Điểm chất lượng (Quality Score)</b>: Đánh giá của nền tảng dựa trên CTR kỳ vọng, độ liên quan mẫu quảng cáo và trải nghiệm Trang đích'
+    ],
+    tip: '⭐ <b>Tác động kép của trang đích (Essay 22):</b> Cải thiện trang đích vừa làm tăng CVR (giúp hạ CPA), vừa là yếu tố cốt lõi tăng Quality Score (giúp hạ giá thầu thực tế CPC). Hai tác động nhân với nhau tạo lợi thế cạnh tranh áp đảo.',
+    example: 'Một nhà quảng cáo thầu 6.000 đ nhưng điểm chất lượng 10/10 (Ad Rank = 60) sẽ vượt qua đối thủ thầu 10.000 đ nhưng điểm chất lượng 5/10 (Ad Rank = 50), và chỉ phải trả CPC thực tế thấp hơn!'
   },
   {
     id: 'f_ltv',
@@ -464,7 +557,16 @@ const FORMULA_FLASHCARDS = [
       'LTV = (AOV × Gross Margin) ÷ (f × t)'
     ],
     answer: 'C',
-    explanation: '<b>LTV = AOV × f × t × Gross Margin</b>.<br>Với f là tần suất mua hàng (đơn/năm), t là thời gian gắn bó (năm), Gross Margin là tỷ lệ lợi nhuận gộp.'
+    explanation: '<b>LTV = AOV × f × t × Gross Margin</b>.<br>Với f là tần suất mua hàng (đơn/năm), t là thời gian gắn bó (năm), Gross Margin là tỷ lệ lợi nhuận gộp.',
+    equation: 'LTV (Lợi nhuận gộp) = AOV × f × t × Gross Margin',
+    vars: [
+      '<b>AOV</b>: Giá trị đơn hàng trung bình (VNĐ/đơn)',
+      '<b>f (Frequency)</b>: Tần suất mua hàng bình quân (số đơn / năm)',
+      '<b>t (Lifespan)</b>: Thời gian gắn bó trung bình của khách hàng (số năm)',
+      '<b>Gross Margin</b>: Tỷ lệ biên lợi nhuận gộp bình quân (%)'
+    ],
+    tip: '⭐ <b>CÂU HỎI ĐỀ CƯƠNG (Buổi 5 & Buổi 13):</b> LTV tính theo lợi nhuận gộp là "trần ngân sách" bảo vệ doanh nghiệp không bị vung tay quá trán khi chi tiền chạy quảng cáo thu hút khách mới.',
+    example: '<b>Essay 20:</b> AOV = 450.000 đ, f = 3 đơn/năm, t = 2 năm, Biên gộp 30% → LTV = 450.000 × 3 × 2 × 30% = <b>810.000 đ</b>.<br><b>Essay 43:</b> AOV = 250.000 đ, f = 2,5 đơn/năm, t = 2 năm, Biên gộp 32% → LTV = 250.000 × 2,5 × 2 × 32% = <b>400.000 đ</b>.'
   },
   {
     id: 'f_cac',
@@ -478,7 +580,14 @@ const FORMULA_FLASHCARDS = [
       'CAC = LTV ÷ Biên lợi nhuận gộp'
     ],
     answer: 'B',
-    explanation: '<b>CAC = Tổng chi phí Marketing & Sales ÷ Số khách hàng mới</b>.<br>Mẫu số bắt buộc là số khách hàng mới, không phải tổng số đơn hàng.'
+    explanation: '<b>CAC = Tổng chi phí Marketing & Sales ÷ Số khách hàng mới</b>.<br>Mẫu số bắt buộc là số khách hàng mới, không phải tổng số đơn hàng.',
+    equation: 'CAC = Tổng chi phí Marketing & Sales ÷ Số khách hàng mới',
+    vars: [
+      '<b>Tổng chi phí Marketing & Sales</b>: Toàn bộ ngân sách quảng cáo, khuyến mãi khách mới, nhân sự, công cụ trong kỳ',
+      '<b>Số khách hàng mới</b>: Lượng khách hàng lần đầu phát sinh đơn hàng (không tính khách cũ mua lại)'
+    ],
+    tip: '💡 <b>Phân biệt CAC và CPA:</b> CPA là chi phí quảng cáo trên mỗi <i>đơn hàng</i>, còn CAC là tổng chi phí tiếp thị & bán hàng để thu hút được 1 <i>khách hàng mới</i>.',
+    example: 'Chi 30.000.000 đ cho Marketing & Sales thu được 200 khách hàng mới → CAC = 30.000.000 ÷ 200 = <b>150.000 đ/khách mới</b>.'
   },
   {
     id: 'f_ltv_cac_ratio',
@@ -492,7 +601,15 @@ const FORMULA_FLASHCARDS = [
       'LTV / CAC ≤ 2'
     ],
     answer: 'A',
-    explanation: '<b>LTV / CAC ≥ 3</b> là chuẩn vàng của mô hình TMĐT bền vững. Nếu LTV / CAC < 1, doanh nghiệp đang chảy máu tiền tệ trên từng khách mới.'
+    explanation: '<b>LTV / CAC ≥ 3</b> là chuẩn vàng của mô hình TMĐT bền vững. Nếu LTV / CAC < 1, doanh nghiệp đang chảy máu tiền tệ trên từng khách mới.',
+    equation: 'Tỷ số chuẩn vàng: LTV ÷ CAC ≥ 3  ⇒  CAC tối đa = LTV ÷ 3',
+    vars: [
+      '<b>LTV</b>: Giá trị lợi nhuận gộp trọn đời của khách hàng',
+      '<b>CAC</b>: Chi phí thu hút 1 khách hàng mới',
+      '<b>CAC tối đa cho phép</b>: LTV ÷ 3 (đảm bảo 1/3 bù chi phí Marketing, 1/3 bù vận hành, 1/3 là lợi nhuận ròng)'
+    ],
+    tip: '⭐ <b>Quy tắc vàng tỷ số LTV / CAC (Buổi 5 & 13):</b><br>• <b>LTV / CAC ≥ 3</b>: Ngưỡng chuẩn vàng của một mô hình TMĐT bền vững.<br>• <b>LTV / CAC ≈ 1 – 2</b>: Biên mỏng, chưa đủ bù chi phí cố định.<br>• <b>LTV / CAC < 1</b>: Đang lỗ trên từng khách hàng thu hút (chảy máu tiền tệ).',
+    example: '• <b>Essay 20:</b> LTV = 810.000 đ → CAC tối đa = 810.000 ÷ 3 = <b>270.000 đ</b>.<br>• <b>Essay 43:</b> LTV = 400.000 đ → CAC tối đa = 400.000 ÷ 3 ≈ <b>133.000 đ</b>.'
   },
   {
     id: 'f_max_cpc',
@@ -506,7 +623,14 @@ const FORMULA_FLASHCARDS = [
       'Max CPC = CAC tối đa × CVR (khách mới)'
     ],
     answer: 'D',
-    explanation: '<b>Max CPC = CAC tối đa × CVR (khách mới)</b>.<br>Với CAC tối đa = LTV ÷ 3. Giúp đặt giá thầu trần trên Google/Facebook Ads để không bao giờ bị lỗ dài hạn.'
+    explanation: '<b>Max CPC = CAC tối đa × CVR (khách mới)</b>.<br>Với CAC tối đa = LTV ÷ 3. Giúp đặt giá thầu trần trên Google/Facebook Ads để không bao giờ bị lỗ dài hạn.',
+    equation: 'Max CPC = CAC tối đa × CVR (khách mới) = (LTV ÷ 3) × CVR',
+    vars: [
+      '<b>CAC tối đa</b>: Ngưỡng chi tối đa để có 1 khách mới (= LTV ÷ 3)',
+      '<b>CVR (khách mới)</b>: Tỷ lệ chuyển đổi từ lượt nhấp sang khách hàng mới'
+    ],
+    tip: '💡 <b>Ứng dụng quản trị (Essay 43):</b> Vì <code>CAC = CPC ÷ CVR</code> nên <code>Max CPC = CAC tối đa × CVR</code>. Công thức này giúp thiết lập giá thầu trần trên Google/Facebook Ads để không bao giờ chạy quảng cáo bị lỗ về lâu dài.',
+    example: '<b>Essay 43:</b> CAC tối đa = 133.000 đ, CVR = 2,7% (0,027) → Max CPC = 133.000 × 0,027 ≈ <b>3.600 đ/click</b>.'
   },
   {
     id: 'f_cart_abandon',
@@ -520,7 +644,14 @@ const FORMULA_FLASHCARDS = [
       'Tỷ lệ bỏ giỏ = (Lượt thanh toán ÷ Lượt thêm giỏ) × 100%'
     ],
     answer: 'C',
-    explanation: '<b>Tỷ lệ bỏ giỏ = [1 − (Lượt thanh toán ÷ Lượt thêm giỏ)] × 100%</b>.<br>6 nguyên nhân hàng đầu: phí ship bất ngờ, bắt tạo tài khoản, thiếu cổng thanh toán quen thuộc, bảo mật kém.'
+    explanation: '<b>Tỷ lệ bỏ giỏ = [1 − (Lượt thanh toán ÷ Lượt thêm giỏ)] × 100%</b>.<br>6 nguyên nhân hàng đầu: phí ship bất ngờ, bắt tạo tài khoản, thiếu cổng thanh toán quen thuộc, bảo mật kém.',
+    equation: 'Cart Abandonment Rate = [1 − (Lượt thanh toán ÷ Lượt thêm giỏ)] × 100%',
+    vars: [
+      '<b>Lượt thêm giỏ (Add to Cart)</b>: Số lượt người dùng đã đưa sản phẩm vào giỏ hàng',
+      '<b>Lượt thanh toán (Checkout / Orders)</b>: Số lượt người dùng tiến hành thanh toán / đặt hàng'
+    ],
+    tip: '💡 <b>6 nguyên nhân bỏ giỏ hàng hàng đầu (Buổi 9 & 15):</b> (1) Phí vận chuyển bất ngờ phát sinh ở bước cuối, (2) Bắt buộc tạo tài khoản rườm rà, (3) Quy trình thanh toán quá nhiều bước, (4) Thiếu phương thức thanh toán mong muốn, (5) Lo ngại an toàn bảo mật, (6) Chính sách đổi trả không rõ ràng.',
+    example: 'Có 1.000 lượt thêm vào giỏ nhưng chỉ 300 lượt thanh toán → Tỷ lệ bỏ giỏ = [1 − (300 ÷ 1.000)] × 100% = <b>70%</b> (Trung bình ngành TMĐT từ 65% – 75%).'
   },
   {
     id: 'f_full_cvr',
@@ -534,7 +665,15 @@ const FORMULA_FLASHCARDS = [
       'CVR toàn phễu = (Lượt hoàn tất đơn ÷ Lượt thanh toán) × 100%'
     ],
     answer: 'B',
-    explanation: '<b>CVR toàn phễu = (Lượt hoàn tất đơn ÷ Tổng phiên) × 100%</b>.<br>Đo lường năng lực chuyển hóa tổng thể từ lượt truy cập ban đầu thành doanh thu cuối cùng.'
+    explanation: '<b>CVR toàn phễu = (Lượt hoàn tất đơn ÷ Tổng phiên) × 100%</b>.<br>Đo lường năng lực chuyển hóa tổng thể từ lượt truy cập ban đầu thành doanh thu cuối cùng.',
+    equation: 'CVR toàn phễu = (Lượt hoàn tất đơn ÷ Tổng phiên) × 100%',
+    vars: [
+      '<b>Lượt hoàn tất đơn (Completed Orders)</b>: Số đơn hàng thành công ở bước cuối cùng của phễu',
+      '<b>Tổng phiên (Total Sessions)</b>: Tổng số phiên truy cập vào website ở đỉnh phễu',
+      '<b>Các bước trung gian</b>: Phiên → Xem SP → Thêm giỏ → Thanh toán → Hoàn tất'
+    ],
+    tip: '⭐ <b>NGUYÊN TẮC QUẢN TRỊ (Essay 18 & Essay 43):</b> Giá trị của cải thiện tỷ lệ thuận với <b>số người tuyệt đối</b> đi vào bước đó. Bước giữa có số lượng người vào lớn gấp nhiều lần nên một cải thiện nhỏ cũng tạo ra mức tăng đơn hàng vượt bậc.',
+    example: '<b>Essay 18:</b> 10.000 phiên → 4.200 xem SP (42%) → 1.100 thêm giỏ (26%) → 620 thanh toán (56%) → 280 hoàn tất (45%).<br>→ <b>CVR toàn phễu</b> = (280 ÷ 10.000) × 100% = <b>2,8%</b>.'
   },
   {
     id: 'f_payment_fee',
@@ -548,7 +687,15 @@ const FORMULA_FLASHCARDS = [
       'Phí = (Giá trị đơn hàng ÷ % phí) + Phí cố định'
     ],
     answer: 'A',
-    explanation: '<b>Phí = Phí cố định + (% phí × Giá trị đơn hàng)</b>.<br>Phần phí cố định chiếm tỷ trọng rất lớn ở đơn hàng nhỏ, ăn sâu vào lãi gộp (đơn 150k phí chiếm 11,3% lãi gộp).'
+    explanation: '<b>Phí = Phí cố định + (% phí × Giá trị đơn hàng)</b>.<br>Phần phí cố định chiếm tỷ trọng rất lớn ở đơn hàng nhỏ, ăn sâu vào lãi gộp (đơn 150k phí chiếm 11,3% lãi gộp).',
+    equation: 'Phí = Phí cố định + (% phí × Giá trị đơn hàng);  Tỷ trọng = Phí ÷ Lợi nhuận gộp',
+    vars: [
+      '<b>Phí cố định</b>: Mức phí thu cứng trên mỗi giao dịch (ví dụ 2.000 đ/giao dịch)',
+      '<b>% phí × Giá trị đơn hàng</b>: Phí biến đổi theo giá trị đơn (ví dụ 1,5% × Giá trị đơn)',
+      '<b>Tỷ trọng phí trên lãi gộp</b>: Thước đo mức độ "ăn sâu" của phí thanh toán vào lợi nhuận'
+    ],
+    tip: '⭐ <b>KẾT LUẬN QUẢN TRỊ (Essay 15):</b> Phần phí cố định chiếm tỷ trọng rất lớn ở đơn hàng giá trị nhỏ, do đó ăn sâu vào lợi nhuận gộp (đơn 150k phí chiếm 11,3% lãi gộp, đơn 1.500k chỉ chiếm 6,5%). Vì vậy, với đơn nhỏ ưu tiên khuyến khích thanh toán phí thấp (chuyển khoản VietQR).',
+    example: '<b>Đơn 150.000 đ (biên gộp 25% = 37.500 đ):</b><br>Phí = 2.000 + (1,5% × 150.000) = 4.250 đ → Tỷ trọng phí = 4.250 ÷ 37.500 ≈ <b>11,3%</b>!'
   },
   {
     id: 'f_logistics',
@@ -562,7 +709,15 @@ const FORMULA_FLASHCARDS = [
       'Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%'
     ],
     answer: 'D',
-    explanation: '<b>Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%</b>.<br>Ngưỡng an toàn tài chính: Chi phí logistics mỗi đơn ≤ Lợi nhuận gộp mỗi đơn.'
+    explanation: '<b>Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%</b>.<br>Ngưỡng an toàn tài chính: Chi phí logistics mỗi đơn ≤ Lợi nhuận gộp mỗi đơn.',
+    equation: 'Tỷ lệ hoàn hàng = (Số đơn hoàn hủy ÷ Tổng số đơn xuất) × 100%',
+    vars: [
+      '<b>Số đơn hoàn hủy</b>: Tổng số đơn giao thất bại / khách trả lại hàng',
+      '<b>Tổng số đơn xuất</b>: Tổng số đơn hàng đã xuất kho bàn giao vận chuyển',
+      '<b>Ngưỡng an toàn</b>: Chi phí Logistics mỗi đơn ≤ Lợi nhuận gộp mỗi đơn'
+    ],
+    tip: '💡 <b>Chẩn đoán (Buổi 10 & Essay 39):</b> Nếu tỷ lệ hoàn hàng cao (ví dụ 18% ở thời trang), chi phí logistics hai chiều (giao đi + hoàn về) cùng chi phí đóng gói sẽ triệt tiêu toàn bộ lợi nhuận gộp của các đơn hàng thành công.',
+    example: 'Nếu lợi nhuận gộp mỗi đơn là 50.000 đ, chi phí giao 25.000 đ, phí hoàn 15.000 đ. Cứ 1 đơn hoàn làm mất 40.000 đ, cần 1 đơn thành công khác gánh bù!'
   },
   {
     id: 'f_security_risk',
@@ -576,7 +731,15 @@ const FORMULA_FLASHCARDS = [
       'Rủi ro (R) = Lỗ hổng (V) × Tác động (I) − Mối đe dọa (T)'
     ],
     answer: 'B',
-    explanation: '<b>R = T × V × I (Threat × Vulnerability × Impact)</b>.<br>Doanh nghiệp không thể triệt tiêu mối đe dọa (T), chỉ có thể giảm lỗ hổng (V) và giảm tác động (I).'
+    explanation: '<b>R = T × V × I (Threat × Vulnerability × Impact)</b>.<br>Doanh nghiệp không thể triệt tiêu mối đe dọa (T), chỉ có thể giảm lỗ hổng (V) và giảm tác động (I).',
+    equation: 'Rủi ro (Risk) = Mối đe dọa (Threat) × Lỗ hổng (Vulnerability) × Tác động (Impact)',
+    vars: [
+      '<b>Mối đe dọa (Threat - T)</b>: Kẻ tấn công, tin tặc, mã độc, lừa đảo AI (yếu tố ngoại cảnh)',
+      '<b>Lỗ hổng (Vulnerability - V)</b>: Điểm yếu bảo mật trong mã nguồn, máy chủ, cấu hình, nhận thức con người',
+      '<b>Tác động (Impact - I)</b>: Mức độ thiệt hại về tài chính, uy tín, gián đoạn kinh doanh, pháp lý'
+    ],
+    tip: '⭐ <b>CÂU HỎI TRỌNG TÂM ĐỀ CƯƠNG (Buổi 7, Câu 145 & Essay 58):</b> Doanh nghiệp <b>KHÔNG THỂ</b> triệt tiêu mối đe dọa (T). Doanh nghiệp chỉ có thể <b>GIẢM LỖ HỔNG (V)</b> bằng biện pháp kỹ thuật phòng ngừa (vá lỗi, HTTPS, phân quyền) và <b>GIẢM TÁC ĐỘNG (I)</b> bằng kế hoạch ứng phó sự cố và sao lưu dự phòng.',
+    example: '<b>Công thức: R = T × V × I.</b> Khi một trong hai yếu tố V hoặc I tiến về 0, rủi ro tổng thể sẽ được khống chế an toàn.'
   },
   {
     id: 'f_slide_ctr',
@@ -590,7 +753,15 @@ const FORMULA_FLASHCARDS = [
       '1,0%'
     ],
     answer: 'C',
-    explanation: '<b>CTR = (4.000 ÷ 200.000) × 100% = 2,0%</b>.<br>Chuẩn ngành TMĐT thường từ 1,0% – 2,5%, do đó 2,0% là mức hiệu quả tốt.'
+    explanation: '<b>CTR = (4.000 ÷ 200.000) × 100% = 2,0%</b>.<br>Chuẩn ngành TMĐT thường từ 1,0% – 2,5%, do đó 2,0% là mức hiệu quả tốt.',
+    equation: 'CTR = (Clicks ÷ Impressions) × 100% = (4.000 ÷ 200.000) × 100% = 2,0%',
+    vars: [
+      '<b>Clicks (Lượt nhấp)</b>: 4.000 clicks',
+      '<b>Impressions (Lượt hiển thị)</b>: 200.000 impressions',
+      '<b>Tỷ lệ CTR đạt được</b>: 2,0%'
+    ],
+    tip: '💡 <b>Nhận xét bài tập trên Slide (Buổi 6):</b> CTR = 2,0% vượt mức trung bình ngành TMĐT (thường 1,0% – 1,5%), chứng tỏ mẫu quảng cáo hấp dẫn và nhắm chọn đúng đối tượng mục tiêu.',
+    example: '<b>Thay số trực tiếp:</b> (4.000 ÷ 200.000) × 100% = 0,02 × 100% = <b>2,0%</b> (Đáp án C).'
   },
   {
     id: 'f_slide_cpa',
@@ -604,7 +775,15 @@ const FORMULA_FLASHCARDS = [
       'CPC = 2.000 đ · CPA = 200.000 đ'
     ],
     answer: 'A',
-    explanation: '<b>CPC = 20.000.000 ÷ 4.000 = 5.000 đ</b>.<br><b>CPA = 20.000.000 ÷ 100 = 200.000 đ</b> (hoặc CPC ÷ CVR = 5.000 ÷ 0,025 = 200.000 đ).'
+    explanation: '<b>CPC = 20.000.000 ÷ 4.000 = 5.000 đ</b>.<br><b>CPA = 20.000.000 ÷ 100 = 200.000 đ</b> (hoặc CPC ÷ CVR = 5.000 ÷ 0,025 = 200.000 đ).',
+    equation: 'CPC = Ad Cost ÷ Clicks = 5.000 đ  |  CPA = Ad Cost ÷ Orders = 200.000 đ',
+    vars: [
+      '<b>Ad Cost (Chi phí quảng cáo)</b>: 20.000.000 đ',
+      '<b>Clicks = 4.000</b> ⇒ CPC = 20.000.000 ÷ 4.000 = <b>5.000 đ/click</b>',
+      '<b>Orders = 100</b> ⇒ CPA = 20.000.000 ÷ 100 = <b>200.000 đ/đơn</b>'
+    ],
+    tip: '💡 <b>Kiểm chứng bằng công thức liên hệ:</b> Với CVR = 100 ÷ 4.000 = 2,5% (0,025), ta cũng có <code>CPA = CPC ÷ CVR = 5.000 ÷ 0,025 = 200.000 đ/đơn</code>.',
+    example: '<b>Đánh giá trên Slide:</b> Với AOV = 800.000 đ và biên lợi nhuận gộp 30% (lãi gộp 240.000 đ/đơn), mức CPA = 200.000 đ/đơn nằm trong ngưỡng an toàn và mang lại lãi ròng 40.000 đ/đơn.'
   },
   {
     id: 'f_slide_roas',
@@ -618,7 +797,15 @@ const FORMULA_FLASHCARDS = [
       '3,00x'
     ],
     answer: 'B',
-    explanation: '<b>ROAS hòa vốn = 1 ÷ 0,3 ≈ 3,33x</b>.<br>Vì ROAS thực tế trên slide đạt 4,0x (80tr / 20tr) > 3,33x nên chiến dịch CÓ LÃI (+4 triệu).'
+    explanation: '<b>ROAS hòa vốn = 1 ÷ 0,3 ≈ 3,33x</b>.<br>Vì ROAS thực tế trên slide đạt 4,0x (80tr / 20tr) > 3,33x nên chiến dịch CÓ LÃI (+4 triệu).',
+    equation: 'ROAS hòa vốn = 1 ÷ Biên lợi nhuận gộp = 1 ÷ 0,30 ≈ 3,33x',
+    vars: [
+      '<b>Gross Margin (Biên lợi nhuận gộp)</b>: 30% = 0,30',
+      '<b>ROAS hòa vốn</b>: 1 ÷ 0,30 ≈ 3,33x (333%)',
+      '<b>ROAS thực tế trên Slide</b>: 80.000.000 ÷ 20.000.000 = 4,00x'
+    ],
+    tip: '⭐ <b>Giải đáp câu hỏi thảo luận trên Slide:</b> Chỉ nhìn vào ROAS = 4x thì <b>chưa đủ</b> kết luận có lãi nếu chưa biết biên lợi nhuận gộp. Khi tính được ROAS hòa vốn = 3,33x và so sánh 4,00x > 3,33x, ta mới kết luận chính xác chiến dịch có lãi (+4.000.000 đ).',
+    example: '<b>Thay số trực tiếp:</b> Lợi nhuận gộp = 80tr × 30% = 24tr > Chi phí QC 20tr → Lãi ròng = <b>+4.000.000 đ</b>.'
   },
   {
     id: 'f_exam_123',
@@ -632,7 +819,15 @@ const FORMULA_FLASHCARDS = [
       '3.000 đ'
     ],
     answer: 'D',
-    explanation: '<b>CPM = (Ad Cost ÷ Impressions) × 1.000</b> = (6.000.000 ÷ 2.000.000) × 1.000 = <b>3.000 đ</b>.'
+    explanation: '<b>CPM = (Ad Cost ÷ Impressions) × 1.000</b> = (6.000.000 ÷ 2.000.000) × 1.000 = <b>3.000 đ</b>.',
+    equation: 'CPM = (Ad Cost ÷ Impressions) × 1.000 = (6.000.000 ÷ 2.000.000) × 1.000 = 3.000 đ',
+    vars: [
+      '<b>Ad Cost (Chi phí quảng cáo)</b>: 6.000.000 đ',
+      '<b>Impressions (Số lượt hiển thị)</b>: 2.000.000 lượt',
+      '<b>1.000</b>: Đơn vị tính trên mỗi 1.000 lượt hiển thị (Mille)'
+    ],
+    tip: '💡 <b>Mẹo tính nhẩm nhanh Câu 123:</b> Rút gọn 6 triệu ÷ 2 triệu = 3 đ/lượt hiển thị. Nhân với 1.000 lượt hiển thị = <b>3.000 đ</b> (Tránh nhầm số 0 thành 300 đ hoặc 30.000 đ!).',
+    example: '<b>Câu 123 Đề cương (Trang 92):</b> CPM = (6.000.000 ÷ 2.000.000) × 1.000 = <b>3.000 đ</b> (Đáp án D).'
   },
   {
     id: 'f_exam_125',
@@ -646,7 +841,14 @@ const FORMULA_FLASHCARDS = [
       '2,0x'
     ],
     answer: 'A',
-    explanation: '<b>ROAS hòa vốn = 1 ÷ Gross Margin</b> = 1 ÷ 0,4 = <b>2,5x</b> (tương đương 250%).'
+    explanation: '<b>ROAS hòa vốn = 1 ÷ Gross Margin</b> = 1 ÷ 0,4 = <b>2,5x</b> (tương đương 250%).',
+    equation: 'ROAS hòa vốn = 1 ÷ Biên lợi nhuận gộp = 1 ÷ 40% = 1 ÷ 0,4 = 2,5x',
+    vars: [
+      '<b>Biên lợi nhuận gộp (Gross Margin)</b>: 40% = 0,4',
+      '<b>ROAS hòa vốn</b>: 1 ÷ 0,4 = 2,5x (tức 250%)'
+    ],
+    tip: '💡 <b>Ý nghĩa Câu 125:</b> Với biên lợi nhuận gộp 40%, cứ 2,5 đồng doanh thu tạo ra được 1 đồng lợi nhuận gộp (2,5 × 40% = 1), vừa đủ hòa vốn 1 đồng chi phí quảng cáo bỏ ra.',
+    example: '<b>Câu 125 Đề cương (Trang 92):</b> Biên lợi nhuận gộp = 40% → ROAS hòa vốn = 1 ÷ 0,4 = <b>2,5x</b> (Đáp án A).'
   }
 ];
 
@@ -676,17 +878,22 @@ setupFormulaQuizList();
 
 function findFormulaDetails(q) {
   if (!q) return null;
-  const qPromptLower = (q.prompt || '').toLowerCase();
-  const qIdLower = (q.id || '').toLowerCase();
-  let match = FORMULA_LIBRARY.find(f => {
-    if (f.category !== q.category) return false;
-    const titleWords = f.title.toLowerCase().split(/[\s·,()]+/);
-    return titleWords.some(w => w.length > 2 && (qPromptLower.includes(w) || qIdLower.includes(w)));
-  });
-  if (!match) {
-    match = FORMULA_LIBRARY.find(f => f.category === q.category);
+  // 1. Direct embedded details on the flashcard object (100% exact match)
+  if (q.equation) {
+    return {
+      id: q.id,
+      category: q.category,
+      title: q.formulaTitle || q.categoryLabel || '',
+      equation: q.equation,
+      vars: q.vars || [],
+      tip: q.tip || '',
+      example: q.example || ''
+    };
   }
-  return match;
+  // 2. Exact ID match in FORMULA_LIBRARY
+  const exactMatch = FORMULA_LIBRARY.find(f => f.id === (q.formulaId || q.id));
+  if (exactMatch) return exactMatch;
+  return null;
 }
 
 function openFormulaModal() {
@@ -714,12 +921,21 @@ function handleFormulaOverlayClick(event) {
   }
 }
 
+let lastFormulaFlipTime = 0;
 function flipFormulaCard() {
+  const now = Date.now();
+  if (now - lastFormulaFlipTime < 280) return;
+  lastFormulaFlipTime = now;
+
   const card = $('#formula3DCard');
   if (!card) return;
   formulaCardFlipped = !formulaCardFlipped;
   card.classList.toggle('is-flipped', formulaCardFlipped);
   if (typeof playFlipSound === 'function') playFlipSound();
+
+  if (document.activeElement && typeof document.activeElement.blur === 'function') {
+    document.activeElement.blur();
+  }
 
   const flipBtns = document.querySelectorAll('.flip-toggle-btn');
   flipBtns.forEach(btn => {

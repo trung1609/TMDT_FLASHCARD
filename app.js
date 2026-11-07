@@ -1140,8 +1140,9 @@ document.addEventListener('keydown', e => {
   // FORMULA 3D FLASHCARD MODAL SHORTCUTS (WAYGROUND / QUIZIZZ STYLE)
   const formulaModalEl = $('#formulaModal');
   if (formulaModalEl && formulaModalEl.classList.contains('open')) {
-    if (e.code === 'Space') {
+    if (e.code === 'Space' || e.key === ' ' || e.keyCode === 32) {
       e.preventDefault();
+      e.stopPropagation();
       flipFormulaCard();
       return;
     }
