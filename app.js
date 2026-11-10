@@ -1725,7 +1725,7 @@ function mergeSyncState(imported) {
 function getSyncBaseUrl() {
   const isLocal = !window.location.hostname || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   if (isLocal) {
-    return 'https://on-tap-cse703102.vercel.app/';
+    return 'https://on-tap-cse703102.vercel.app/tmdt';
   }
   return window.location.origin + window.location.pathname;
 }

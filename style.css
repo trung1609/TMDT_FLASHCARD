@@ -5988,3 +5988,96 @@ header {
   }
 }
 
+/* Hub navigation back button in Subject Pages */
+.back-hub-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  color: var(--ink);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  flex-shrink: 0;
+}
+.back-hub-pill:hover {
+  background: var(--primary-subtle);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateX(-2px);
+}
+.back-hub-icon {
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 800;
+}
+@media (max-width: 640px) {
+  .back-hub-label {
+    display: none;
+  }
+  .back-hub-pill {
+    padding: 6px 10px;
+  }
+}
+
+/* ==========================================================================
+   4K, 2K & Ultrawide Responsive Enhancements for Subject Quiz Workspace
+   ========================================================================== */
+@media (min-width: 2560px) {
+  header {
+    padding: 16px 48px;
+  }
+  .layout {
+    max-width: 2400px;
+    margin: 0 auto;
+  }
+  aside.sidebar {
+    width: 360px;
+  }
+  main.main {
+    max-width: 1560px;
+    padding: 36px 48px 100px;
+  }
+  .question-prompt {
+    font-size: 20px !important;
+    line-height: 1.6 !important;
+  }
+  .option-card {
+    padding: 16px 20px !important;
+    font-size: 16.5px !important;
+  }
+  .session-header h2 {
+    font-size: 26px !important;
+  }
+}
+
+@media (min-width: 1921px) and (max-width: 2559px) {
+  header {
+    padding: 14px 36px;
+  }
+  .layout {
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+  aside.sidebar {
+    width: 330px;
+  }
+  main.main {
+    max-width: 1320px;
+    padding: 28px 40px 90px;
+  }
+  .question-prompt {
+    font-size: 18.5px !important;
+  }
+  .option-card {
+    padding: 15px 18px !important;
+    font-size: 15.5px !important;
+  }
+}
+
+
+

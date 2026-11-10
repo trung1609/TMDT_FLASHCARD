@@ -4,6 +4,14 @@
     {
       "source": "/on-tap-cse703102/dist/(.*)",
       "destination": "/$1"
+    },
+    {
+      "source": "/tmdt",
+      "destination": "/tmdt.html"
+    },
+    {
+      "source": "/cse703102",
+      "destination": "/tmdt.html"
     }
   ],
   "headers": [

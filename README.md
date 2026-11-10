@@ -1,19 +1,31 @@
-# 🎓 CSE703102 - Hệ thống Ôn tập & Flashcard Thương Mại Điện Tử
+# 🎓 Phenikaa Quiz Hub - Cổng Học Phần & Ôn Thi Trắc Nghiệm Thông Minh
 
-Ứng dụng ôn tập trắc nghiệm và câu hỏi tự luận môn **Thương Mại Điện Tử (CSE703102)** thiết kế theo phong cách hiện đại Wayground / Quizizz, trực quan, sinh động và tối ưu responsive trên mọi thiết bị.
+Hệ thống kho quiz tài liệu học tập và ôn thi trắc nghiệm theo từng môn học dành cho sinh viên **Phenikaa University**. Thiết kế giao diện sáng, hiện đại, thanh lịch (Clean Academic UI), tích hợp đồ họa **Three.js 3D** tương tác trực quan và tối ưu 100% trên cả máy tính lẫn điện thoại.
 
 🌐 **Trải nghiệm trực tiếp:** [https://on-tap-cse703102.vercel.app](https://on-tap-cse703102.vercel.app)
 
 ---
 
-## ✨ Điểm nổi bật
+## 🏛️ Danh mục học phần trong kho
 
-- 📚 **Ngân hàng câu hỏi đồ sộ**: 300 câu trắc nghiệm và 60 câu tự luận bám sát đề cương 121 trang, phân chia theo 13 buổi học.
-- 🎯 **Trực quan & Đối chiếu tức thì**: Hiển thị ảnh chụp trích xuất trực tiếp đáp án và giải thích từ tài liệu gốc ngay khi trả lời, kèm bộ phóng to (Lightbox) xem full trang giáo trình.
-- 🎮 **Trải nghiệm Gamification (Wayground Style)**:
-  - Hiệu ứng âm thanh chân thực (Ding đúng, Buzzer sai, Streak level-up).
-  - Pháo hoa giấy (Confetti) rực rỡ khi trả lời đúng và khi giữ chuỗi liên hoàn.
-  - Theo dõi tiến độ, streak chuỗi đúng, độ chính xác %, lưu trữ trực tiếp trên LocalStorage của trình duyệt.
+1. 🛒 **Thương Mại Điện Tử (CSE703102)** - `tmdt.html`
+   - **Trạng thái:** Sẵn sàng ôn tập (Hoạt động chính thức)
+   - **Nội dung:** 300 câu trắc nghiệm & 60 câu tự luận bám sát đề cương 121 trang, phân chia theo 13 buổi học.
+   - **Tính năng nổi bật:** Đối chiếu ảnh trích xuất giáo trình gốc tức thì, Sổ tay công thức 3D & Máy tính mô phỏng, Gamification âm thanh & chuỗi streak, Đồng bộ 2 chiều Máy tính ⇆ Điện thoại bằng mã rút gọn và mã QR.
+
+*(Các học phần tiếp theo sẽ được cập nhật trực tiếp vào `courses.js` khi hoàn tất biên soạn đề cương & câu hỏi)*
+
+---
+
+## ✨ Điểm nổi bật hệ thống
+
+- 🧭 **Cổng điều hướng thông minh (`index.html`)**: Tìm kiếm theo tên môn, mã học phần, bộ lọc theo khối ngành (CNTT, Kinh tế số, Đại cương) và tự động nhận diện tiến độ học từ LocalStorage.
+- 🎨 **Không gian 3D Three.js tinh tế**: Trải nghiệm mô hình 3D tương tác nhẹ nhàng (khối đa diện tri thức, cuốn sách mở 3D, mạng lưới liên kết hạt kiến thức) phản hồi mượt mà theo di chuột và cảm biến xoay điện thoại.
+- 🎯 **Trực quan & Đối chiếu tức thì**: Trích xuất đáp án và giải thích từ tài liệu gốc ngay khi trả lời, kèm bộ phóng to (Lightbox) xem full trang giáo trình.
+- 🎮 **Trải nghiệm Gamification (Wayground / Quizizz Style)**:
+  - Hiệu ứng âm thanh sống động (Ding đúng, Buzzer sai, Streak level-up).
+  - Pháo hoa giấy (Confetti) khi đúng và giữ chuỗi.
+  - Theo dõi tiến độ, streak chuỗi đúng, tỷ lệ % chính xác.
 - ⌨️ **Hệ thống phím tắt siêu tốc**:
   - `A`, `B`, `C`, `D` hoặc `1`, `2`, `3`, `4`: Chọn đáp án trắc nghiệm tức thì.
   - `←` / `→`: Chuyển câu hỏi trước / sau.
@@ -21,23 +33,57 @@
   - `R`: Làm lại câu hiện tại.
   - `S`: Bật / tắt âm thanh.
   - `Esc`: Đóng lightbox ảnh.
-- 📱 **Tối ưu Mobile First**: Tự động cuộn mượt đưa câu hỏi lên vị trí trung tâm, nút bấm thân thiện với cảm ứng, giao diện gọn gàng, không bị tràn hay tụt dòng.
-- ⚡ **Hoạt động 100% Offline**: Chỉ cần mở trực tiếp file `index.html` trên trình duyệt mà không cần cài đặt môi trường hay internet.
+- ⚡ **Hoạt động 100% Offline**: Tích hợp sẵn toàn bộ thư viện (Three.js, QR, jsqr) cục bộ, chỉ cần mở trực tiếp file `index.html` trên trình duyệt mà không cần cài đặt môi trường hay internet.
 
 ---
 
 ## 📂 Cấu trúc thư mục
 
 ```text
-├── index.html                 # Ứng dụng chính (Single Page App)
-├── ngan-hang-cau-hoi.json     # Dữ liệu 300 trắc nghiệm + 60 tự luận
-├── de-cuong-goc.pdf          # File đề cương gốc 121 trang
-├── vercel.json                # Cấu hình định tuyến & cache Vercel
-├── answers/                   # 360 ảnh trích xuất đáp án gốc (q_1.png -> q_300.png, e_1.png -> e_60.png)
-├── pages/                     # 46 trang PDF đáp án gốc dạng PNG chất lượng cao
-├── HUONG-DAN.txt              # Hướng dẫn mở nhanh
+├── index.html                 # Cổng Hub chọn học phần (Trang chủ /)
+├── courses.js                 # Danh mục khai báo các học phần trong kho
+├── hub.css                    # Giao diện sáng, hiện đại của Kho học phần
+├── hub.js                     # Điều hướng, tìm kiếm, lọc và tiến độ học
+├── hub-3d.js                  # Không gian 3D tương tác Three.js
+├── three.min.js               # Thư viện Three.js offline
+├── tmdt.html                  # Trang ôn tập môn Thương Mại Điện Tử (CSE703102)
+├── app.js                     # Core logic ôn thi môn TMĐT
+├── data.js                    # Dữ liệu 300 trắc nghiệm + 60 tự luận TMĐT
+├── formulas.js                # Sổ tay công thức 3D & Máy tính TMĐT
+├── style.css                  # Giao diện trang ôn tập TMĐT
+├── answers/                   # 360 ảnh trích xuất đáp án gốc TMĐT
+├── pages/                     # 46 trang PDF đáp án gốc chất lượng cao
+├── api/sync.js                # Vercel Serverless Function đồng bộ đám mây
+├── vercel.json                # Cấu hình định tuyến Clean URLs & Cache
 └── README.md
 ```
+
+---
+
+## 🛠️ Hướng dẫn thêm một học phần mới
+
+1. **Chuẩn bị dữ liệu câu hỏi**: Soạn câu hỏi trắc nghiệm dưới dạng mảng JSON hoặc file JS tương tự `data.js`.
+2. **Tạo trang ôn thi**: Nhân bản từ `tmdt.html` thành tên môn mới (VD: `web.html`, `csdl.html`) và liên kết đến file dữ liệu tương ứng.
+3. **Đăng ký vào kho**: Mở file `courses.js`, thêm object học phần mới:
+   ```javascript
+   {
+     id: "cse3020",
+     code: "CSE3020",
+     title: "Lập Trình Web & Ứng Dụng",
+     faculty: "Khoa Công nghệ thông tin",
+     category: "cntt",
+     credits: 3,
+     status: "ready", // Đặt là ready khi đã hoàn thiện trang ôn thi
+     url: "web.html",
+     icon: "🌐",
+     badgeText: "250 Câu hỏi",
+     description: "HTML5, CSS3, ES6+, RESTful API...",
+     highlights: ["JavaScript ES6+", "REST API", "Responsive Layout"],
+     statsStorageKey: "cse3020-v1",
+     totalQuestions: 250
+   }
+   ```
+4. Lưu file và mở lại `index.html`, môn học mới sẽ ngay lập tức xuất hiện trên trang chủ!
 
 ---
 
@@ -48,4 +94,4 @@
    git clone https://github.com/trung1609/TMDT_FLASHCARD.git
    ```
 2. Click đúp vào file `index.html` bằng Google Chrome, Microsoft Edge hoặc Safari.
-3. Học tập và ôn thi hiệu quả!
+3. Chọn học phần và bắt đầu ôn tập hiệu quả!
