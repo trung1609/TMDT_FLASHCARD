@@ -372,28 +372,33 @@
     if (winW >= 2560) {
       // Màn hình 4K / Ultra-wide
       camera.fov = 40;
-      camera.position.z = 12.0;
+      camera.position.set(0, 0, 12.0);
       mainGroup.scale.set(1.2, 1.2, 1.2);
+      mainGroup.position.set(0, 0, 0);
     } else if (winW >= 1920) {
       // Màn hình Full HD / 2K
       camera.fov = 43;
-      camera.position.z = 13.0;
+      camera.position.set(0, 0, 13.0);
       mainGroup.scale.set(1.05, 1.05, 1.05);
+      mainGroup.position.set(0, 0, 0);
     } else if (winW >= 1024) {
       // Laptops & Desktops tiêu chuẩn (HD / WXGA)
       camera.fov = 45;
-      camera.position.z = 13.8;
+      camera.position.set(0, 0, 13.8);
       mainGroup.scale.set(1.0, 1.0, 1.0);
+      mainGroup.position.set(0, 0, 0);
     } else if (winW >= 640) {
       // Tablets & màn hình trung bình
-      camera.fov = 48;
-      camera.position.z = 15.2;
-      mainGroup.scale.set(0.9, 0.9, 0.9);
+      camera.fov = 46;
+      camera.position.set(0, 0, 15.0);
+      mainGroup.scale.set(0.88, 0.88, 0.88);
+      mainGroup.position.set(0, 0, 0);
     } else {
-      // Điện thoại di động
-      camera.fov = 50;
-      camera.position.z = 17.0;
-      mainGroup.scale.set(0.82, 0.82, 0.82);
+      // Điện thoại di động: căn chỉnh vừa vặn với chiều cao 140px - 175px
+      camera.fov = 44;
+      camera.position.set(0, 0, 16.5);
+      mainGroup.scale.set(0.70, 0.70, 0.70);
+      mainGroup.position.set(0, -0.15, 0);
     }
 
     camera.updateProjectionMatrix();

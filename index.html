@@ -22,6 +22,8 @@
   <link rel="stylesheet" href="hub.css">
 </head>
 <body>
+  <canvas id="confettiCanvas"></canvas>
+  <div id="toast" role="alert"></div>
 
   <!-- Top Navigation Header -->
   <header class="hub-header">
@@ -37,7 +39,7 @@
       </a>
 
       <div class="hub-header-actions">
-        <div class="hide-mobile" style="display: flex; gap: 8px;">
+        <div class="hub-header-stats hide-mobile">
           <span class="hub-pill-btn" style="cursor: default;" title="Số môn trong kho">
             📚 <strong id="statTotalCourses">2 môn sẵn sàng</strong>
           </span>
@@ -46,8 +48,16 @@
           </span>
         </div>
 
-        <button type="button" class="hub-pill-btn" onclick="openGuideModal()" title="Hướng dẫn đóng góp và thêm môn học mới">
-          <span>➕</span> <span class="hide-mobile">Thêm môn mới</span>
+        <button type="button" class="hub-pill-btn primary" onclick="openGlobalSyncModal()" title="Đồng bộ 1 lần toàn bộ tiến độ các môn học">
+          <span>📲</span> <span>Đồng bộ</span>
+        </button>
+
+        <button type="button" id="headingScaleBtn" class="hub-pill-btn heading-scale-btn" onclick="cycleHeadingScale()" title="Tùy chỉnh cỡ chữ đề mục (Gọn / Chuẩn / Lớn)">
+          <span>Aa</span> <span class="hide-mobile">Tiêu đề: <b id="headingScaleLabel">Chuẩn</b></span>
+        </button>
+
+        <button type="button" id="headerAddBtn" class="hub-pill-btn hide-mobile" onclick="openGuideModal()" title="Hướng dẫn đóng góp và thêm môn học mới">
+          <span>➕</span> <span>Thêm môn</span>
         </button>
 
         <button id="themeToggleBtn" class="theme-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
@@ -62,7 +72,7 @@
     <div class="hero-content">
       <div class="hero-pill-badge">
         <span class="dot"></span>
-        <span>KHO HỌC PHẦN ÔN THI TRẮC NGHIỆM PHENIKAA</span>
+        <span>KHO HỌC PHẦN ÔN THI PHENIKAA</span>
       </div>
 
       <h2 class="hero-title">
@@ -99,11 +109,11 @@
             <span>Xem ngay trích đoạn tài liệu</span>
           </div>
         </div>
-        <div class="feat-item">
+        <div class="feat-item" onclick="openGlobalSyncModal()" style="cursor: pointer;" title="Bấm để đồng bộ toàn bộ tiến độ">
           <div class="feat-icon">📲</div>
           <div>
             <strong>Đồng bộ đa thiết bị</strong>
-            <span>Lưu tiến độ & mã rút gọn</span>
+            <span>Lưu tiến độ tất cả các môn</span>
           </div>
         </div>
       </div>
@@ -121,7 +131,15 @@
   <main id="coursesSection" class="hub-main">
     <!-- Section Heading (Đề mục tùy chỉnh linh hoạt) -->
     <div class="hub-section-header">
-      <div class="hub-section-badge">DANH MỤC HỌC PHẦN</div>
+      <div class="section-top-row">
+        <div class="hub-section-badge">DANH MỤC HỌC PHẦN</div>
+        <div class="heading-customizer-pill" title="Tùy chỉnh kích thước các đề mục phù hợp màn hình">
+          <span class="customizer-label">Cỡ tiêu đề:</span>
+          <button type="button" class="heading-size-opt" data-scale="compact" onclick="setHeadingScale('compact')">Gọn</button>
+          <button type="button" class="heading-size-opt active" data-scale="normal" onclick="setHeadingScale('normal')">Chuẩn</button>
+          <button type="button" class="heading-size-opt" data-scale="large" onclick="setHeadingScale('large')">Lớn</button>
+        </div>
+      </div>
       <h2 class="hub-section-title">Chọn học phần muốn ôn tập</h2>
       <p class="hub-section-desc">Hệ thống ngân hàng trắc nghiệm và câu hỏi tự luận theo từng môn học được phân bổ khoa học, tối ưu ôn thi.</p>
     </div>
@@ -244,6 +262,160 @@
     </div>
   </div>
 
+  <!-- Modal: Đồng bộ toàn bộ tiến độ Máy tính ⇆ Điện thoại -->
+  <div id="globalSyncModal" class="hub-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="globalSyncModalTitle">
+    <div class="hub-modal-dialog" style="max-width: 680px;">
+      <div class="modal-header-row">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="font-size: 26px;">📲</div>
+          <div>
+            <h3 id="globalSyncModalTitle" style="font-size: 18px; font-weight: 800; color: var(--navy-phenikaa);">
+              Đồng Bộ Tiến Độ Máy Tính ⇆ Điện Thoại
+            </h3>
+            <span style="font-size: 12px; color: var(--text-muted);">Đồng bộ 1 lần toàn bộ tiến độ của tất cả các môn học</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeGlobalSyncModal()">✕</button>
+      </div>
+
+      <!-- Live Summary Banner -->
+      <div class="sync-summary-banner">
+        <div class="sync-summary-item">
+          <span class="ss-lbl">🛒 Thương Mại Điện Tử</span>
+          <span class="ss-val" id="syncSumTmdt">0/360 câu</span>
+        </div>
+        <div class="sync-summary-item">
+          <span class="ss-lbl">🐘 Dữ Liệu Lớn</span>
+          <span class="ss-val" id="syncSumBd" style="color: #0284c7;">0/319 câu</span>
+        </div>
+        <div class="sync-summary-item">
+          <span class="ss-lbl">📦 Tổng tiến độ</span>
+          <span class="ss-val" id="syncSumTotal" style="color: #10b981;">0 câu</span>
+        </div>
+      </div>
+
+      <!-- Tabs Row -->
+      <div class="sync-tabs-row">
+        <button class="sync-tab-btn active" data-tab="qr" onclick="switchGlobalSyncTab('qr')">
+          <span>📱</span> <span>Quét mã QR 1 chạm</span>
+        </button>
+        <button class="sync-tab-btn" data-tab="file" onclick="switchGlobalSyncTab('file')">
+          <span>📁</span> <span>File sao lưu (.json)</span>
+        </button>
+        <button class="sync-tab-btn" data-tab="code" onclick="switchGlobalSyncTab('code')">
+          <span>📋</span> <span>Mã rút gọn</span>
+        </button>
+      </div>
+
+      <!-- Tab Panels -->
+      <div class="sync-modal-body">
+        <!-- Panel 1: QR Code -->
+        <div id="syncPanel_qr" class="sync-tab-panel active">
+          <div class="sync-qr-card">
+            <div class="sync-qr-frame">
+              <canvas id="globalSyncQrCanvas" width="260" height="260"></canvas>
+            </div>
+            <div class="sync-qr-guide">
+              <div class="guide-step">
+                <span class="step-num">1</span>
+                <span>Mở <b>Camera</b> điện thoại hoặc tính năng <b>Quét mã Zalo</b></span>
+              </div>
+              <div class="guide-step">
+                <span class="step-num">2</span>
+                <span>Hướng camera vào mã QR bên cạnh</span>
+              </div>
+              <div class="guide-step">
+                <span class="step-num">3</span>
+                <span>Chạm mở link: Tiến độ tất cả các môn sẽ <b>tự động lưu vào điện thoại</b> ngay!</span>
+              </div>
+              <div class="sync-qr-actions">
+                <button class="hub-pill-btn primary" onclick="copyGlobalSyncUrl()" title="Sao chép link đầy đủ">
+                  <span>🔗</span> <span>Sao chép link</span>
+                </button>
+                <button class="hub-pill-btn" onclick="downloadGlobalQrImage()" title="Tải ảnh QR về máy">
+                  <span>📥</span> <span>Tải ảnh QR</span>
+                </button>
+                <button class="hub-pill-btn" onclick="document.getElementById('globalQrFileInput').click()" title="Nạp ảnh QR có sẵn">
+                  <span>📤</span> <span>Tải ảnh QR lên</span>
+                </button>
+                <button class="hub-pill-btn" onclick="refreshGlobalSync()" title="Làm mới mã với dữ liệu mới">
+                  <span>🔄</span> <span>Làm mới</span>
+                </button>
+              </div>
+              <input type="file" id="globalQrFileInput" accept="image/*" style="display:none;" onchange="handleGlobalQrUpload(event)">
+              <p class="sync-qr-hint">⚡ Mã QR đồng bộ toàn bộ học phần trong kho. Không cần đăng nhập tài khoản.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: File JSON -->
+        <div id="syncPanel_file" class="sync-tab-panel">
+          <div class="sync-file-card">
+            <div class="sync-file-section">
+              <div class="sync-file-info">
+                <strong>Xuất tiến độ ra file (.json)</strong>
+                <p>Tải toàn bộ kết quả đã làm của tất cả các môn học về máy để lưu trữ hoặc gửi qua Zalo/Drive.</p>
+              </div>
+              <button class="hub-pill-btn primary" onclick="exportGlobalBackupFile()">
+                <span>📥</span> <span>Tải file sao lưu</span>
+              </button>
+            </div>
+
+            <div class="sync-file-section">
+              <div class="sync-file-info">
+                <strong>Khôi phục tiến độ từ file (.json)</strong>
+                <p>Chọn file backup đã lưu trước đó để nạp lại toàn bộ tiến độ vào thiết bị này.</p>
+              </div>
+              <input type="file" id="globalImportFileInput" accept=".json" style="display:none;" onchange="handleGlobalImportFile(event)">
+              <button class="hub-pill-btn" onclick="document.getElementById('globalImportFileInput').click()">
+                <span>📤</span> <span>Chọn file khôi phục</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Short Code -->
+        <div id="syncPanel_code" class="sync-tab-panel">
+          <div class="sync-code-card">
+            <div class="sync-code-section">
+              <div class="sync-code-section-header">
+                <span class="sync-section-badge">MÃ RÚT GỌN CỦA BẠN</span>
+              </div>
+              <input type="text" id="globalSyncExportText" class="sync-code-token" readonly value="Đang tạo..." onclick="this.select()" title="Bấm để chọn mã">
+              <div class="sync-code-actions">
+                <button class="hub-pill-btn primary" style="flex:1; justify-content:center;" onclick="copyGlobalSyncCode()">
+                  <span>📋</span> <span>Sao chép mã</span>
+                </button>
+                <button class="hub-pill-btn" style="flex:1; justify-content:center;" onclick="copyGlobalSyncUrl()">
+                  <span>🔗</span> <span>Sao chép link</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="sync-code-divider">
+              <span>HOẶC</span>
+            </div>
+
+            <div class="sync-code-section">
+              <div class="sync-code-section-header">
+                <span class="sync-section-badge">NHẬP MÃ TỪ THIẾT BỊ KHÁC</span>
+              </div>
+              <div class="sync-input-row">
+                <input type="text" id="globalSyncImportInput" class="sync-import-input" placeholder="Nhập mã 6 ký tự hoặc dán link..." autocomplete="off" onkeydown="if(event.key==='Enter') applyGlobalSyncCode()">
+                <button class="hub-pill-btn" type="button" onclick="pasteToGlobalSyncInput()">
+                  <span>📋 Dán</span>
+                </button>
+              </div>
+              <button class="hub-pill-btn primary" style="width: 100%; justify-content: center;" onclick="applyGlobalSyncCode()">
+                <span>⚡</span> <span>Áp dụng mã đồng bộ</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="hub-footer">
     <div class="footer-inner">
@@ -253,6 +425,7 @@
       <div class="footer-links">
         <a href="tmdt.html">Ôn TMĐT (CSE703102)</a>
         <a href="bigdata.html">Ôn Dữ Liệu Lớn (CSE405)</a>
+        <a href="javascript:void(0)" onclick="openGlobalSyncModal()">Đồng bộ tiến độ</a>
         <a href="javascript:void(0)" onclick="openGuideModal()">Đóng góp đề cương</a>
         <a href="javascript:void(0)" onclick="scrollToCourses()">Danh sách môn</a>
       </div>
@@ -261,8 +434,11 @@
 
   <!-- Scripts: 100% Offline Compatible -->
   <script src="three.min.js"></script>
+  <script src="qrcode.min.js"></script>
+  <script src="jsqr.min.js"></script>
   <script src="courses.js"></script>
   <script src="hub-3d.js"></script>
+  <script src="hub-sync.js"></script>
   <script src="hub.js"></script>
 </body>
 </html>

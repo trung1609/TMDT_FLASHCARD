@@ -10,6 +10,46 @@
   let currentFilter = 'all';
   let searchQuery = '';
   let currentTheme = localStorage.getItem('quiz-hub-theme') || localStorage.getItem('cse703102-theme') || 'light';
+  
+  // Tùy chỉnh kích thước các đề mục (Heading Scale)
+  const HEADING_SCALES = ['compact', 'normal', 'large'];
+  const HEADING_LABELS = {
+    compact: 'Gọn',
+    normal: 'Chuẩn',
+    large: 'Lớn'
+  };
+  let currentHeadingScale = localStorage.getItem('quiz-hub-heading-scale') || 'normal';
+
+  // Áp dụng Tùy Chỉnh Tiêu Đề
+  function applyHeadingScale(scale) {
+    if (!HEADING_SCALES.includes(scale)) scale = 'normal';
+    currentHeadingScale = scale;
+    document.documentElement.setAttribute('data-heading-scale', scale);
+    localStorage.setItem('quiz-hub-heading-scale', scale);
+
+    const labelEl = document.getElementById('headingScaleLabel');
+    if (labelEl) {
+      labelEl.textContent = HEADING_LABELS[scale] || 'Chuẩn';
+    }
+
+    document.querySelectorAll('.heading-size-opt').forEach(btn => {
+      if (btn.getAttribute('data-scale') === scale) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  window.setHeadingScale = function (scale) {
+    applyHeadingScale(scale);
+  };
+
+  window.cycleHeadingScale = function () {
+    const idx = HEADING_SCALES.indexOf(currentHeadingScale);
+    const nextIdx = (idx + 1) % HEADING_SCALES.length;
+    applyHeadingScale(HEADING_SCALES[nextIdx]);
+  };
 
   // Áp dụng Theme
   function applyTheme(theme) {
@@ -310,8 +350,9 @@
 
   // Lắng nghe sự kiện
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Áp dụng theme ban đầu
+    // 1. Áp dụng theme & kích thước tiêu đề ban đầu
     applyTheme(currentTheme);
+    applyHeadingScale(currentHeadingScale);
 
     // Nút chuyển theme
     const themeBtn = document.getElementById('themeToggleBtn');
@@ -334,6 +375,15 @@
         searchQuery = e.target.value;
         renderCourses();
       });
+    }
+
+    // 4. Mở modal đồng bộ tự động nếu được chuyển hướng từ tmdt/bigdata (openSync=1)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('openSync') === '1' && typeof window.openGlobalSyncModal === 'function') {
+      setTimeout(() => {
+        window.openGlobalSyncModal();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }, 200);
     }
 
     // 4. Đóng modal khi click ra ngoài overlay
