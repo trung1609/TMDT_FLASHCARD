@@ -53,10 +53,6 @@
         <span id="themeIcon">🌙</span>
       </button>
 
-      <a id="headerSyncBtn" class="sync-header-btn" href="index.html?openSync=1" title="Đồng bộ tiến độ toàn bộ các môn học (Máy tính ⇆ Điện thoại)" style="text-decoration:none;">
-        <span>📲</span> <span class="hide-mobile">Đồng bộ toàn môn</span>
-      </a>
-
       <button id="headerFormulaBtn" class="formula-header-btn" title="Mở sổ tay công thức TMĐT & Máy tính mô phỏng">
         <span>📐</span> <span class="hide-mobile">Công thức cần nhớ</span>
       </button>
@@ -78,12 +74,6 @@
       </div>
       <nav id="sessions" class="nav" aria-label="Chọn buổi học"></nav>
       
-      <div class="sidebar-sync-box">
-        <a class="sidebar-sync-btn" href="index.html?openSync=1" title="Đồng bộ tiến độ toàn bộ các môn học sang điện thoại" style="text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;">
-          <span>📲</span> <span>Đồng bộ toàn bộ môn học</span>
-        </a>
-      </div>
-
       <div class="side-tip-card">
         <strong>💡 Phím tắt nhanh</strong>
         <p style="margin:0;line-height:1.5;">Bấm phím <b>A B C D</b> (hoặc 1 2 3 4) để chọn đáp án, bấm <b>← →</b> để chuyển câu. Khi chuyển câu trang sẽ tự cuộn đúng vị trí câu hỏi!</p>
@@ -293,164 +283,6 @@
     </div>
   </div>
 
-  <!-- Sync & Backup Modal (QR Code & File Import/Export) -->
-  <div id="syncModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="syncModalTitle" onclick="handleSyncOverlayClick(event)">
-    <div class="sync-modal-dialog">
-      <div class="sync-modal-header">
-        <div class="sync-modal-title-wrap">
-          <div class="sync-modal-badge">⚡ TIỆN ÍCH ĐỒNG BỘ 2 CHIỀU</div>
-          <h3 id="syncModalTitle" class="sync-modal-title">📲 Đồng bộ tiến độ Máy tính ⇆ Điện thoại</h3>
-          <p class="sync-modal-sub">Hoàn toàn không cần đăng nhập · Quét mã QR 1 chạm hoặc sao lưu file</p>
-        </div>
-        <button class="f3d-close-btn" onclick="closeSyncModal()" title="Đóng (Esc)">✕</button>
-      </div>
-
-      <!-- Live Progress Summary -->
-      <div class="sync-summary-banner">
-        <div class="sync-summary-item"><span class="ss-lbl">Trắc nghiệm</span><span class="ss-val" id="syncStatQuiz">0/300</span></div>
-        <div class="sync-summary-item"><span class="ss-lbl">Flashcard 3D</span><span class="ss-val" id="syncStatFlash">0/300</span></div>
-        <div class="sync-summary-item"><span class="ss-lbl">Công thức</span><span class="ss-val" id="syncStatFormula">0/24</span></div>
-        <div class="sync-summary-item"><span class="ss-lbl">Đã lưu ⭐</span><span class="ss-val" id="syncStatStar">0 câu</span></div>
-        <div class="sync-summary-item"><span class="ss-lbl">Kỷ lục chuỗi</span><span class="ss-val" id="syncStatStreak" style="color:#f59e0b;">0 🔥</span></div>
-      </div>
-
-      <!-- Tabs Navigation -->
-      <div class="sync-tabs-row">
-        <button id="syncTabBtnQr" class="sync-tab-btn active" onclick="switchSyncTab('qr')">
-          <span>📱</span> <span>Quét mã QR 1 chạm</span>
-        </button>
-        <button id="syncTabBtnFile" class="sync-tab-btn" onclick="switchSyncTab('file')">
-          <span>📁</span> <span>File sao lưu (.json)</span>
-        </button>
-        <button id="syncTabBtnCode" class="sync-tab-btn" onclick="switchSyncTab('code')">
-          <span>📋</span> <span>Mã rút gọn</span>
-        </button>
-      </div>
-
-      <div class="sync-modal-body">
-        <!-- TAB 1: QR CODE SYNC -->
-        <div id="syncTabQr" class="sync-tab-panel active">
-          <div class="sync-qr-card">
-            <div class="sync-qr-frame">
-              <canvas id="syncQrCanvas" width="280" height="280"></canvas>
-              <div class="sync-qr-expiry" id="syncQrExpiry">
-                <span class="expiry-clock-icon">🕒</span> <span>Hết hạn: <strong id="syncExpiryDate">09/11/2026</strong></span>
-              </div>
-            </div>
-            <div class="sync-qr-guide">
-              <div class="guide-step">
-                <span class="step-num">1</span>
-                <span>Mở <b>Camera</b> điện thoại hoặc tính năng <b>Quét mã Zalo</b></span>
-              </div>
-              <div class="guide-step">
-                <span class="step-num">2</span>
-                <span>Hướng camera vào mã QR sắc nét bên cạnh</span>
-              </div>
-              <div class="guide-step">
-                <span class="step-num">3</span>
-                <span>Chạm mở link: Tiến độ sẽ <b>tự động lưu vào điện thoại</b> ngay!</span>
-              </div>
-              <div class="sync-qr-actions">
-                <button class="btn primary" onclick="copySyncUrl()" title="Sao chép đường dẫn rút gọn để gửi qua Zalo/Messenger">
-                  <span>📋</span> <span>Sao chép link</span>
-                </button>
-                <button class="btn" onclick="downloadQrImage()" title="Tải file ảnh mã QR về máy hoặc điện thoại">
-                  <span>📥</span> <span>Tải ảnh QR</span>
-                </button>
-                <button class="btn" onclick="document.getElementById('qrImageFileInput').click()" title="Tải ảnh QR có sẵn trong máy để nạp tiến độ">
-                  <span>📤</span> <span>Tải lên ảnh QR</span>
-                </button>
-                <button class="btn" onclick="refreshSyncQr()" title="Tạo lại mã với dữ liệu mới nhất">
-                  <span>🔄</span> <span>Làm mới</span>
-                </button>
-              </div>
-              <input type="file" id="qrImageFileInput" accept="image/*" style="display:none;" onchange="handleQrImageUpload(event)">
-              <p class="sync-qr-hint">⚡ Mã QR độ nét cao 1 chạm · Link rút gọn siêu ngắn dễ gửi Zalo/Messenger</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 2: FILE JSON IMPORT / EXPORT -->
-        <div id="syncTabFile" class="sync-tab-panel">
-          <div class="sync-file-card">
-            <div class="sync-file-section">
-              <div class="sync-file-icon">📥</div>
-              <div class="sync-file-info">
-                <strong>Xuất tiến độ ra file (.json)</strong>
-                <p>Tải toàn bộ câu đã làm, bài tự luận, ghi chú và chuỗi streak về máy tính hoặc gửi qua Zalo.</p>
-              </div>
-              <button class="btn primary" onclick="exportBackupFile()">
-                <span>📥</span> <span>Tải file sao lưu</span>
-              </button>
-            </div>
-
-            <div class="sync-divider"></div>
-
-            <div class="sync-file-section">
-              <div class="sync-file-icon">📤</div>
-              <div class="sync-file-info">
-                <strong>Khôi phục tiến độ từ file (.json)</strong>
-                <p>Chọn file <code>tmdt_tiendo.json</code> đã lưu trước đó để nạp lại vào trình duyệt này.</p>
-              </div>
-              <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="handleImportFile(event)">
-              <button class="btn" onclick="document.getElementById('importFileInput').click()">
-                <span>📤</span> <span>Chọn file khôi phục</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 3: CODE STRING COPY / PASTE -->
-        <div id="syncTabCode" class="sync-tab-panel">
-          <div class="sync-code-card">
-            <!-- Box 1: Mã rút gọn hiện tại của bạn -->
-            <div class="sync-code-section">
-              <div class="sync-code-section-header">
-                <span class="sync-section-badge">MÃ CỦA BẠN</span>
-                <span class="sync-section-hint">Dùng để nạp vào điện thoại / máy khác</span>
-              </div>
-              <div class="sync-code-display-wrap">
-                <input type="text" id="syncExportText" class="sync-code-token" readonly value="Đang tạo..." onclick="this.select()" title="Bấm để chọn toàn bộ mã">
-                <div class="sync-code-actions">
-                  <button class="btn sync-btn-copy primary" onclick="copySyncCode()" title="Sao chép mã rút gọn">
-                    <span>📋</span> <span>Sao chép mã</span>
-                  </button>
-                  <button class="btn sync-btn-link" onclick="copySyncUrl()" title="Sao chép link rút gọn đầy đủ">
-                    <span>🔗</span> <span>Sao chép link</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Divider -->
-            <div class="sync-code-divider">
-              <span>HOẶC</span>
-            </div>
-
-            <!-- Box 2: Nhập mã từ thiết bị khác -->
-            <div class="sync-code-section">
-              <div class="sync-code-section-header">
-                <span class="sync-section-badge input-badge">NHẬP MÃ ĐỒNG BỘ</span>
-                <span class="sync-section-hint">Dán mã 6 ký tự hoặc link rút gọn</span>
-              </div>
-              <div class="sync-input-group">
-                <div class="sync-input-row">
-                  <input type="text" id="syncImportText" class="sync-import-input" placeholder="Nhập mã (VD: 3NqbgY) hoặc dán link..." autocomplete="off" onkeydown="if(event.key==='Enter') applySyncCode()">
-                  <button class="btn sync-btn-paste" type="button" onclick="pasteToSyncInput()" title="Dán nhanh từ bộ nhớ tạm">
-                    <span>📋</span> <span>Dán</span>
-                  </button>
-                </div>
-                <button class="btn primary sync-btn-apply" onclick="applySyncCode()">
-                  <span>⚡</span> <span>Áp dụng mã</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Formula 3D Flashcard Modal (Wayground / Quizizz Style) -->
   <div id="formulaModal" class="formula-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="formulaModalTitle" onclick="handleFormulaOverlayClick(event)">
     <div class="formula-modal-dialog">
@@ -459,8 +291,6 @@
   </div>
 
   <!-- Modular Scripts -->
-  <script src="qrcode.min.js"></script>
-  <script src="jsqr.min.js"></script>
   <script src="data.js"></script>
   <script src="formulas.js"></script>
   <script src="app.js"></script>
