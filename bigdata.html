@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tích hợp & Phân tích Dữ liệu lớn · Phenikaa Quiz Hub</title>
+  <meta name="description" content="Hệ thống luyện tập 319 câu hỏi Tích hợp và Phân tích Dữ liệu lớn (Hadoop, HDFS, Spark, NoSQL, Neo4j, MongoDB, Streaming).">
+  <link rel="icon" type="image/png" href="phenikaa-icon.png">
+  <link rel="apple-touch-icon" href="phenikaa-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;850&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="bigdata.css">
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+  <div id="toast" role="alert"></div>
+
+  <!-- Header Navigation -->
+  <header class="bd-header">
+    <div class="bd-header-inner">
+      <div class="bd-brand-wrap">
+        <a href="index.html" class="back-hub-pill" title="Quay về Kho học phần">
+          <span>‹</span>
+          <span>Kho học phần</span>
+        </a>
+        <div class="bd-logo-icon" title="Phenikaa University · Big Data Practice Lab">🐘</div>
+        <div class="bd-brand-text">
+          <h1>Tích Hợp & Phân Tích Dữ Liệu Lớn</h1>
+          <p>CSE405 · 319 câu hỏi chuẩn 5 Batch</p>
+        </div>
+      </div>
+
+      <div class="bd-header-actions">
+        <div class="streak-pill" title="Chuỗi trả lời đúng liên tiếp">
+          <span>🔥</span>
+          <span><strong id="streakCount">0</strong> chuỗi</span>
+        </div>
+
+        <button id="soundToggle" class="icon-btn" title="Bật/Tắt âm thanh (Phím S)" aria-label="Âm thanh">
+          <span id="soundIcon">🔊</span>
+        </button>
+
+        <button id="themeToggle" class="icon-btn" title="Đổi chế độ Sáng / Tối" aria-label="Giao diện">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="bd-main">
+    <!-- Overview Summary Card -->
+    <section class="bd-overview-card">
+      <div class="bd-overview-title">
+        <h2>Luyện Tập Trắc Nghiệm Dữ Liệu Lớn</h2>
+        <p>Chọn bộ đề theo từng Batch, làm bài với phím tắt nhanh, đối chiếu đáp án & giải thích kỹ thuật tức thì.</p>
+      </div>
+      <div class="bd-stats-group">
+        <div class="bd-stat-box">
+          <strong id="statDone">0</strong>
+          <span>Đã làm</span>
+        </div>
+        <div class="bd-stat-box">
+          <strong id="statCorrect" style="color: var(--green-good);">0</strong>
+          <span>Đúng</span>
+        </div>
+        <div class="bd-stat-box">
+          <strong id="statRate" style="color: #ea580c;">0%</strong>
+          <span>Chính xác</span>
+        </div>
+        <div class="bd-stat-box">
+          <strong id="statTotal">319</strong>
+          <span>Câu hỏi</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Batch Selection Bar -->
+    <nav class="bd-batches-bar" aria-label="Chọn bộ đề Batch">
+      <button type="button" class="batch-btn active" data-batch="1">Batch 1 <small>46 câu</small></button>
+      <button type="button" class="batch-btn" data-batch="2">Batch 2 <small>52 câu</small></button>
+      <button type="button" class="batch-btn" data-batch="3">Batch 3 <small>45 câu</small></button>
+      <button type="button" class="batch-btn" data-batch="4">Batch 4 <small>60 câu</small></button>
+      <button type="button" class="batch-btn" data-batch="5">Batch 5 <small>116 câu</small></button>
+      <button type="button" class="batch-btn" data-batch="all">Tất cả <small>319 câu</small></button>
+    </nav>
+
+    <!-- Context Note according to Batch -->
+    <div id="batchNoteBox" class="batch-note-box" style="display: none;"></div>
+
+    <!-- Toolbar: Filters, Jump & Search -->
+    <div class="bd-toolbar">
+      <div class="bd-toolbar-left">
+        <div class="tool-item">
+          <label for="jumpSelect">Đi đến câu:</label>
+          <select id="jumpSelect" class="tool-select"></select>
+        </div>
+
+        <div class="tool-item">
+          <label for="filterSelect">Bộ lọc:</label>
+          <select id="filterSelect" class="tool-select">
+            <option value="all">Tất cả câu hỏi</option>
+            <option value="remaining">Chưa làm</option>
+            <option value="wrong">Câu làm sai</option>
+            <option value="correct">Đã làm đúng</option>
+          </select>
+        </div>
+
+        <div class="tool-item" style="flex: 1; min-width: 180px;">
+          <input type="text" id="searchInput" class="tool-select" style="width: 100%;" placeholder="🔍 Tìm kiếm trong đề..." autocomplete="off">
+        </div>
+      </div>
+
+      <button type="button" id="btnResetBatch" class="reset-btn" title="Xóa tiến độ bộ đề hiện tại để làm lại từ đầu">
+        🔄 Làm lại bộ đề
+      </button>
+    </div>
+
+    <!-- Question Quiz Card -->
+    <section id="quizCard" class="bd-quiz-card">
+      <div class="q-meta-top">
+        <div class="q-badges-wrap">
+          <span id="qBatchTag" class="q-badge batch-tag">Batch 1 · Câu 1</span>
+          <span id="qCdrTag" class="q-badge cdr-tag" style="display: none;">CDR 1.1</span>
+          <span id="qDiffTag" class="q-badge" style="display: none;">Dễ</span>
+        </div>
+        <span id="qStatusPill" class="q-status-pill untested">Chưa kiểm tra</span>
+      </div>
+
+      <h3 id="qPromptTitle" class="q-prompt-title">Đang tải câu hỏi...</h3>
+
+      <!-- Code Snippet / Context Box -->
+      <div id="qContextBox" class="q-context-box" style="display: none;"></div>
+
+      <p id="qInstructionText" class="q-instruction-text">Chọn đáp án:</p>
+
+      <!-- Options Choices -->
+      <div id="qOptionsList" class="q-options-list"></div>
+
+      <!-- Action Buttons -->
+      <div class="q-actions-row">
+        <button type="button" id="btnCheck" class="btn primary">
+          <span>Kiểm tra đáp án (Enter)</span>
+        </button>
+        <button type="button" id="btnClear" class="btn secondary" disabled>
+          <span>Xóa lựa chọn</span>
+        </button>
+        <button type="button" id="btnRetry" class="btn secondary" style="display: none;">
+          <span>Làm lại câu này (Phím R)</span>
+        </button>
+      </div>
+
+      <!-- Feedback / Explanation Box -->
+      <div id="qFeedbackBox" class="q-feedback-box" style="display: none;"></div>
+    </section>
+
+    <!-- Empty Filter State -->
+    <section id="emptyState" class="bd-empty-state" style="display: none;">
+      <div style="font-size: 36px; margin-bottom: 8px;">🎯</div>
+      <h3>Không có câu hỏi trong bộ lọc này</h3>
+      <p id="emptyDesc">Bạn đã hoàn thành các câu hỏi trong bộ lọc hiện tại.</p>
+      <button type="button" id="btnEmptyReset" class="btn primary">
+        Xem tất cả câu hỏi
+      </button>
+    </section>
+
+    <!-- Bottom Navigation Bar -->
+    <nav id="navBottom" class="bd-nav-bottom">
+      <button type="button" id="btnPrev" class="btn secondary" disabled>
+        <span>← Câu trước (←)</span>
+      </button>
+      <span id="navPosText" class="nav-pos-text">Câu 1 / 46</span>
+      <button type="button" id="btnNext" class="btn primary">
+        <span>Câu tiếp theo (→) →</span>
+      </button>
+    </nav>
+  </main>
+
+  <!-- Modular Scripts: 100% Offline Compatible -->
+  <script src="bigdata-data.js"></script>
+  <script src="bigdata.js"></script>
+</body>
+</html>
+

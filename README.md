@@ -13,7 +13,17 @@ Hệ thống kho quiz tài liệu học tập và ôn thi trắc nghiệm theo t
    - **Nội dung:** 300 câu trắc nghiệm & 60 câu tự luận bám sát đề cương 121 trang, phân chia theo 13 buổi học.
    - **Tính năng nổi bật:** Đối chiếu ảnh trích xuất giáo trình gốc tức thì, Sổ tay công thức 3D & Máy tính mô phỏng, Gamification âm thanh & chuỗi streak, Đồng bộ 2 chiều Máy tính ⇆ Điện thoại bằng mã rút gọn và mã QR.
 
-*(Các học phần tiếp theo sẽ được cập nhật trực tiếp vào `courses.js` khi hoàn tất biên soạn đề cương & câu hỏi)*
+2. 🐘 **Tích Hợp & Phân Tích Dữ Liệu Lớn (CSE405)** - `bigdata.html`
+   - **Trạng thái:** Sẵn sàng ôn tập (Chuẩn 100% từ Big Data Practice Lab)
+   - **Nội dung:** 319 câu hỏi trắc nghiệm & thực hành chia thành 5 Batch chuyên đề:
+     - **Batch 1 (46 câu):** Tổng quan Dữ liệu lớn, HDFS, Mô hình 3V/5V & Nguồn dữ liệu.
+     - **Batch 2 (52 câu):** Hệ sinh thái Hadoop, MapReduce, Cơ sở dữ liệu NoSQL & Định lý CAP.
+     - **Batch 3 (45 câu):** Xử lý phân tán Apache Spark, RDD Transformations & Streaming.
+     - **Batch 4 (60 câu):** Cơ sở dữ liệu đồ thị Neo4j, Cypher Query & MongoDB Aggregation.
+     - **Batch 5 (116 câu):** Ôn tập nền tảng, cú pháp thực hành & 16 câu so sánh hệ thống dữ liệu.
+   - **Tính năng nổi bật:** Highlight khối mã lệnh Cypher/MongoDB, giải thích đối chiếu kỹ thuật, phím tắt nhanh A/B/C/D & Enter, chuỗi Streak và lưu tiến độ tự động.
+
+*(Các học phần tiếp theo sẽ tiếp tục được mở rộng vào `courses.js`)*
 
 ---
 

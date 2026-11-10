@@ -12,6 +12,14 @@
     {
       "source": "/cse703102",
       "destination": "/tmdt.html"
+    },
+    {
+      "source": "/bigdata",
+      "destination": "/bigdata.html"
+    },
+    {
+      "source": "/du-lieu-lon",
+      "destination": "/bigdata.html"
     }
   ],
   "headers": [
