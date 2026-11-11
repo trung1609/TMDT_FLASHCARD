@@ -318,17 +318,6 @@
     if (modal) modal.classList.remove('active');
   };
 
-  // Modal Hướng Dẫn Thêm Môn Mới
-  window.openGuideModal = function () {
-    const modal = document.getElementById('guideModal');
-    if (modal) modal.classList.add('active');
-  };
-
-  window.closeGuideModal = function () {
-    const modal = document.getElementById('guideModal');
-    if (modal) modal.classList.remove('active');
-  };
-
   // Cuộn mượt tới danh sách học phần
   window.scrollToCourses = function () {
     const el = document.getElementById('coursesSection');
@@ -389,16 +378,13 @@
     // 4. Đóng modal khi click ra ngoài overlay
     window.addEventListener('click', (e) => {
       const upModal = document.getElementById('upcomingModal');
-      const gdModal = document.getElementById('guideModal');
       if (e.target === upModal) closeUpcomingModal();
-      if (e.target === gdModal) closeGuideModal();
     });
 
     // 6. Phím Escape đóng modal
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeUpcomingModal();
-        closeGuideModal();
       }
     });
   });

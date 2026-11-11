@@ -56,10 +56,6 @@
           <span>Aa</span> <span class="hide-mobile">Tiêu đề: <b id="headingScaleLabel">Chuẩn</b></span>
         </button>
 
-        <button type="button" id="headerAddBtn" class="hub-pill-btn hide-mobile" onclick="openGuideModal()" title="Hướng dẫn đóng góp và thêm môn học mới">
-          <span>➕</span> <span>Thêm môn</span>
-        </button>
-
         <button id="themeToggleBtn" class="theme-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Đổi giao diện">
           <span id="themeIcon">🌙</span>
         </button>
@@ -167,98 +163,12 @@
     <div id="coursesGrid" class="courses-grid">
       <!-- Course cards will be rendered dynamically by hub.js -->
     </div>
-
-    <!-- Guide: How to add a new course -->
-    <section class="hub-guide-section">
-      <div class="guide-header">
-        <div>
-          <h3>🛠️ Bạn muốn thêm học phần mới vào kho?</h3>
-          <p>Hệ thống được thiết kế dạng module hóa, rất dễ dàng để bổ sung các môn học tiếp theo.</p>
-        </div>
-        <button type="button" class="hub-pill-btn primary" onclick="openGuideModal()">
-          Xem hướng dẫn chi tiết
-        </button>
-      </div>
-
-      <div class="guide-steps-grid">
-        <div class="guide-step-card">
-          <div class="step-num">1</div>
-          <h4>Chuẩn bị câu hỏi</h4>
-          <p>Soạn ngân hàng câu hỏi trắc nghiệm dưới dạng mảng JSON hoặc file <code>data.js</code> có danh sách buổi và câu hỏi.</p>
-        </div>
-        <div class="guide-step-card">
-          <div class="step-num">2</div>
-          <h4>Tạo file môn học</h4>
-          <p>Nhân bản từ <code>tmdt.html</code> sang tên môn mới (ví dụ <code>web.html</code>, <code>csdl.html</code>) và liên kết dữ liệu.</p>
-        </div>
-        <div class="guide-step-card">
-          <div class="step-num">3</div>
-          <h4>Đăng ký vào kho</h4>
-          <p>Mở file <code>courses.js</code>, thêm thông tin học phần vào mảng và đặt <code>status: 'ready'</code>.</p>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- Modal: Chi Tiết Môn Sắp Ra Mắt -->
   <div id="upcomingModal" class="hub-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="upcomingModalTitle">
     <div class="hub-modal-dialog">
       <div id="upcomingModalBody"></div>
-    </div>
-  </div>
-
-  <!-- Modal: Hướng Dẫn Thêm Môn Học Mới -->
-  <div id="guideModal" class="hub-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle">
-    <div class="hub-modal-dialog" style="max-width: 620px;">
-      <div class="modal-header-row">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="font-size: 26px;">📚</div>
-          <div>
-            <h3 id="guideModalTitle" style="font-size: 18px; font-weight: 800; color: var(--navy-phenikaa);">
-              Hướng Dẫn Thêm Môn Học Vào Kho
-            </h3>
-            <span style="font-size: 12px; color: var(--text-muted);">Dành cho sinh viên & quản trị viên biên soạn</span>
-          </div>
-        </div>
-        <button class="modal-close-btn" onclick="closeGuideModal()">✕</button>
-      </div>
-
-      <div style="margin: 16px 0; font-size: 13.5px; line-height: 1.6; color: var(--text-main);">
-        <p style="margin-bottom: 12px;">
-          Kho Quiz Hub được kiến trúc tách biệt giữa <b>Trang chủ điều hướng (<code>index.html</code>)</b> và <b>Trang ôn tập môn học (như <code>tmdt.html</code>)</b>. Các bước triển khai môn tiếp theo:
-        </p>
-
-        <div style="background: var(--surface-subtle); border: 1px solid var(--border-card); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px;">
-          <strong style="color: var(--orange-phenikaa); display: block; margin-bottom: 6px;">Bước 1: Khai báo trong <code>courses.js</code></strong>
-          <pre style="background: #1e293b; color: #f8fafc; padding: 10px 12px; border-radius: 8px; font-size: 12px; overflow-x: auto;"><code>{
-  id: "cse3020",
-  code: "CSE3020",
-  title: "Lập Trình Web & Ứng Dụng",
-  status: "ready", // hoặc "coming_soon"
-  url: "web.html",
-  icon: "🌐",
-  ...
-}</code></pre>
-        </div>
-
-        <div style="background: var(--surface-subtle); border: 1px solid var(--border-card); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px;">
-          <strong style="color: var(--orange-phenikaa); display: block; margin-bottom: 6px;">Bước 2: Chuẩn bị file HTML và Data</strong>
-          <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
-            Chỉ cần sao chép <code>tmdt.html</code> thành <code>web.html</code>, trỏ tới file dữ liệu câu hỏi của môn đó. Mọi tính năng phím tắt, âm thanh, đối chiếu trang gốc, flashcard và đồng bộ đều dùng lại nguyên bản!
-          </p>
-        </div>
-
-        <div style="background: var(--surface-subtle); border: 1px solid var(--border-card); border-radius: var(--radius-md); padding: 14px;">
-          <strong style="color: var(--orange-phenikaa); display: block; margin-bottom: 6px;">Bước 3: Tự động hoàn tất</strong>
-          <p style="font-size: 13px; color: var(--text-muted); margin: 0;">
-            Khi lưu file, trang chủ sẽ tự động hiển thị học phần mới với đầy đủ tính năng tìm kiếm, thống kê và lưu tiến độ riêng biệt.
-          </p>
-        </div>
-      </div>
-
-      <div style="display: flex; justify-content: flex-end; gap: 10px;">
-        <button class="hub-pill-btn primary" onclick="closeGuideModal()">Đã rõ, đóng hướng dẫn</button>
-      </div>
     </div>
   </div>
 
@@ -426,7 +336,6 @@
         <a href="tmdt.html">Ôn TMĐT (CSE703102)</a>
         <a href="bigdata.html">Ôn Dữ Liệu Lớn (CSE405)</a>
         <a href="javascript:void(0)" onclick="openGlobalSyncModal()">Đồng bộ tiến độ</a>
-        <a href="javascript:void(0)" onclick="openGuideModal()">Đóng góp đề cương</a>
         <a href="javascript:void(0)" onclick="scrollToCourses()">Danh sách môn</a>
       </div>
     </div>
