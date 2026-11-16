@@ -77,6 +77,11 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 70px;
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--bg-main);

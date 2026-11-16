@@ -627,6 +627,7 @@
     delete answers[currentQId];
     saveState();
     render();
+    scrollToQuestionView(true);
   }
 
   // Xóa lựa chọn chưa nộp
@@ -640,6 +641,30 @@
     }
   }
 
+  // Tự động cuộn mượt về khung câu hỏi và đáp án khi sang câu khác (User Request)
+  function scrollToQuestionView(smooth = true) {
+    requestAnimationFrame(() => {
+      const card = document.getElementById('quizCard');
+      if (!card || card.style.display === 'none') return;
+
+      const toolbar = document.querySelector('.bd-toolbar');
+      const header = document.querySelector('.bd-header') || document.querySelector('header');
+      const headerHeight = header ? (header.getBoundingClientRect().height || header.offsetHeight) : 54;
+
+      // Trên desktop đủ rộng & cao, cuộn tới Toolbar để người dùng thấy cả dropdown Đi đến câu và khung câu hỏi
+      // Trên mobile hoặc màn hình chiều cao thấp, cuộn trực tiếp tới khung câu hỏi (quizCard)
+      const targetEl = (window.innerWidth > 768 && window.innerHeight >= 720 && toolbar) ? toolbar : card;
+      const rect = targetEl.getBoundingClientRect();
+      const currentScrollY = window.pageYOffset || window.scrollY || document.documentElement.scrollTop || 0;
+      const targetY = currentScrollY + rect.top - headerHeight - 12;
+
+      window.scrollTo({
+        top: Math.max(0, Math.round(targetY)),
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+    });
+  }
+
   // Chuyển câu (delta: -1 hoặc +1)
   function moveQuestion(delta) {
     const list = getVisibleQuestions();
@@ -649,7 +674,7 @@
     if (nextQ) {
       currentQId = nextQ.id;
       render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      scrollToQuestionView(true);
     }
   }
 
@@ -671,6 +696,7 @@
 
     saveState();
     render();
+    scrollToQuestionView(true);
   }
 
   // Reset toàn bộ bộ đề đang chọn
@@ -723,7 +749,13 @@
         handleOptionSelect(q, key);
       }
     } else if (e.key === 'Enter') {
-      checkCurrentAnswer();
+      const rec = answers[currentQId];
+      if (rec && rec.checked) {
+        // Đã kiểm tra: Nhấn Enter chuyển sang câu tiếp theo và tự động cuộn
+        moveQuestion(1);
+      } else {
+        checkCurrentAnswer();
+      }
     } else if (e.key === 'ArrowLeft') {
       moveQuestion(-1);
     } else if (e.key === 'ArrowRight' || e.key === ' ') {
@@ -768,7 +800,7 @@
       jumpSelect.addEventListener('change', (e) => {
         currentQId = e.target.value;
         render();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollToQuestionView(true);
       });
     }
 
@@ -778,6 +810,7 @@
       filterSelect.addEventListener('change', (e) => {
         currentFilter = e.target.value;
         render();
+        scrollToQuestionView(true);
       });
     }
 
