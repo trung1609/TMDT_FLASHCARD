@@ -65,6 +65,10 @@
           <strong id="statCorrect" style="color: var(--green-good);">0</strong>
           <span>Đúng</span>
         </div>
+        <div class="bd-stat-box stat-box-wrong" id="statBoxWrong" title="Bấm để vào phần làm lại các câu bị sai" style="cursor: pointer;">
+          <strong id="statWrong" style="color: var(--red-bad);">0</strong>
+          <span>Câu sai (Làm lại)</span>
+        </div>
         <div class="bd-stat-box">
           <strong id="statRate" style="color: #ea580c;">0%</strong>
           <span>Chính xác</span>
@@ -84,7 +88,29 @@
       <button type="button" class="batch-btn" data-batch="4">Batch 4 <small>60 câu</small></button>
       <button type="button" class="batch-btn" data-batch="5">Batch 5 <small>116 câu</small></button>
       <button type="button" class="batch-btn" data-batch="all">Tất cả <small>319 câu</small></button>
+      <button type="button" class="batch-btn batch-btn-wrong" data-batch="wrong" id="btnBatchWrong" title="Vào phần làm lại các câu bị làm sai">
+        <span>⚠️ Làm lại câu sai</span>
+        <span id="badgeWrongCount" class="wrong-badge-count" style="display: none;">0</span>
+      </button>
     </nav>
+
+    <!-- Dedicated Wrong Questions Mode Banner -->
+    <div id="wrongModeBanner" class="wrong-mode-banner" style="display: none;">
+      <div class="wrong-banner-icon">⚠️</div>
+      <div class="wrong-banner-info">
+        <div class="wrong-banner-badge">CHUYÊN MỤC ÔN TẬP ĐẶC BIỆT</div>
+        <h3>Phần Làm Lại Các Câu Hỏi Bị Sai</h3>
+        <p id="wrongBannerText">Đang lọc các câu bạn đã trả lời chưa chính xác. Bạn có thể làm lại từng câu hoặc bấm nút bên dưới để mở lại toàn bộ danh sách làm tươi mới.</p>
+      </div>
+      <div class="wrong-banner-actions">
+        <button type="button" id="btnResetAllWrong" class="btn-wrong-action reset" title="Đặt lại trạng thái chưa làm cho tất cả các câu sai để bạn làm lại từ đầu">
+          <span>🔄</span> <span>Làm lại tất cả câu sai</span>
+        </button>
+        <button type="button" id="btnExitWrong" class="btn-wrong-action exit" title="Quay về xem tất cả các câu">
+          <span>✕</span> <span>Thoát chế độ này</span>
+        </button>
+      </div>
+    </div>
 
     <!-- Context Note according to Batch -->
     <div id="batchNoteBox" class="batch-note-box" style="display: none;"></div>

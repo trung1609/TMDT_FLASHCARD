@@ -363,6 +363,173 @@ body {
   color: #ffffff;
 }
 
+/* Dedicated Wrong Questions Batch Tab & Badges */
+.batch-btn.batch-btn-wrong {
+  border-color: #fca5a5;
+  color: #dc2626;
+  background: #fff5f5;
+}
+
+.batch-btn.batch-btn-wrong:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+.batch-btn.batch-btn-wrong.active {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-color: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.wrong-badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: var(--radius-full);
+  background: #ef4444;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.batch-btn.batch-btn-wrong.active .wrong-badge-count {
+  background: #ffffff;
+  color: #dc2626;
+}
+
+/* Stat Box for Wrong Questions */
+.bd-stat-box.stat-box-wrong {
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px dashed rgba(239, 68, 68, 0.3);
+  transition: all 0.2s ease;
+}
+
+.bd-stat-box.stat-box-wrong:hover {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: #ef4444;
+  transform: translateY(-2px);
+}
+
+/* Dedicated Wrong Mode Banner */
+.wrong-mode-banner {
+  background: linear-gradient(135deg, #fff1f2 0%, #fee2e2 100%);
+  border: 1.5px solid #fca5a5;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .wrong-mode-banner {
+  background: linear-gradient(135deg, #451a1a 0%, #2a1215 100%);
+  border-color: #7f1d1d;
+}
+
+.wrong-banner-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.wrong-banner-info {
+  flex: 1;
+  min-width: 240px;
+}
+
+.wrong-banner-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.12);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  margin-bottom: 4px;
+}
+
+.wrong-banner-info h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: #991b1b;
+  margin-bottom: 4px;
+}
+
+[data-theme="dark"] .wrong-banner-info h3 {
+  color: #fca5a5;
+}
+
+.wrong-banner-info p {
+  font-size: 13px;
+  color: #7f1d1d;
+  line-height: 1.5;
+}
+
+[data-theme="dark"] .wrong-banner-info p {
+  color: #fecdd3;
+}
+
+.wrong-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-wrong-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  white-space: nowrap;
+}
+
+.btn-wrong-action.reset {
+  background: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+}
+
+.btn-wrong-action.reset:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-wrong-action.exit {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+[data-theme="dark"] .btn-wrong-action.exit {
+  background: #1f2937;
+  color: #f3f4f6;
+  border-color: #374151;
+}
+
+.btn-wrong-action.exit:hover {
+  background: #f3f4f6;
+}
+
 /* Batch Context Alert Note */
 .batch-note-box {
   background: #f0f9ff;
@@ -930,6 +1097,22 @@ body {
    Responsive Breakpoints
    ========================================================================== */
 @media (max-width: 768px) {
+  .wrong-mode-banner {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .wrong-banner-icon {
+    font-size: 24px;
+  }
+  .wrong-banner-actions {
+    width: 100%;
+  }
+  .btn-wrong-action {
+    flex: 1 1 calc(50% - 6px);
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
   .bd-header-inner {
     padding: 8px 14px;
   }

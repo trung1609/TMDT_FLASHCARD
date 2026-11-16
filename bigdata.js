@@ -192,9 +192,27 @@
     }
   }
 
-  // Danh sách câu theo Batch đang chọn
+  // Tập hợp ID câu hỏi đang trong phiên làm lại chuyên biệt
+  let activeWrongSessionIds = new Set();
+
+  // Lấy toàn bộ câu hỏi đang bị làm sai trên toàn bộ 319 câu
+  function getGlobalWrongQuestions() {
+    if (typeof BIGDATA_QUESTIONS === 'undefined') return [];
+    return BIGDATA_QUESTIONS.filter(q => {
+      const rec = answers[q.id];
+      return rec && rec.checked && rec.correct === false;
+    });
+  }
+
+  // Danh sách câu theo Batch đang chọn (hỗ trợ Batch đặc biệt 'wrong')
   function getScopedQuestions() {
     if (typeof BIGDATA_QUESTIONS === 'undefined') return [];
+    if (currentBatch === 'wrong') {
+      if (activeWrongSessionIds.size > 0) {
+        return BIGDATA_QUESTIONS.filter(q => activeWrongSessionIds.has(q.id));
+      }
+      return getGlobalWrongQuestions();
+    }
     if (currentBatch === 'all') return BIGDATA_QUESTIONS;
     return BIGDATA_QUESTIONS.filter(q => String(q.batch) === String(currentBatch));
   }
@@ -240,14 +258,26 @@
     const correctCount = scoped.filter(q => answers[q.id]?.correct === true).length;
     const totalCount = scoped.length;
 
+    // Tổng số câu sai trên toàn bộ đề
+    const globalWrongCount = getGlobalWrongQuestions().length;
+
     const elDone = document.getElementById('statDone');
     const elCorrect = document.getElementById('statCorrect');
+    const elWrong = document.getElementById('statWrong');
     const elTotal = document.getElementById('statTotal');
     const elRate = document.getElementById('statRate');
+    const badgeWrong = document.getElementById('badgeWrongCount');
 
     if (elDone) elDone.textContent = doneCount;
     if (elCorrect) elCorrect.textContent = correctCount;
+    if (elWrong) elWrong.textContent = globalWrongCount;
     if (elTotal) elTotal.textContent = totalCount;
+
+    if (badgeWrong) {
+      badgeWrong.textContent = globalWrongCount;
+      badgeWrong.style.display = globalWrongCount > 0 ? 'inline-flex' : 'none';
+    }
+
     if (elRate) {
       const rate = doneCount > 0 ? Math.round((correctCount / doneCount) * 100) : 0;
       elRate.textContent = rate + '%';
@@ -268,7 +298,7 @@
       opt.value = q.id;
       const rec = answers[q.id];
       const statusIcon = rec?.checked ? (rec.correct ? '✓ ' : '✕ ') : '';
-      opt.textContent = `${statusIcon}${currentBatch === 'all' ? `B${q.batch}·Câu ${q.n}` : `Câu ${q.n}`}`;
+      opt.textContent = `${statusIcon}${currentBatch === 'all' || currentBatch === 'wrong' ? `B${q.batch}·Câu ${q.n}` : `Câu ${q.n}`}`;
       if (activeQ && q.id === activeQ.id) opt.selected = true;
       jump.appendChild(opt);
     });
@@ -286,17 +316,33 @@
       btn.classList.toggle('active', b === currentBatch);
     });
 
-    // Cập nhật Batch Notes
-    const noteEl = document.getElementById('batchNoteBox');
-    if (noteEl) {
-      if (currentBatch === '4') {
-        noteEl.style.display = 'flex';
-        noteEl.innerHTML = '💡 <b>Lưu ý Batch 4:</b> Đáp án đã được đối chiếu kỹ lưỡng với tài liệu Word và tài liệu kỹ thuật Neo4j.';
-      } else if (currentBatch === '5') {
-        noteEl.style.display = 'flex';
-        noteEl.innerHTML = '💡 <b>Gợi ý Batch 5:</b> Bao gồm các câu hỏi ôn tập cú pháp, bài tập thực hành và 16 câu trắc nghiệm so sánh các hệ dữ liệu lớn (Câu 101 – 116).';
+    // Cập nhật Banner Chuyên mục câu sai
+    const wrongBanner = document.getElementById('wrongModeBanner');
+    const batchNoteBox = document.getElementById('batchNoteBox');
+    if (wrongBanner) {
+      if (currentBatch === 'wrong') {
+        wrongBanner.style.display = 'flex';
+        if (batchNoteBox) batchNoteBox.style.display = 'none';
+        const scopedWrong = getScopedQuestions();
+        const wrongText = document.getElementById('wrongBannerText');
+        if (wrongText) {
+          wrongText.innerHTML = `Đang lọc <b>${scopedWrong.length} câu</b> bạn đã trả lời chưa chính xác. Bạn có thể làm lại từng câu bên dưới hoặc bấm nút <b>Làm lại tất cả câu sai</b> để mở lại toàn bộ danh sách làm tươi mới từ đầu.`;
+        }
       } else {
-        noteEl.style.display = 'none';
+        wrongBanner.style.display = 'none';
+      }
+    }
+
+    // Cập nhật Batch Notes (khi không ở chế độ câu sai)
+    if (batchNoteBox && currentBatch !== 'wrong') {
+      if (currentBatch === '4') {
+        batchNoteBox.style.display = 'flex';
+        batchNoteBox.innerHTML = '💡 <b>Lưu ý Batch 4:</b> Đáp án đã được đối chiếu kỹ lưỡng với tài liệu Word và tài liệu kỹ thuật Neo4j.';
+      } else if (currentBatch === '5') {
+        batchNoteBox.style.display = 'flex';
+        batchNoteBox.innerHTML = '💡 <b>Gợi ý Batch 5:</b> Bao gồm các câu hỏi ôn tập cú pháp, bài tập thực hành và 16 câu trắc nghiệm so sánh các hệ dữ liệu lớn (Câu 101 – 116).';
+      } else {
+        batchNoteBox.style.display = 'none';
       }
     }
 
@@ -319,10 +365,17 @@
       if (emptyState) {
         emptyState.style.display = 'block';
         const emptyDesc = document.getElementById('emptyDesc');
+        const emptyBtn = document.getElementById('btnEmptyReset');
         if (emptyDesc) {
-          emptyDesc.textContent = currentFilter === 'wrong'
-            ? 'Bạn chưa có câu trả lời sai nào trong bộ đề này. Làm rất tốt!'
-            : (currentFilter === 'remaining' ? 'Bạn đã làm xong tất cả các câu trong bộ đề này!' : 'Không tìm thấy câu hỏi phù hợp với tìm kiếm.');
+          if (currentBatch === 'wrong') {
+            emptyDesc.innerHTML = '🎉 <b>Chúc mừng bạn! Không có câu hỏi nào bị làm sai!</b><br>Tất cả các câu bạn đã làm đều trả lời chính xác 100%. Hãy tiếp tục luyện tập các phần tiếp theo nhé!';
+            if (emptyBtn) emptyBtn.textContent = 'Quay về ôn tập tất cả câu hỏi';
+          } else {
+            emptyDesc.textContent = currentFilter === 'wrong'
+              ? 'Bạn chưa có câu trả lời sai nào trong bộ đề này. Làm rất tốt!'
+              : (currentFilter === 'remaining' ? 'Bạn đã làm xong tất cả các câu trong bộ đề này!' : 'Không tìm thấy câu hỏi phù hợp với tìm kiếm.');
+            if (emptyBtn) emptyBtn.textContent = 'Xóa bộ lọc & Đặt lại';
+          }
         }
       }
       return;
@@ -340,7 +393,14 @@
     const isChecked = !!rec.checked;
 
     // Badges
-    document.getElementById('qBatchTag').textContent = `Batch ${q.batch} · Câu ${q.n}`;
+    const batchTagEl = document.getElementById('qBatchTag');
+    if (batchTagEl) {
+      if (currentBatch === 'wrong') {
+        batchTagEl.textContent = `⚠️ Ôn câu sai · Batch ${q.batch} · Câu ${q.n}`;
+      } else {
+        batchTagEl.textContent = `Batch ${q.batch} · Câu ${q.n}`;
+      }
+    }
     const cdrTag = document.getElementById('qCdrTag');
     if (cdrTag) {
       if (q.cdr) {
@@ -538,7 +598,11 @@
     const curIdx = visibleList.indexOf(q);
     const posText = document.getElementById('navPosText');
     if (posText) {
-      posText.textContent = `Câu ${curIdx + 1} / ${visibleList.length} (${currentBatch === 'all' ? 'Tất cả 319 câu' : `Batch ${currentBatch}`})`;
+      if (currentBatch === 'wrong') {
+        posText.textContent = `Câu sai ${curIdx + 1} / ${visibleList.length} (Tổng ${visibleList.length} câu đang ôn lại)`;
+      } else {
+        posText.textContent = `Câu ${curIdx + 1} / ${visibleList.length} (${currentBatch === 'all' ? 'Tất cả 319 câu' : `Batch ${currentBatch}`})`;
+      }
     }
 
     const btnPrev = document.getElementById('btnPrev');
@@ -603,13 +667,18 @@
         streak++;
         playSound('correct');
         triggerConfetti();
-        if (streak % 5 === 0) {
+        if (currentBatch === 'wrong') {
+          showToast('🎉 Xuất sắc! Bạn đã khắc phục và trả lời đúng câu hỏi này!');
+        } else if (streak % 5 === 0) {
           playSound('streak');
           showToast(`🔥 Tuyệt vời! Chuỗi ${streak} câu trả lời đúng liên tiếp!`);
         }
       } else {
         streak = 0;
         playSound('wrong');
+        if (currentBatch === 'wrong') {
+          showToast('⚠️ Vẫn chưa chính xác, hãy đọc kỹ phần giải thích đối chiếu bên dưới!');
+        }
       }
     } else {
       rec.correct = null;
@@ -624,10 +693,14 @@
   // Làm lại câu hiện tại
   function retryCurrentQuestion() {
     if (!currentQId) return;
+    if (currentBatch === 'wrong') {
+      activeWrongSessionIds.add(currentQId);
+    }
     delete answers[currentQId];
     saveState();
     render();
     scrollToQuestionView(true);
+    showToast('🔄 Đã làm mới câu này để bạn chọn lại!');
   }
 
   // Xóa lựa chọn chưa nộp
@@ -681,6 +754,12 @@
   // Đổi Batch
   function setBatch(batchId) {
     currentBatch = batchId;
+    if (currentBatch === 'wrong') {
+      const wrongList = getGlobalWrongQuestions();
+      activeWrongSessionIds = new Set(wrongList.map(q => q.id));
+    } else {
+      activeWrongSessionIds.clear();
+    }
     currentFilter = 'all';
     searchQuery = '';
     const searchInput = document.getElementById('searchInput');
@@ -699,8 +778,57 @@
     scrollToQuestionView(true);
   }
 
+  // Làm lại tất cả câu sai (xóa trạng thái đã làm của các câu sai để người dùng làm lại từ đầu)
+  function resetAllWrongQuestions() {
+    const wrongList = getGlobalWrongQuestions();
+    const idsToReset = activeWrongSessionIds.size > 0
+      ? Array.from(activeWrongSessionIds)
+      : wrongList.map(q => q.id);
+
+    if (idsToReset.length === 0) {
+      showToast('ℹ️ Hiện tại không có câu hỏi nào bị làm sai để làm lại!');
+      return;
+    }
+
+    if (!confirm(`Bạn có chắc muốn làm lại tất cả ${idsToReset.length} câu đã trả lời sai? Tất cả lựa chọn của các câu này sẽ được xóa để bạn làm lại tươi mới từ đầu.`)) {
+      return;
+    }
+
+    // Duy trì các câu này trong activeWrongSessionIds để phiên làm lại tiếp tục
+    activeWrongSessionIds = new Set(idsToReset);
+
+    // Xóa record answers của từng câu sai này
+    idsToReset.forEach(id => {
+      delete answers[id];
+    });
+
+    currentFilter = 'all';
+    searchQuery = '';
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = '';
+    const filterSelect = document.getElementById('filterSelect');
+    if (filterSelect) filterSelect.value = 'all';
+
+    currentQId = idsToReset[0] || null;
+    streak = 0;
+    saveState();
+    render();
+    scrollToQuestionView(true);
+    showToast('🔄 Đã làm mới toàn bộ câu sai! Chúc bạn làm đúng 100% lần này.');
+  }
+
+  // Thoát chế độ làm câu sai
+  function exitWrongMode() {
+    activeWrongSessionIds.clear();
+    setBatch('all');
+  }
+
   // Reset toàn bộ bộ đề đang chọn
   function resetCurrentBatchProgress() {
+    if (currentBatch === 'wrong') {
+      resetAllWrongQuestions();
+      return;
+    }
     const scoped = getScopedQuestions();
     const batchName = currentBatch === 'all' ? 'tất cả 319 câu hỏi' : `Batch ${currentBatch}`;
     if (!confirm(`Bạn có chắc muốn xóa toàn bộ kết quả đã làm trong ${batchName} để ôn tập lại từ đầu?`)) return;
@@ -845,12 +973,38 @@
     const btnEmptyReset = document.getElementById('btnEmptyReset');
     if (btnEmptyReset) {
       btnEmptyReset.addEventListener('click', () => {
+        if (currentBatch === 'wrong') {
+          exitWrongMode();
+          return;
+        }
         currentFilter = 'all';
         searchQuery = '';
         if (searchInput) searchInput.value = '';
         if (filterSelect) filterSelect.value = 'all';
         render();
       });
+    }
+
+    // Nút chuyên mục câu sai
+    const statBoxWrong = document.getElementById('statBoxWrong');
+    if (statBoxWrong) {
+      statBoxWrong.addEventListener('click', () => {
+        const wrongCount = getGlobalWrongQuestions().length;
+        if (wrongCount === 0 && currentBatch !== 'wrong') {
+          showToast('🎉 Tuyệt vời! Bạn hiện không có câu hỏi nào bị sai.');
+        }
+        setBatch('wrong');
+      });
+    }
+
+    const btnResetAllWrong = document.getElementById('btnResetAllWrong');
+    if (btnResetAllWrong) {
+      btnResetAllWrong.addEventListener('click', resetAllWrongQuestions);
+    }
+
+    const btnExitWrong = document.getElementById('btnExitWrong');
+    if (btnExitWrong) {
+      btnExitWrong.addEventListener('click', exitWrongMode);
     }
 
     window.addEventListener('keydown', handleKeyDown);
