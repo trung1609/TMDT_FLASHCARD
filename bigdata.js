@@ -877,13 +877,9 @@
         handleOptionSelect(q, key);
       }
     } else if (e.key === 'Enter') {
-      const rec = answers[currentQId];
-      if (rec && rec.checked) {
-        // Đã kiểm tra: Nhấn Enter chuyển sang câu tiếp theo và tự động cuộn
-        moveQuestion(1);
-      } else {
-        checkCurrentAnswer();
-      }
+      e.preventDefault();
+      // Phím Enter dùng duy nhất để "Kiểm tra đáp án" của câu hỏi hiện tại, không tự ý chuyển sang câu tiếp theo
+      checkCurrentAnswer();
     } else if (e.key === 'ArrowLeft') {
       moveQuestion(-1);
     } else if (e.key === 'ArrowRight' || e.key === ' ') {
@@ -1006,6 +1002,14 @@
     if (btnExitWrong) {
       btnExitWrong.addEventListener('click', exitWrongMode);
     }
+
+    // Tự động blur các nút bấm sau khi bấm để tránh phím Enter/Space vô tình kích hoạt lại nút đang focus
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (btn) {
+        btn.blur();
+      }
+    });
 
     window.addEventListener('keydown', handleKeyDown);
 
