@@ -610,8 +610,8 @@
     if (btnPrev) btnPrev.disabled = curIdx <= 0;
     if (btnNext) btnNext.disabled = curIdx >= visibleList.length - 1;
 
-    // Luôn bỏ focus khỏi các nút để tránh trình duyệt giữ focus vào nút Next/Check khi nhấn Enter
-    if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+    // Luôn bỏ focus khỏi các nút button để tránh trình duyệt giữ focus vào nút Next/Check khi nhấn Enter
+    if (document.activeElement && document.activeElement.tagName === 'BUTTON' && typeof document.activeElement.blur === 'function') {
       document.activeElement.blur();
     }
   }
@@ -628,7 +628,7 @@
 
   // Chọn option
   function handleOptionSelect(q, letter) {
-    if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+    if (document.activeElement && document.activeElement.tagName === 'BUTTON' && typeof document.activeElement.blur === 'function') {
       document.activeElement.blur();
     }
 
@@ -652,7 +652,7 @@
 
   // Kiểm tra đáp án
   function checkCurrentAnswer() {
-    if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+    if (document.activeElement && document.activeElement.tagName === 'BUTTON' && typeof document.activeElement.blur === 'function') {
       document.activeElement.blur();
     }
 
@@ -753,7 +753,7 @@
 
   // Chuyển câu (delta: -1 hoặc +1)
   function moveQuestion(delta) {
-    if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+    if (document.activeElement && document.activeElement.tagName === 'BUTTON' && typeof document.activeElement.blur === 'function') {
       document.activeElement.blur();
     }
     const list = getVisibleQuestions();
@@ -880,9 +880,9 @@
 
   // Phím tắt bàn phím (Đồng bộ: Phím Enter CHỈ kiểm tra đáp án, không bao giờ tự ý chuyển câu)
   function handleKeyDown(e) {
-    // Chỉ bỏ qua phím tắt khi người dùng đang thực sự gõ tìm kiếm trong ô input
     const active = document.activeElement;
-    if (active && (active.id === 'searchInput' || active.tagName === 'TEXTAREA' || (active.tagName === 'INPUT' && active.type === 'text'))) {
+    // Bỏ qua toàn bộ phím tắt khi người dùng đang thao tác trong ô tìm kiếm, textarea hoặc dropdown SELECT
+    if (active && (active.id === 'searchInput' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA' || (active.tagName === 'INPUT' && active.type === 'text'))) {
       if (e.key === 'Escape') active.blur();
       return;
     }
@@ -891,7 +891,7 @@
     if (e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();
-      if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+      if (document.activeElement && document.activeElement.tagName === 'BUTTON' && typeof document.activeElement.blur === 'function') {
         document.activeElement.blur();
       }
       checkCurrentAnswer();
@@ -953,6 +953,7 @@
         currentQId = e.target.value;
         render();
         scrollToQuestionView(true);
+        jumpSelect.blur();
       });
     }
 
@@ -963,6 +964,7 @@
         currentFilter = e.target.value;
         render();
         scrollToQuestionView(true);
+        filterSelect.blur();
       });
     }
 
@@ -1031,11 +1033,11 @@
       btnExitWrong.addEventListener('click', exitWrongMode);
     }
 
-    // Tự động blur các nút bấm và ô chọn sau khi bấm để tránh phím Enter vô tình kích hoạt lại nút đang focus
+    // Tự động blur các nút bấm sau khi bấm để tránh phím Enter vô tình kích hoạt lại nút đang focus
     document.addEventListener('click', (e) => {
-      const el = e.target.closest('button, input[type="radio"], input[type="checkbox"], select');
-      if (el && el.id !== 'searchInput' && typeof el.blur === 'function') {
-        el.blur();
+      const btn = e.target.closest('button');
+      if (btn && typeof btn.blur === 'function') {
+        btn.blur();
       }
     });
 
