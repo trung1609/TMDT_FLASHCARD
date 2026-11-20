@@ -609,6 +609,11 @@
     const btnNext = document.getElementById('btnNext');
     if (btnPrev) btnPrev.disabled = curIdx <= 0;
     if (btnNext) btnNext.disabled = curIdx >= visibleList.length - 1;
+
+    // Luôn bỏ focus khỏi các nút để tránh trình duyệt giữ focus vào nút Next/Check khi nhấn Enter
+    if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
   }
 
   function escapeHtml(str) {
@@ -623,6 +628,10 @@
 
   // Chọn option
   function handleOptionSelect(q, letter) {
+    if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+
     const rec = answers[q.id] || { selected: [] };
     if (rec.checked) return;
 
@@ -643,6 +652,10 @@
 
   // Kiểm tra đáp án
   function checkCurrentAnswer() {
+    if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+
     const visibleList = getVisibleQuestions();
     const q = visibleList.find(x => x.id === currentQId);
     if (!q) return;
@@ -740,6 +753,9 @@
 
   // Chuyển câu (delta: -1 hoặc +1)
   function moveQuestion(delta) {
+    if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
     const list = getVisibleQuestions();
     const idx = list.findIndex(x => x.id === currentQId);
     if (idx === -1) return;
@@ -862,10 +878,25 @@
     showToast(soundEnabled ? '🔊 Đã bật âm thanh' : '🔇 Đã tắt âm thanh');
   }
 
-  // Phím tắt bàn phím
+  // Phím tắt bàn phím (Đồng bộ: Phím Enter CHỈ kiểm tra đáp án, không bao giờ tự ý chuyển câu)
   function handleKeyDown(e) {
-    // Không bắt phím khi đang gõ vào ô input tìm kiếm
-    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    // Chỉ bỏ qua phím tắt khi người dùng đang thực sự gõ tìm kiếm trong ô input
+    const active = document.activeElement;
+    if (active && (active.id === 'searchInput' || active.tagName === 'TEXTAREA' || (active.tagName === 'INPUT' && active.type === 'text'))) {
+      if (e.key === 'Escape') active.blur();
+      return;
+    }
+
+    // Phím Enter: Bắt giữ ngay ở mọi thao tác để CHỈ "Kiểm tra đáp án", tuyệt đối không chuyển câu
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      if (document.activeElement && document.activeElement.id !== 'searchInput' && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+      checkCurrentAnswer();
+      return;
+    }
 
     const key = e.key.toUpperCase();
 
@@ -876,13 +907,10 @@
       if (q && q.options && q.options[key]) {
         handleOptionSelect(q, key);
       }
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      // Phím Enter dùng duy nhất để "Kiểm tra đáp án" của câu hỏi hiện tại, không tự ý chuyển sang câu tiếp theo
-      checkCurrentAnswer();
     } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
       moveQuestion(-1);
-    } else if (e.key === 'ArrowRight' || e.key === ' ') {
+    } else if (e.key === 'ArrowRight') {
       e.preventDefault();
       moveQuestion(1);
     } else if (key === 'R') {
@@ -1003,15 +1031,16 @@
       btnExitWrong.addEventListener('click', exitWrongMode);
     }
 
-    // Tự động blur các nút bấm sau khi bấm để tránh phím Enter/Space vô tình kích hoạt lại nút đang focus
+    // Tự động blur các nút bấm và ô chọn sau khi bấm để tránh phím Enter vô tình kích hoạt lại nút đang focus
     document.addEventListener('click', (e) => {
-      const btn = e.target.closest('button');
-      if (btn) {
-        btn.blur();
+      const el = e.target.closest('button, input[type="radio"], input[type="checkbox"], select');
+      if (el && el.id !== 'searchInput' && typeof el.blur === 'function') {
+        el.blur();
       }
     });
 
-    window.addEventListener('keydown', handleKeyDown);
+    // Lắng nghe keydown ở capturing phase để ngăn chặn triệt để mọi hành vi mặc định của Enter trên các nút
+    window.addEventListener('keydown', handleKeyDown, true);
 
     // Initial render
     const scoped = getScopedQuestions();
