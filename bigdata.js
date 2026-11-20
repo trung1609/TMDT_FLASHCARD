@@ -222,14 +222,14 @@
     const scoped = getScopedQuestions();
     return scoped.filter(q => {
       const rec = answers[q.id];
-      // Filter trạng thái
+      // Filter trạng thái (luôn giữ câu hỏi đang hiển thị currentQId để người dùng xem kết quả & giải thích mà không bị tự nhảy câu)
       let matchesFilter = true;
       if (currentFilter === 'remaining') {
-        matchesFilter = !rec || !rec.checked;
+        matchesFilter = (!rec || !rec.checked) || (currentQId && q.id === currentQId);
       } else if (currentFilter === 'wrong') {
-        matchesFilter = rec && rec.checked && rec.correct === false;
+        matchesFilter = (rec && rec.checked && rec.correct === false) || (currentQId && q.id === currentQId);
       } else if (currentFilter === 'correct') {
-        matchesFilter = rec && rec.checked && rec.correct === true;
+        matchesFilter = (rec && rec.checked && rec.correct === true) || (currentQId && q.id === currentQId);
       }
 
       // Filter từ khóa tìm kiếm
@@ -764,6 +764,23 @@
       currentQId = nextQ.id;
       render();
       scrollToQuestionView(true);
+    } else if (delta === 1 && currentFilter !== 'all') {
+      // Khi đã ở câu cuối cùng của danh sách lọc hiện tại, kiểm tra xem còn câu nào khác trong bộ đề khớp bộ lọc không
+      const trulyRemaining = getScopedQuestions().filter(q => {
+        const rec = answers[q.id];
+        if (currentFilter === 'remaining') return !rec || !rec.checked;
+        if (currentFilter === 'wrong') return rec && rec.checked && rec.correct === false;
+        if (currentFilter === 'correct') return rec && rec.checked && rec.correct === true;
+        return true;
+      });
+      if (trulyRemaining.length === 0) {
+        currentQId = null;
+        render();
+      } else {
+        currentQId = trulyRemaining[0].id;
+        render();
+        scrollToQuestionView(true);
+      }
     }
   }
 
@@ -962,6 +979,7 @@
     if (filterSelect) {
       filterSelect.addEventListener('change', (e) => {
         currentFilter = e.target.value;
+        currentQId = null; // Đặt lại để hiển thị câu đầu tiên khớp bộ lọc mới
         render();
         scrollToQuestionView(true);
         filterSelect.blur();
@@ -973,6 +991,7 @@
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value;
+        currentQId = null;
         render();
       });
     }
